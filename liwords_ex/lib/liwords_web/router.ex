@@ -7,5 +7,6 @@ defmodule LIWordsWeb.Router do
 
   scope "/api", LIWordsWeb do
     pipe_through :api
+    resources "/boards", BoardController, except: [:new, :edit]
   end
 end
