@@ -2,11 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const fontFamily = 'Arial,Geneva,Helvetica,Helv,sans-serif';
+// const tileStyle = {
+//   color: '#4417b7',
+//   outline: '#492889',
+//   textColor: '#ffffff',
+//   blankTextColor: '#11fefe',
+// };
+
 const tileStyle = {
-  color: '#4417b7',
-  outline: '#492889',
-  textColor: '#ffffff',
-  blankTextColor: '#11fefe',
+  color: '#fdb72b',
+  outline: '#a57719',
+  textColor: '#000000',
+  blankTextColor: '#fe1111',
 };
 
 class Tile extends React.Component {
@@ -32,7 +39,7 @@ class Tile extends React.Component {
 
   renderTileLetter() {
     let letterColor = tileStyle.textColor;
-    let rune = this.props.rune;
+    let { rune } = this.props;
     if (rune.toUpperCase() !== rune) {
       letterColor = tileStyle.blankTextColor;
       rune = rune.toUpperCase();
@@ -54,13 +61,16 @@ class Tile extends React.Component {
   }
 
   render() {
-    const transform = `translate(${this.props.x},${this.props.y})`;
+    const scaleFactor = 0.95;
+    const realX = this.props.x + (((1 - scaleFactor) * this.props.width) / 2);
+    const realY = this.props.y + (((1 - scaleFactor) * this.props.height) / 2);
+    const transform = `translate(${realX}, ${realY})`;
 
     return (
       <g transform={transform}>
         <rect
-          width={0.97 * this.props.width}
-          height={0.97 * this.props.height}
+          width={scaleFactor * this.props.width}
+          height={scaleFactor * this.props.height}
           strokeWidth="0.5px"
           stroke={tileStyle.outline}
           fill={tileStyle.color}

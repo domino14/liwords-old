@@ -60,6 +60,7 @@ class Board extends React.Component {
           x={x * squareWidth}
           y={y * squareHeight}
           key={`sq_${x}_${y}`}
+          showBonusLabel={this.props.showBonusLabels}
         />);
       }
     }
