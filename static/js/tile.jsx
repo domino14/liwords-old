@@ -6,6 +6,7 @@ const tileStyle = {
   color: '#4417b7',
   outline: '#492889',
   textColor: '#ffffff',
+  blankTextColor: '#11fefe',
 };
 
 class Tile extends React.Component {
@@ -29,32 +30,44 @@ class Tile extends React.Component {
     );
   }
 
+  renderTileLetter() {
+    let letterColor = tileStyle.textColor;
+    let rune = this.props.rune;
+    if (rune.toUpperCase() !== rune) {
+      letterColor = tileStyle.blankTextColor;
+      rune = rune.toUpperCase();
+    }
+    return (
+      <text
+        x={this.props.width / 2}
+        y={this.props.height / 2}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily={fontFamily}
+        fontWeight="500"
+        fontSize="150%"
+        stroke={letterColor}
+        fill={letterColor}
+      >{rune}
+      </text>
+    );
+  }
+
   render() {
     const transform = `translate(${this.props.x},${this.props.y})`;
 
     return (
       <g transform={transform}>
         <rect
-          width={this.props.width}
-          height={this.props.height}
+          width={0.97 * this.props.width}
+          height={0.97 * this.props.height}
           strokeWidth="0.5px"
           stroke={tileStyle.outline}
           fill={tileStyle.color}
-          rx={1}
-          ry={1}
+          rx={3}
+          ry={3}
         />
-        <text
-          x={this.props.width / 2}
-          y={this.props.height / 2}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontFamily={fontFamily}
-          fontWeight="500"
-          fontSize="150%"
-          stroke={tileStyle.textColor}
-          fill={tileStyle.textColor}
-        >{this.props.rune}
-        </text>
+        {this.renderTileLetter()}
         {this.renderPointValue()}
       </g>);
   }
