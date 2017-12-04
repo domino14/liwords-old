@@ -1,10 +1,13 @@
 defmodule LIWordsWeb.BoardController do
+  require Logger
   use LIWordsWeb, :controller
 
   alias LIWords.API
   alias LIWords.API.Board
 
   action_fallback LIWordsWeb.FallbackController
+
+  # plug :authenticate when action in [:index, :new, :create, :update, :delete]
 
   def index(conn, _params) do
     boards = API.list_boards()
