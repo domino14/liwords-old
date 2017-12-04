@@ -20,6 +20,24 @@ const SCRABBLE_BOARD = [
   `=  '   =   '  =`,
 ];
 
+const TEST_GAME_TILES = [
+  '               ',
+  ' OOH B LIP  P  ',
+  '  DISUSE    L  ',
+  'BREN R A  CUE  ',
+  '    QI V FA W  ',
+  '   RIN E UN    ',
+  '  YE   N TO  T ',
+  '  OF  JEEZE  R ',
+  '  GI   D     O ',
+  ' MAX V       I ',
+  ' I EYESTONE  L ',
+  ' C D G  HAdARIM',
+  ' A           T ',
+  ' STRATAl     E ',
+  '      LONG     ',
+];
+
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -49,6 +67,7 @@ class CrosswordAppContainer extends React.Component {
         boardHeight={500}
         gridLayout={SCRABBLE_BOARD}
         showBonusLabels
+        tilesLayout={TEST_GAME_TILES}
       />
     );
   }
