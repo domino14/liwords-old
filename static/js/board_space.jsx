@@ -46,6 +46,7 @@ const BoardSpace = (props) => {
   const bonusProps = BonusTypesEnum.properties[props.bonusType];
   const { strokeColor, fillColor } = bonusProps;
   let bonusLabel = null;
+  let startingSquare = null;
   if (props.showBonusLabel && bonusProps.bonusText !== '') {
     bonusLabel = (
       <text
@@ -62,6 +63,23 @@ const BoardSpace = (props) => {
       </text>
     );
   }
+  // ✩✪✫
+  if (props.startingSquare) {
+    startingSquare = (
+      <text
+        x={props.width / 2}
+        y={props.height / 2}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily={fontFamily}
+        fontSize="150%"
+        stroke="#333333"
+        fill="#333333"
+        strokeWidth="0.5px"
+      >✪
+      </text>
+    );
+  }
 
   return (
     <g transform={transform}>
@@ -73,6 +91,7 @@ const BoardSpace = (props) => {
         fill={fillColor}
       />
       {bonusLabel}
+      {startingSquare}
     </g>);
 };
 
@@ -80,6 +99,7 @@ const BoardSpace = (props) => {
 BoardSpace.defaultProps = {
   bonusType: ' ',
   startingSquare: false,
+  showBonusLabel: false,
 };
 
 BoardSpace.propTypes = {

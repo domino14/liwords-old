@@ -53,6 +53,7 @@ class Board extends React.Component {
     for (let y = 0; y < this.props.gridHeight; y += 1) {
       for (let x = 0; x < this.props.gridWidth; x += 1) {
         const sq = this.props.gridLayout[y][x];
+        const startingSquare = x === 7 && y === 7;
         spaces.push(<BoardSpace
           bonusType={sq}
           width={squareWidth}
@@ -60,7 +61,8 @@ class Board extends React.Component {
           x={x * squareWidth}
           y={y * squareHeight}
           key={`sq_${x}_${y}`}
-          showBonusLabel={this.props.showBonusLabels}
+          showBonusLabel={this.props.showBonusLabels && !startingSquare}
+          startingSquare={startingSquare}
         />);
       }
     }
@@ -72,6 +74,9 @@ class Board extends React.Component {
     const squareHeight = this.props.boardHeight / this.props.gridHeight;
 
     const tiles = [];
+    if (!this.props.tilesLayout || this.props.tilesLayout.length === 0) {
+      return tiles;
+    }
 
     for (let y = 0; y < this.props.gridHeight; y += 1) {
       for (let x = 0; x < this.props.gridWidth; x += 1) {
