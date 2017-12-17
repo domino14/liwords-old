@@ -34,8 +34,9 @@ defmodule LIWords.Crosswords.GCG do
     # for a properly formatted GCG)
     if game_repr[:state][:last_token] == :note do
       # Output for the next iteration.
-      Map.put(game_repr[:state], :last_note,
+      new_state = Map.put(game_repr[:state], :last_note,
         game_repr[:state][:last_note] <> line)
+      %{game_repr | state: new_state}
     else
       game_repr  # Output unchanged for next iteration. This could be a GCG
                  # parsing error?
@@ -49,36 +50,40 @@ defmodule LIWords.Crosswords.GCG do
   """
   defp parse_new_turn(parsed_turn, game_repr) do
     # We have either a new turn, or a new note/player definition.
+    # Note that this can't be a new line in a multi-line note (that's what
+    # line_pattern_not_found is above)
     # If there is a last_note, wrap it into the last_turn and set last_note
     # to blank.
     state = game_repr[:state]
-    last_turn = if state[:last_note] != "" do
+    last_turn = if state[:last_note] do
       Map.put(state[:last_turn], :note, state[:last_note])
     else
       state[:last_turn]
     end
-
-    # Append the last turn to the turns.
-    turns = if last_turn do
-      game_repr[:turns] ++ [last_turn]
-    else
-      game_repr[:turns]
-    end
-
     # Now check the new turn.
-    {last_token, turn_repr} = parsed_turn
-    game_repr = case last_token do
+    {this_token, turn_repr} = parsed_turn
+    case this_token do
       :player ->
         %{game_repr | players: game_repr[:players] ++ [turn_repr]}
       :note ->
-        new_state = %{game_repr[:state] | last_note: turn_repr[:note]}
+        new_state = %{game_repr[:state] | last_note: turn_repr["note"],
+          last_token: :note}
         %{game_repr | state: new_state}
       _ ->    # Everything else
         new_state = %{game_repr[:state] |
-          last_turn: Map.put(turn_repr, :type, last_token)}
-        %{game_repr | state: new_state}
+          last_turn: Map.put(turn_repr, :type, this_token),
+          last_note: "",
+          last_token: this_token}
+        # Append the last turn to the turns.
+        turns = if last_turn do
+          # [last_turn | game_repr[:turns]]
+          [last_turn | game_repr[:turns]]
+        else
+          game_repr[:turns]
+        end
+        %{game_repr | turns: turns, state: new_state}
     end
-    %{game_repr | turns: turns}
+
   end
 
   def parse_line(line, game_repr) do
@@ -91,8 +96,6 @@ defmodule LIWords.Crosswords.GCG do
         end
       end
     )
-    IO.puts(inspect parsed)
-    IO.puts(inspect game_repr)
     if is_nil(parsed) do
       line_pattern_not_found(line, game_repr)
     else
@@ -104,28 +107,33 @@ defmodule LIWords.Crosswords.GCG do
     Takes in a stream and parses it line by line.
   """
   def parse_stream(stream) do
-    game_repr = %{
+    game_repr = Enum.reduce(stream, %{
       players: [],
       turns: [],
       state: %{
-        last_note: "",
+        last_note: nil,
         last_token: nil,
         last_turn: nil
-      },   # This is a temporary construct.
-    }
-
-    Enum.reduce(stream, game_repr, fn(line, game_repr) ->
+      },
+    }, fn(line, game_repr) ->
       parse_line(line, game_repr)
     end)
 
-    # Enum.map(stream, fn line ->
-    #   parse_line(line, game_repr, "", nil, nil)
-    # end)
-    # # append the last turn
-    # if last_turn do
-    #   turns = turns ++ [last_turn]
-    # end
-    # {players, turns}
+    # Append the last turn
+    state = game_repr[:state]
+    last_turn = if state[:last_note] do
+      Map.put(state[:last_turn], :note, state[:last_note])
+    else
+      state[:last_turn]
+    end
+    turns = if last_turn do
+      [last_turn | game_repr[:turns]]
+    else
+      game_repr[:turns]
+    end
+
+    %{game_repr | turns: Enum.reverse(turns), state: nil}
+
   end
 
   @doc """
