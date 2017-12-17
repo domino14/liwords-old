@@ -60,6 +60,7 @@ defmodule LIWords.Crosswords.GCG do
     else
       state[:last_turn]
     end
+
     # Now check the new turn.
     {this_token, turn_repr} = parsed_turn
     case this_token do
@@ -132,7 +133,7 @@ defmodule LIWords.Crosswords.GCG do
       game_repr[:turns]
     end
 
-    %{game_repr | turns: Enum.reverse(turns), state: nil}
+    Poison.encode!(%{game_repr | turns: Enum.reverse(turns), state: nil})
 
   end
 
