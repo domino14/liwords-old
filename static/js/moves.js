@@ -3,16 +3,16 @@
  */
 
 const MoveTypesEnum = {
-  SCORING_PLAY: 1,
-  PASS: 2,
+  SCORING_PLAY: 'move',
+  PASS: 'pass',
   // Note: GCG does not specifically have a note for an incorrect challenge,
   // and Quackle just implicitly treats it as a pass. We will do the same
   // for now, for compatibility.
-  CHALLENGE_OFF: 3, // Withdrawal of challenged phoney.
-  CHALLENGE_BONUS: 4,
-  EXCHANGE: 5,
-  ENDGAME_POINTS: 6,
-  TIME_PENALTY: 7,
+  CHALLENGE_OFF: 'lost_challenge', // Withdrawal of challenged phoney.
+  CHALLENGE_BONUS: 'challenge_bonus',
+  EXCHANGE: 'exchange',
+  ENDGAME_POINTS: 'end_rack_points',
+  TIME_PENALTY: 'time_penalty',
 };
 
 class Move {

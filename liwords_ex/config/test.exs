@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :liwords, LIWords.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "cesar",
+  password: "password",
   database: "liwords_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

@@ -22,6 +22,10 @@ defmodule LIWords.Crosswords.GCG do
       # >howard:  (Q) +20 411
       end_rack_points: ~r/>(?<nick>\S+):\s+\((?<rack>\S+)\)\s+\+(?<score>\d+)\s+(?<cumul>\d+)/,
     ]
+  @movedir_patterns [
+    v: ~r/(?<col>[A-Za-z])(?<row>[0-9]+)/,
+    h: ~r/(?<row>[0-9]+)(?<col>[A-Za-z])/
+  ]
 
   def parse_file(filename) do
     stream = File.stream!(filename)
@@ -72,35 +76,59 @@ defmodule LIWords.Crosswords.GCG do
         %{game_repr | state: new_state}
       _ ->    # Everything else
         new_state = %{game_repr[:state] |
-          last_turn: Map.put(turn_repr, :type, this_token),
+          last_turn: Map.put(fix_turn(turn_repr, this_token), :type, this_token),
           last_note: "",
           last_token: this_token}
         # Append the last turn to the turns.
         turns = if last_turn do
-          # [last_turn | game_repr[:turns]]
           [last_turn | game_repr[:turns]]
         else
           game_repr[:turns]
         end
         %{game_repr | turns: turns, state: new_state}
     end
+  end
 
+  def fix_turn(turn_repr, move_type) do
+    if move_type != :move do
+      turn_repr
+    else
+      Map.merge(turn_repr, fix_coords(turn_repr["pos"]))
+    end
+  end
+
+  defp fix_coords(coords) do
+    # Turn a coordinate like 7F into 0-indexed row, column
+    coords = Enum.find_value(@movedir_patterns,
+      fn {key, pattern} ->
+        with captures when is_map(captures) <- Regex.named_captures(pattern, coords) do
+          {key, captures}
+        end
+      end
+    )
+    {dir, repr} = coords
+    {row, col} = {repr["row"], String.upcase(repr["col"])}
+    # Get the integer value of the column letter
+    <<cn::utf8>> = col
+    # 65 is the ASCII code for the letter 'A'. Therefore, cn-65 gives us
+    # the column index.
+    %{"row" => String.to_integer(row) - 1, "col" => cn - 65, "dir" => dir}
   end
 
   def parse_line(line, game_repr) do
     # Use a keyword list.
 
-    parsed = Enum.find_value(@regex_patterns,
+    turn = Enum.find_value(@regex_patterns,
       fn {key, pattern} ->
         with captures when is_map(captures) <- Regex.named_captures(pattern, line) do
           {key, captures}
         end
       end
     )
-    if is_nil(parsed) do
+    if is_nil(turn) do
       line_pattern_not_found(line, game_repr)
     else
-      parse_new_turn(parsed, game_repr)
+      parse_new_turn(turn, game_repr)
     end
   end
 
