@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const vowelOrder = 'AEIOU';
-const consonantOrder = 'BCDFGHJKLMNPQRSTVWXYZ';
+import GameSummary from './game_summary';
+// const vowelOrder = 'AEIOU';
+// const consonantOrder = 'BCDFGHJKLMNPQRSTVWXYZ';
+const letterOrder = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ?';
 
 const TurnsNavbar = props => (
   <div className="btn-toolbar" role="toolbar">
@@ -52,20 +54,14 @@ function poolGenerator(possibleLetters, pool) {
 }
 
 const Pool = (props) => {
-  const vowels = poolGenerator(vowelOrder, props.pool);
-  const consonants = poolGenerator(consonantOrder, props.pool);
-  const blanks = poolGenerator('?', props.pool);
+  const letters = poolGenerator(letterOrder, props.pool);
 
   return (
     <div className="row">
-      <div className="col-lg-5">
-        {vowels.join(' ')}
-      </div>
-      <div className="col-lg-6">
-        {consonants.join(' ')}
-      </div>
-      <div className="col-lg-1">
-        {blanks.join(' ')}
+      <div className="col-lg-12">
+        <span style={{ fontFamily: 'monospace' }}>
+          <big>{letters.join(' ')}</big>
+        </span>
       </div>
     </div>);
 };
@@ -86,6 +82,10 @@ class Scoresheet extends React.Component {
           fastForward={this.props.fastForward}
           fastBackward={this.props.fastBackward}
         />
+        <GameSummary
+          gameRepr={this.props.gameRepr}
+          currentTurn={this.props.currentTurn}
+        />
         <Pool
           pool={this.props.pool}
         />
@@ -103,6 +103,7 @@ Scoresheet.propTypes = {
   stepBackward: PropTypes.func.isRequired,
   fastForward: PropTypes.func.isRequired,
   fastBackward: PropTypes.func.isRequired,
+  currentTurn: PropTypes.number.isRequired,
 };
 
 export default Scoresheet;
