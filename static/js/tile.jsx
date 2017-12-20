@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const fontFamily = 'Arial,Geneva,Helvetica,Helv,sans-serif';
-// const tileStyle = {
-//   color: '#4417b7',
-//   outline: '#492889',
-//   textColor: '#ffffff',
-//   blankTextColor: '#11fefe',
-// };
-
 const tileStyle = {
-  color: '#fdb72b',
-  outline: '#a57719',
-  textColor: '#000000',
-  blankTextColor: '#fe1111',
+  color: '#4417b7',
+  outline: '#492889',
+  textColor: '#ffffff',
+  blankTextColor: '#11fefe',
 };
+
+// const tileStyle = {
+//   color: '#fdb72b',
+//   outline: '#a57719',
+//   textColor: '#000000',
+//   blankTextColor: '#fe1111',
+// };
 
 class Tile extends React.Component {
   renderPointValue() {

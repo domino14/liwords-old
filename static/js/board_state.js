@@ -51,6 +51,12 @@ class BoardState {
       this.pool[letter] -= 1;
     }
   }
+  /**
+   * Remove a letter from the row, col position, and add back into pool.
+   * @param  {number} row A 0-indexed row
+   * @param  {number} col A 0-indexed col
+   * @param  {string} letter
+   */
   removeLetter(row, col, letter) {
     this.layout[(row * 15) + col] = ' ';
     if (letter.toUpperCase() !== letter) {
@@ -63,6 +69,15 @@ class BoardState {
       this.pool[letter] += 1;
     } else {
       this.pool[letter] = 1;
+    }
+  }
+  /**
+   * This is a utility function to remove a series of letters from the pool.
+   * @param  {string} rack A rack of letters
+   */
+  removeFromPool(rack) {
+    for (let i = 0; i < rack.length; i += 1) {
+      this.pool[rack[i]] -= 1;
     }
   }
 }
