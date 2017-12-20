@@ -23,8 +23,8 @@ class Tile extends React.Component {
     }
     return (
       <text
-        x={8.25 * (this.props.width / 10)}
-        y={8.25 * (this.props.width / 10)}
+        x={8 * (this.props.width / 10)}
+        y={8 * (this.props.width / 10)}
         textAnchor="middle"
         dominantBaseline="central"
         fontFamily={fontFamily}
@@ -46,13 +46,13 @@ class Tile extends React.Component {
     }
     return (
       <text
-        x={this.props.width / 2}
-        y={this.props.height / 2}
+        x={(this.props.width / 2) - (this.props.width / 30)}
+        y={(this.props.height / 2) - (this.props.width / 30)}
         textAnchor="middle"
         dominantBaseline="central"
         fontFamily={fontFamily}
         fontWeight="500"
-        fontSize="150%"
+        fontSize="130%"
         stroke={letterColor}
         fill={letterColor}
       >{rune}

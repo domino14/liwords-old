@@ -87,13 +87,14 @@ class Scoresheet extends React.Component {
           fastBackward={this.props.fastBackward}
         />
         <Pool
-          pool={{ }}
+          pool={this.props.pool}
         />
       </div>);
   }
 }
 
 Scoresheet.propTypes = {
+  pool: PropTypes.object.isRequired,
   gameRepr: PropTypes.shape({
     players: PropTypes.array,
     turns: PropTypes.array,

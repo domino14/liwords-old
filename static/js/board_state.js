@@ -16,6 +16,8 @@ class BoardState {
   // time penalties, time remaining, etc.
   constructor(tileDistribution, layout) {
     this.layout = layout || blankLayout();
+    this.currentRack = '';
+    this.currentUser = null;
     this.tileDistribution = tileDistribution;
     // tileDistribution should be a map of letter distributions
     // {A: 9, ?: 2, B: 2, etc}
@@ -97,7 +99,12 @@ class BoardStateCalculator {
    */
   computeLayout(moveIndex) {
     let boardState = new BoardState(this.tileDistribution);
-
+    // The current rack is the rack that the move at moveIndex is being
+    // made from. We should add 1 to to moveIndex to get the rack
+    boardState.currentRack = (this.moveList[moveIndex + 1] ?
+      this.moveList[moveIndex + 1].rack : '');
+    boardState.currentUser = (this.moveList[moveIndex + 1] ?
+      this.moveList[moveIndex + 1].nick : '');
     for (let i = 0; i <= moveIndex; i += 1) {
       const item = this.moveList[i];
       switch (item.type) {

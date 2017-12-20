@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Board from '../board';
+import Rack from '../rack';
 import Scoresheet from '../scoresheet';
 import { BoardStateCalculator } from '../board_state';
 import { CrosswordGameDistribution } from '../tile_distributions';
@@ -420,41 +421,58 @@ class Viewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTurn: 0,
+      // 0 would mean the very first turn; this is -1 instead as we start
+      // with a blank board.
+      currentTurn: -1,
     };
   }
 
   render() {
     const maxTurnIndex = gameRepr.turns.length - 1;
+    const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
     return (
       <div className="row">
         <div className="col-lg-5">
-          <Board
-            gridWidth={15}
-            gridHeight={15}
-            boardWidth={500}
-            boardHeight={500}
-            gridLayout={CrosswordGameSetup}
-            tilesLayout={boardStateCalculator
-              .computeLayout(this.state.currentTurn).layoutString()}
-            showBonusLabels
-          />
+          <div className="row">
+            <div className="col-lg-12">
+              <Board
+                gridWidth={15}
+                gridHeight={15}
+                boardWidth={450}
+                boardHeight={450}
+                gridLayout={CrosswordGameSetup}
+                tilesLayout={boardState.layoutString()}
+                showBonusLabels
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-1">
+              <span>{boardState.currentUser}</span>
+            </div>
+            <div className="col-lg-8 col-lg-offset-1">
+              <Rack
+                letters={boardState.currentRack}
+              />
+            </div>
+          </div>
         </div>
         <div className="col-lg-3">
           <Scoresheet
             gameRepr={gameRepr}
             currentTurn={this.state.currentTurn}
+            pool={boardState.pool}
             stepForward={() => this.setState({
               currentTurn: Math.min(this.state.currentTurn + 1, maxTurnIndex),
             })}
             stepBackward={() => this.setState({
-              currentTurn: Math.max(this.state.currentTurn - 1, 0),
+              currentTurn: Math.max(this.state.currentTurn - 1, -1),
             })}
             fastForward={() => this.setState({
               currentTurn: maxTurnIndex,
             })}
             fastBackward={() => this.setState({
-              currentTurn: 0,
+              currentTurn: -1,
             })}
           />
         </div>
