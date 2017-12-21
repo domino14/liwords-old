@@ -457,10 +457,13 @@ class Viewer extends React.Component {
             </div>
           </div>
         </div>
-        <div className="col-lg-3">
+        <div className="col-lg-4">
           <Scoresheet
-            gameRepr={gameRepr}
+            player1={gameRepr.players[0]}
+            player2={gameRepr.players[1]}
+            turns={boardState.turns}
             currentTurn={this.state.currentTurn}
+            tilesLayout={boardState.layoutString()}
             pool={boardState.pool}
             stepForward={() => this.setState({
               currentTurn: Math.min(this.state.currentTurn + 1, maxTurnIndex),

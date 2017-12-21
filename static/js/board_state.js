@@ -22,6 +22,7 @@ class BoardState {
     // tileDistribution should be a map of letter distributions
     // {A: 9, ?: 2, B: 2, etc}
     this.pool = Object.assign({}, tileDistribution);
+    this.turns = {};
   }
 
   /**
@@ -82,6 +83,39 @@ class BoardState {
       this.pool[rack[i]] -= 1;
     }
   }
+
+  /**
+   * Return the letter at the given row, col.
+   * @param  {number} row
+   * @param  {number} col
+   * @return {string}
+   */
+  letterAt(row, col) {
+    return this.layout[(row * 15) + col];
+  }
+  /**
+   * Pushes a new turn for the given user.
+   */
+  pushNewTurn(nickname, turnRepr) {
+    if (!this.turns[nickname]) {
+      this.turns[nickname] = [];
+    }
+    this.turns[nickname].push(turnRepr);
+  }
+  modifyLastTurn(nickname, modification) {
+    const lastIdx = this.turns[nickname].length - 1;
+    this.turns[nickname][lastIdx] = Object.assign(
+      this.turns[nickname][lastIdx],
+      modification,
+    );
+  }
+}
+
+function setCharAt(str, index, chr) {
+  if (index > str.length - 1) {
+    return str;
+  }
+  return str.substr(0, index) + chr + str.substr(index + 1);
 }
 
 class BoardStateCalculator {
@@ -93,7 +127,7 @@ class BoardStateCalculator {
   /**
    * Compute the layout at the given move index. Only matters for scoring
    * plays and withdrawn challenges, as other events do not change the board
-   * layout or the pool.
+   * layout or the pool. This also computes the pool and the turn summary.
    * @param {number} moveIndex
    * @return {BoardState}
    */
@@ -109,13 +143,40 @@ class BoardStateCalculator {
       const item = this.moveList[i];
       switch (item.type) {
         case MoveTypesEnum.SCORING_PLAY:
-          boardState = this.trackPlay(item, boardState, 'add');
+          boardState = this.trackPlay(i, item, boardState, 'add');
           break;
         case MoveTypesEnum.CHALLENGE_OFF:
           // Note that a challenged off play always comes immediately
           // after the "scoring play" event. The challenged off play
           // does not have positional info, so we just use the old event.
-          boardState = this.trackPlay(this.moveList[i - 1], boardState, 'remove');
+          boardState = this.trackPlay(i, this.moveList[i - 1], boardState, 'remove');
+          break;
+        case MoveTypesEnum.PASS:
+          boardState.pushNewTurn(item.nick, {
+            pos: '',
+            summary: 'Pass',
+            score: '+0',
+            cumul: item.cumul,
+            turnIdx: i,
+          });
+          break;
+        case MoveTypesEnum.EXCHANGE:
+          boardState.pushNewTurn(item.nick, {
+            pos: '',
+            summary: `Exchange ${item.exchanged}`,
+            score: '+0',
+            cumul: item.cumul,
+            turnIdx: i,
+          });
+          break;
+        case MoveTypesEnum.ENDGAME_POINTS:
+          boardState.pushNewTurn(item.nick, {
+            pos: '',
+            summary: `2 × (${item.rack})`,
+            score: `+${item.score}`,
+            cumul: item.cumul,
+            turnIdx: i,
+          });
           break;
         default:
           // For everything else, there's Mastercard.
@@ -127,25 +188,43 @@ class BoardStateCalculator {
   /**
    * Compute the layout for a scoring play, given an existing layout and
    * a play.
+   * @param {number} idx The index of the play in the overall game.
    * @param {Object} item A representation of a scoring play.
    * @param {BoardState} boardState An existing board state to be added to.
    * @param {string} addOrRemove
    * @return {BoardState}
    */
-  trackPlay(item, boardState, addOrRemove) {
+  trackPlay(idx, item, boardState, addOrRemove) {
     let f;
     if (addOrRemove === 'add') {
       f = boardState.addLetter.bind(boardState);
     } else if (addOrRemove === 'remove') {
       f = boardState.removeLetter.bind(boardState);
     }
+    let { play } = item;
     for (let i = 0; i < item.play.length; i += 1) {
       const letter = item.play[i];
       const row = item.dir === 'v' ? item.row + i : item.row;
       const col = item.dir === 'h' ? item.col + i : item.col;
       if (letter !== '.') {
         f(row, col, letter);
+      } else {
+        play = setCharAt(play, i, boardState.letterAt(row, col));
       }
+    }
+    // Now push a summary of the play
+    if (addOrRemove === 'add') {
+      boardState.pushNewTurn(item.nick, {
+        pos: item.pos,
+        summary: play,
+        score: `+${item.score}`,
+        cumul: item.cumul,
+        turnIdx: idx,
+      });
+    } else if (addOrRemove === 'remove') {
+      // This is the only case in which we go back and edit the previous
+      // item.
+      boardState.modifyLastTurn(item.nick, { challengedOff: true });
     }
     return boardState;
   }

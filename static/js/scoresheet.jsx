@@ -83,8 +83,9 @@ class Scoresheet extends React.Component {
           fastBackward={this.props.fastBackward}
         />
         <GameSummary
-          gameRepr={this.props.gameRepr}
-          currentTurn={this.props.currentTurn}
+          player1={this.props.player1}
+          player2={this.props.player2}
+          turns={this.props.turns}
         />
         <Pool
           pool={this.props.pool}
@@ -95,15 +96,21 @@ class Scoresheet extends React.Component {
 
 Scoresheet.propTypes = {
   pool: PropTypes.object.isRequired,
-  gameRepr: PropTypes.shape({
-    players: PropTypes.array,
-    turns: PropTypes.array,
+  turns: PropTypes.object.isRequired,
+  player1: PropTypes.shape({
+    real_name: PropTypes.string,
+    p_number: PropTypes.string,
+    nick: PropTypes.string,
+  }).isRequired,
+  player2: PropTypes.shape({
+    real_name: PropTypes.string,
+    p_number: PropTypes.string,
+    nick: PropTypes.string,
   }).isRequired,
   stepForward: PropTypes.func.isRequired,
   stepBackward: PropTypes.func.isRequired,
   fastForward: PropTypes.func.isRequired,
   fastBackward: PropTypes.func.isRequired,
-  currentTurn: PropTypes.number.isRequired,
 };
 
 export default Scoresheet;
