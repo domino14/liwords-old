@@ -146,4 +146,51 @@ describe('BoardStateCalculator', () => {
       '?': 1,
     });
   });
+
+  it('Should calculate a game summary', () => {
+    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const thisState = calculator.computeLayout(6);
+    expect(thisState.turns.leesa.length).toBe(4);
+    expect(thisState.turns.cesar.length).toBe(3);
+    expect(thisState.turns.leesa[3]).toEqual({
+      pos: 'J5',
+      summary: 'fICTIOUS',
+      score: '+61',
+      cumul: '173',
+      turnIdx: 6,
+    });
+    expect(thisState.turns.cesar[2]).toEqual({
+      pos: 'O7',
+      summary: 'CONTEMN',
+      score: '+14',
+      cumul: '60',
+      turnIdx: 5,
+    });
+  });
+
+  it('Should calculate a game summary with a challenge', () => {
+    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const thisState = calculator.computeLayout(8);
+    expect(thisState.turns.leesa.length).toBe(4);
+    expect(thisState.turns.cesar.length).toBe(4);
+    expect(thisState.turns.leesa[3]).toEqual({
+      pos: 'J5',
+      summary: 'fICTIOUS',
+      score: '+0',
+      cumul: '112',
+      // Note that this turn was edited, so turnIdx is still 6
+      // This isn't really a bug but a choice. :P
+      turnIdx: 6,
+      challengedOff: true,
+    });
+    expect(thisState.turns.cesar[3]).toEqual({
+      pos: 'O7',
+      summary: 'CONTEMNER',
+      score: '+39',
+      cumul: '99',
+      turnIdx: 8,
+    });
+  });
 });

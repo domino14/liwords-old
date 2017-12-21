@@ -149,7 +149,7 @@ class BoardStateCalculator {
           // Note that a challenged off play always comes immediately
           // after the "scoring play" event. The challenged off play
           // does not have positional info, so we just use the old event.
-          boardState = this.trackPlay(i, this.moveList[i - 1], boardState, 'remove');
+          boardState = this.trackPlay(i, this.moveList[i - 1], boardState, 'remove', item);
           break;
         case MoveTypesEnum.PASS:
           boardState.pushNewTurn(item.nick, {
@@ -192,9 +192,10 @@ class BoardStateCalculator {
    * @param {Object} item A representation of a scoring play.
    * @param {BoardState} boardState An existing board state to be added to.
    * @param {string} addOrRemove
+   * @param {Object} if addOrRemove is 'remove', this is the removed item.
    * @return {BoardState}
    */
-  trackPlay(idx, item, boardState, addOrRemove) {
+  trackPlay(idx, item, boardState, addOrRemove, optRemovedItem) {
     let f;
     if (addOrRemove === 'add') {
       f = boardState.addLetter.bind(boardState);
@@ -224,7 +225,11 @@ class BoardStateCalculator {
     } else if (addOrRemove === 'remove') {
       // This is the only case in which we go back and edit the previous
       // item.
-      boardState.modifyLastTurn(item.nick, { challengedOff: true });
+      boardState.modifyLastTurn(item.nick, {
+        challengedOff: true,
+        score: '+0',
+        cumul: optRemovedItem.cumul,
+      });
     }
     return boardState;
   }
