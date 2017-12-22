@@ -93,6 +93,10 @@ describe('BoardStateCalculator', () => {
       Z: 1,
       '?': 2,
     });
+    expect(thisState.lastPlayedLetters).toEqual({
+      R13C14: true,
+      R14C14: true,
+    });
   });
 
   it('Should calculate another reasonably complex board setup', () => {
@@ -144,6 +148,15 @@ describe('BoardStateCalculator', () => {
       Y: 2,
       Z: 1,
       '?': 1,
+    });
+    expect(thisState.lastPlayedLetters).toEqual({
+      R4C9: true,
+      R6C9: true,
+      R7C9: true,
+      R8C9: true,
+      R9C9: true,
+      R10C9: true,
+      R11C9: true,
     });
   });
 

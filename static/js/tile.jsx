@@ -9,14 +9,29 @@ const tileStyle = {
   blankTextColor: '#11fefe',
 };
 
-// const tileStyle = {
+// const lastPlayedTileStyle = {
 //   color: '#fdb72b',
 //   outline: '#a57719',
 //   textColor: '#000000',
 //   blankTextColor: '#fe1111',
 // };
+//
+const lastPlayedTileStyle = {
+  color: '#175cb7',
+  outline: '#492889',
+  textColor: '#ffffff',
+  blankTextColor: '#11fefe',
+};
 
 class Tile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.tileStyle = tileStyle;
+    if (props.lastPlayed) {
+      this.tileStyle = lastPlayedTileStyle;
+    }
+  }
+
   renderPointValue() {
     if (!this.props.value) {
       return null;
@@ -29,19 +44,19 @@ class Tile extends React.Component {
         dominantBaseline="central"
         fontFamily={fontFamily}
         fontSize="60%"
-        stroke={tileStyle.textColor}
+        stroke={this.tileStyle.textColor}
         strokeWidth="0.05px"
-        fill={tileStyle.textColor}
+        fill={this.tileStyle.textColor}
       >{this.props.value}
       </text>
     );
   }
 
   renderTileLetter() {
-    let letterColor = tileStyle.textColor;
+    let letterColor = this.tileStyle.textColor;
     let { rune } = this.props;
     if (rune.toUpperCase() !== rune) {
-      letterColor = tileStyle.blankTextColor;
+      letterColor = this.tileStyle.blankTextColor;
       rune = rune.toUpperCase();
     }
     return (
@@ -72,8 +87,8 @@ class Tile extends React.Component {
           width={scaleFactor * this.props.width}
           height={scaleFactor * this.props.height}
           strokeWidth="0.5px"
-          stroke={tileStyle.outline}
-          fill={tileStyle.color}
+          stroke={this.tileStyle.outline}
+          fill={this.tileStyle.color}
           rx={3}
           ry={3}
         />
@@ -83,6 +98,9 @@ class Tile extends React.Component {
   }
 }
 
+Tile.defaultProps = {
+  lastPlayed: false,
+};
 
 Tile.propTypes = {
   rune: PropTypes.string.isRequired,
@@ -92,6 +110,7 @@ Tile.propTypes = {
   height: PropTypes.number.isRequired,
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
+  lastPlayed: PropTypes.bool,
 };
 
 export default Tile;

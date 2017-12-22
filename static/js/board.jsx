@@ -46,6 +46,7 @@ class Board extends React.Component {
       for (let x = 0; x < this.props.gridWidth; x += 1) {
         const rune = this.props.tilesLayout[y][x];
         if (rune !== ' ') {
+          const lastPlayed = this.props.lastPlayedLetters[`R${y}C${x}`] === true;
           tiles.push(<Tile
             rune={rune}
             value={runeToValues(rune, CrosswordGameTileValues)}
@@ -53,7 +54,8 @@ class Board extends React.Component {
             height={squareHeight}
             x={x * squareWidth}
             y={y * squareHeight}
-            key={`tile_${x}_${y}`}
+            lastPlayed={lastPlayed}
+            key={`tile_${x}_${y}_${lastPlayed}`}
           />);
         }
       }
@@ -86,7 +88,7 @@ Board.propTypes = {
   gridHeight: PropTypes.number.isRequired,
   gridLayout: PropTypes.arrayOf(PropTypes.string).isRequired,
   tilesLayout: PropTypes.arrayOf(PropTypes.string).isRequired,
-
+  lastPlayedLetters: PropTypes.object.isRequired,
   showBonusLabels: PropTypes.bool,
 
   boardWidth: PropTypes.number.isRequired,

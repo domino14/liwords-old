@@ -23,6 +23,7 @@ class BoardState {
     // {A: 9, ?: 2, B: 2, etc}
     this.pool = Object.assign({}, tileDistribution);
     this.turns = {};
+    this.lastPlayedLetters = {};
   }
 
   /**
@@ -204,6 +205,7 @@ class BoardStateCalculator {
    */
   trackPlay(idx, item, boardState, addOrRemove, optRemovedItem) {
     let f;
+    boardState.lastPlayedLetters = {};
     if (addOrRemove === 'add') {
       f = boardState.addLetter.bind(boardState);
     } else if (addOrRemove === 'remove') {
@@ -216,6 +218,9 @@ class BoardStateCalculator {
       const col = item.dir === 'h' ? item.col + i : item.col;
       if (letter !== '.') {
         f(row, col, letter);
+        if (addOrRemove === 'add') {
+          boardState.lastPlayedLetters[`R${row}C${col}`] = true;
+        }
       } else {
         play = setCharAt(play, i, boardState.letterAt(row, col));
       }

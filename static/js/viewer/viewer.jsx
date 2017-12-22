@@ -442,6 +442,7 @@ class Viewer extends React.Component {
                 boardHeight={450}
                 gridLayout={CrosswordGameSetup}
                 tilesLayout={boardState.layoutString()}
+                lastPlayedLetters={boardState.lastPlayedLetters}
                 showBonusLabels
               />
             </div>
