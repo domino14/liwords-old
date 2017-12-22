@@ -5,79 +5,104 @@ import { CrosswordGameTileValues, runeToValues } from './tile_values';
 import BoardSpace from './board_space';
 import Tile from './tile';
 
+const BoardSpaces = (props) => {
+  const squareWidth = props.boardWidth / props.gridWidth;
+  const squareHeight = props.boardHeight / props.gridHeight;
 
-class Board extends React.Component {
-  // Use SVG to render.
+  const spaces = [];
+  for (let y = 0; y < props.gridHeight; y += 1) {
+    for (let x = 0; x < props.gridWidth; x += 1) {
+      const sq = props.gridLayout[y][x];
+      const startingSquare = x === 7 && y === 7;
+      spaces.push(<BoardSpace
+        bonusType={sq}
+        width={squareWidth}
+        height={squareHeight}
+        x={x * squareWidth}
+        y={y * squareHeight}
+        key={`sq_${x}_${y}`}
+        showBonusLabel={props.showBonusLabels && !startingSquare}
+        startingSquare={startingSquare}
+      />);
+    }
+  }
+  return spaces;
+};
 
-  renderSpaces() {
-    const squareWidth = this.props.boardWidth / this.props.gridWidth;
-    const squareHeight = this.props.boardHeight / this.props.gridHeight;
+BoardSpaces.propTypes = {
+  boardWidth: PropTypes.number.isRequired,
+  boardHeight: PropTypes.number.isRequired,
+  gridWidth: PropTypes.number.isRequired,
+  gridHeight: PropTypes.number.isRequired,
+  gridLayout: PropTypes.arrayOf(PropTypes.string).isRequired,
+  showBonusLabels: PropTypes.bool.isRequired,
+};
 
-    const spaces = [];
-    for (let y = 0; y < this.props.gridHeight; y += 1) {
-      for (let x = 0; x < this.props.gridWidth; x += 1) {
-        const sq = this.props.gridLayout[y][x];
-        const startingSquare = x === 7 && y === 7;
-        spaces.push(<BoardSpace
-          bonusType={sq}
+const Tiles = (props) => {
+  const squareWidth = props.boardWidth / props.gridWidth;
+  const squareHeight = props.boardHeight / props.gridHeight;
+
+  const tiles = [];
+  if (!props.tilesLayout || props.tilesLayout.length === 0) {
+    return tiles;
+  }
+
+  for (let y = 0; y < props.gridHeight; y += 1) {
+    for (let x = 0; x < props.gridWidth; x += 1) {
+      const rune = props.tilesLayout[y][x];
+      if (rune !== ' ') {
+        const lastPlayed = props.lastPlayedLetters[`R${y}C${x}`] === true;
+        tiles.push(<Tile
+          rune={rune}
+          value={runeToValues(rune, CrosswordGameTileValues)}
           width={squareWidth}
           height={squareHeight}
           x={x * squareWidth}
           y={y * squareHeight}
-          key={`sq_${x}_${y}`}
-          showBonusLabel={this.props.showBonusLabels && !startingSquare}
-          startingSquare={startingSquare}
+          lastPlayed={lastPlayed}
+          key={`tile_${x}_${y}`}
         />);
       }
     }
-    return spaces;
   }
+  return tiles;
+};
 
-  renderTiles() {
-    const squareWidth = this.props.boardWidth / this.props.gridWidth;
-    const squareHeight = this.props.boardHeight / this.props.gridHeight;
+Tiles.propTypes = {
+  boardWidth: PropTypes.number.isRequired,
+  boardHeight: PropTypes.number.isRequired,
+  gridWidth: PropTypes.number.isRequired,
+  gridHeight: PropTypes.number.isRequired,
+  tilesLayout: PropTypes.arrayOf(PropTypes.string).isRequired,
+  lastPlayedLetters: PropTypes.object.isRequired,
+};
 
-    const tiles = [];
-    if (!this.props.tilesLayout || this.props.tilesLayout.length === 0) {
-      return tiles;
-    }
-
-    for (let y = 0; y < this.props.gridHeight; y += 1) {
-      for (let x = 0; x < this.props.gridWidth; x += 1) {
-        const rune = this.props.tilesLayout[y][x];
-        if (rune !== ' ') {
-          const lastPlayed = this.props.lastPlayedLetters[`R${y}C${x}`] === true;
-          tiles.push(<Tile
-            rune={rune}
-            value={runeToValues(rune, CrosswordGameTileValues)}
-            width={squareWidth}
-            height={squareHeight}
-            x={x * squareWidth}
-            y={y * squareHeight}
-            lastPlayed={lastPlayed}
-            key={`tile_${x}_${y}_${lastPlayed}`}
-          />);
-        }
-      }
-    }
-    return tiles;
-  }
-
-  render() {
-    return (
-      <svg
-        width={this.props.boardWidth}
-        height={this.props.boardHeight}
-      >
-        <g>
-          {/* apply transform here to the g */}
-          {this.renderSpaces()}
-          {this.renderTiles()}
-        </g>
-      </svg>
-    );
-  }
-}
+const Board = props => (
+  <svg
+    width={props.boardWidth}
+    height={props.boardHeight}
+  >
+    <g>
+      {/* apply transform here to the g */}
+      <BoardSpaces
+        boardWidth={props.boardWidth}
+        boardHeight={props.boardHeight}
+        gridWidth={props.gridWidth}
+        gridHeight={props.gridHeight}
+        gridLayout={props.gridLayout}
+        showBonusLabels={props.showBonusLabels}
+      />
+      <Tiles
+        boardWidth={props.boardWidth}
+        boardHeight={props.boardHeight}
+        gridWidth={props.gridWidth}
+        gridHeight={props.gridHeight}
+        tilesLayout={props.tilesLayout}
+        lastPlayedLetters={props.lastPlayedLetters}
+      />
+    </g>
+  </svg>
+);
 
 Board.defaultProps = {
   showBonusLabels: false,

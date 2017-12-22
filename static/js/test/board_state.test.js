@@ -47,7 +47,7 @@ describe('BoardStateCalculator', () => {
     const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
     const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(8);
-    expect(thisState.layoutString()).toEqual([
+    expect(thisState.tilesLayout()).toEqual([
       '               ',
       '               ',
       '               ',
@@ -103,7 +103,7 @@ describe('BoardStateCalculator', () => {
     const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
     const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(6);
-    expect(thisState.layoutString()).toEqual([
+    expect(thisState.tilesLayout()).toEqual([
       '               ',
       '               ',
       '               ',

@@ -430,6 +430,7 @@ class Viewer extends React.Component {
   render() {
     const maxTurnIndex = gameRepr.turns.length - 1;
     const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
+    const tilesLayout = boardState.tilesLayout();
     return (
       <div className="row">
         <div className="col-lg-5">
@@ -441,7 +442,7 @@ class Viewer extends React.Component {
                 boardWidth={450}
                 boardHeight={450}
                 gridLayout={CrosswordGameSetup}
-                tilesLayout={boardState.layoutString()}
+                tilesLayout={tilesLayout}
                 lastPlayedLetters={boardState.lastPlayedLetters}
                 showBonusLabels
               />
@@ -464,7 +465,7 @@ class Viewer extends React.Component {
             player2={gameRepr.players[1]}
             turns={boardState.turns}
             currentTurn={this.state.currentTurn}
-            tilesLayout={boardState.layoutString()}
+            tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}
             stepForward={() => this.setState({

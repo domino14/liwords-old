@@ -30,7 +30,7 @@ class BoardState {
    * Convert the layout array into an array of strings, for ease of display.
    * @return {Array.<string>}
    */
-  layoutString() {
+  tilesLayout() {
     const layout = [];
     for (let j = 0; j < 15; j += 1) {
       // row by row
