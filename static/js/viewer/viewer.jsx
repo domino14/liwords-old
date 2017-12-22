@@ -465,6 +465,7 @@ class Viewer extends React.Component {
             currentTurn={this.state.currentTurn}
             tilesLayout={boardState.layoutString()}
             pool={boardState.pool}
+            currentRack={boardState.currentRack}
             stepForward={() => this.setState({
               currentTurn: Math.min(this.state.currentTurn + 1, maxTurnIndex),
             })}

@@ -135,8 +135,15 @@ class BoardStateCalculator {
     let boardState = new BoardState(this.tileDistribution);
     // The current rack is the rack that the move at moveIndex is being
     // made from. We should add 1 to to moveIndex to get the rack
-    boardState.currentRack = (this.moveList[moveIndex + 1] ?
-      this.moveList[moveIndex + 1].rack : '');
+    if (this.moveList[moveIndex + 1] &&
+        this.moveList[moveIndex + 1].type !== MoveTypesEnum.CHALLENGE_OFF &&
+        this.moveList[moveIndex + 1].type !== MoveTypesEnum.ENDGAME_POINTS) {
+      boardState.currentRack = this.moveList[moveIndex + 1].rack;
+    } else {
+      boardState.currentRack = '';
+    }
+
+
     boardState.currentUser = (this.moveList[moveIndex + 1] ?
       this.moveList[moveIndex + 1].nick : '');
     for (let i = 0; i <= moveIndex; i += 1) {

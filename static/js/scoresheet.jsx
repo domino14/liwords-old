@@ -71,6 +71,13 @@ Pool.propTypes = {
   pool: PropTypes.object.isRequired,
 };
 
+function poolMinusRack(pool, rack) {
+  const poolCopy = Object.assign({}, pool);
+  for (let i = 0; i < rack.length; i += 1) {
+    poolCopy[rack[i]] -= 1;
+  }
+  return poolCopy;
+}
 
 class Scoresheet extends React.Component {
   render() {
@@ -82,13 +89,23 @@ class Scoresheet extends React.Component {
           fastForward={this.props.fastForward}
           fastBackward={this.props.fastBackward}
         />
-        <GameSummary
-          player1={this.props.player1}
-          player2={this.props.player2}
-          turns={this.props.turns}
-        />
+        <div
+          style={{ height: 400, overflowY: 'scroll' }}
+          ref={(domNode) => {
+            if (domNode === null) {
+              return;
+            }
+            domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
+          }}
+        >
+          <GameSummary
+            player1={this.props.player1}
+            player2={this.props.player2}
+            turns={this.props.turns}
+          />
+        </div>
         <Pool
-          pool={this.props.pool}
+          pool={poolMinusRack(this.props.pool, this.props.currentRack)}
         />
       </div>);
   }
@@ -97,6 +114,7 @@ class Scoresheet extends React.Component {
 Scoresheet.propTypes = {
   pool: PropTypes.object.isRequired,
   turns: PropTypes.object.isRequired,
+  currentRack: PropTypes.string.isRequired,
   player1: PropTypes.shape({
     real_name: PropTypes.string,
     p_number: PropTypes.string,
