@@ -424,12 +424,91 @@ class Viewer extends React.Component {
     this.state = {
       // 0 would mean the very first turn; this is -1 instead as we start
       // with a blank board.
-      currentTurn: -1,
+      currentTurn: (
+        window.location.hash !== '' ?
+          window.location.hash.substring(1) - 1 : -1) || -1,
     };
+    this.stepForward = this.stepForward.bind(this);
+    this.stepBackward = this.stepBackward.bind(this);
+    this.fastForward = this.fastForward.bind(this);
+    this.fastBackward = this.fastBackward.bind(this);
+    this.hashChange = this.hashChange.bind(this);
+    this.onTurnClick = this.onTurnClick.bind(this);
+
+    // window.onhashchange = this.hashChange;
+    this.lastClickedTurn = null;
+  }
+
+  componentDidMount() {
+   // this.hashChange();
+  }
+
+  onTurnClick(idx) {
+    this.lastClickedTurn = idx;
+    window.location.hash = idx;
+    this.setState({
+      currentTurn: idx - 1,
+    });
+  }
+
+  hashChange() {
+    // -1 because we use user-friendly hashes for turns -- there is no
+    // turn zero (that's the start of the game, before anyone has gone).
+    // Internally, we treat that as turn `-1` -- see above default
+    // value of currentTurn
+    if (this.lastClickedTurn === window.location.hash) {
+      // This hash change was created by clicking on a turn, so let's
+      // ignore this. We only want to modify the state when the hash
+      // changes on load or by typing in a new hash.
+      return;
+    }
+    this.setState({
+      currentTurn: window.location.hash - 1 || -1,
+    });
+  }
+
+  stepForward() {
+    const maxTurnIndex = gameRepr.turns.length - 1;
+    this.setState((prevState) => {
+      const newTurn = Math.min(prevState.currentTurn + 1, maxTurnIndex);
+      this.lastClickedTurn = newTurn + 1;
+      window.location.hash = newTurn + 1;
+      return {
+        currentTurn: newTurn,
+      };
+    });
+  }
+
+  stepBackward() {
+    this.setState((prevState) => {
+      const newTurn = Math.max(prevState.currentTurn - 1, -1);
+      window.location.hash = newTurn + 1;
+      this.lastClickedTurn = newTurn + 1;
+      return {
+        currentTurn: newTurn,
+      };
+    });
+  }
+
+  fastForward() {
+    const maxTurnIndex = gameRepr.turns.length - 1;
+    window.location.hash = maxTurnIndex + 1;
+    this.lastClickedTurn = maxTurnIndex + 1;
+    this.setState({
+      currentTurn: maxTurnIndex,
+    });
+  }
+
+  fastBackward() {
+    window.location.hash = 0;
+    this.lastClickedTurn = 0;
+    this.setState({
+      currentTurn: -1,
+    });
   }
 
   render() {
-    const maxTurnIndex = gameRepr.turns.length - 1;
+    console.log('current turn', this.state.currentTurn);
     const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
     const tilesLayout = boardState.tilesLayout();
     return (
@@ -477,19 +556,11 @@ class Viewer extends React.Component {
             tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}
-            stepForward={() => this.setState((prevState) => {
-              return { currentTurn: Math.min(prevState.currentTurn + 1, maxTurnIndex) };
-            })}
-            stepBackward={() => this.setState((prevState) => {
-              return { currentTurn: Math.max(prevState.currentTurn - 1, -1) };
-            })}
-
-            fastForward={() => this.setState({
-              currentTurn: maxTurnIndex,
-            })}
-            fastBackward={() => this.setState({
-              currentTurn: -1,
-            })}
+            stepForward={this.stepForward}
+            stepBackward={this.stepBackward}
+            fastForward={this.fastForward}
+            fastBackward={this.fastBackward}
+            onTurnClick={idx => () => this.onTurnClick(idx)}
           />
         </div>
       </div>

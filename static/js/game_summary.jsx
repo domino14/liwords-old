@@ -1,6 +1,24 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events,
+jsx-a11y/interactive-supports-focus */
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
+const ClickableTurn = props => (
+  <span
+    onClick={props.onTurnClick(props.turnIdx)}
+    role="link"
+    style={{ cursor: 'pointer' }}
+  >
+    {props.turn}
+  </span>
+);
+
+ClickableTurn.propTypes = {
+  onTurnClick: PropTypes.func.isRequired,
+  turnIdx: PropTypes.number.isRequired,
+  turn: PropTypes.string.isRequired,
+};
 
 const TurnsTable = (props) => {
   const tableRows = [];
@@ -20,15 +38,19 @@ const TurnsTable = (props) => {
     const secondColumn = props.turns[player2] && props.turns[player2][i] ?
       transformTurn(props.turns[player2][i]) : '';
     const secondLink = secondColumn ? (
-      <a href={`#${props.turns[player2][i].turnIdx}`}>
-        {secondColumn}
-      </a>) : null;
+      <ClickableTurn
+        onTurnClick={props.onTurnClick}
+        turnIdx={props.turns[player2][i].turnIdx + 1}
+        turn={secondColumn}
+      />) : null;
     const row = (
       <tr key={`rowturn${i}`}>
         <td>
-          <a href={`#${props.turns[player1][i].turnIdx}`}>
-            {transformTurn(props.turns[player1][i])}
-          </a>
+          <ClickableTurn
+            onTurnClick={props.onTurnClick}
+            turnIdx={props.turns[player1][i].turnIdx + 1}
+            turn={transformTurn(props.turns[player1][i])}
+          />
         </td>
         {/* Only render second column if it exists */}
         <td>
@@ -53,6 +75,7 @@ TurnsTable.propTypes = {
     p_number: PropTypes.string,
     nick: PropTypes.string,
   }).isRequired,
+  onTurnClick: PropTypes.func.isRequired,
 };
 
 const GameSummary = props => (
@@ -68,6 +91,7 @@ const GameSummary = props => (
         player1={props.player1}
         player2={props.player2}
         turns={props.turns}
+        onTurnClick={props.onTurnClick}
       />
     </tbody>
   </table>
@@ -86,6 +110,7 @@ GameSummary.propTypes = {
     p_number: PropTypes.string,
     nick: PropTypes.string,
   }).isRequired,
+  onTurnClick: PropTypes.func.isRequired,
 };
 
 export default GameSummary;

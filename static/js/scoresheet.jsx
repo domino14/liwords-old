@@ -79,37 +79,34 @@ function poolMinusRack(pool, rack) {
   return poolCopy;
 }
 
-class Scoresheet extends React.Component {
-  render() {
-    return (
-      <div>
-        <TurnsNavbar
-          stepForward={this.props.stepForward}
-          stepBackward={this.props.stepBackward}
-          fastForward={this.props.fastForward}
-          fastBackward={this.props.fastBackward}
-        />
-        <div
-          style={{ height: 400, overflowY: 'scroll' }}
-          ref={(domNode) => {
-            if (domNode === null) {
-              return;
-            }
-            domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
-          }}
-        >
-          <GameSummary
-            player1={this.props.player1}
-            player2={this.props.player2}
-            turns={this.props.turns}
-          />
-        </div>
-        <Pool
-          pool={poolMinusRack(this.props.pool, this.props.currentRack)}
-        />
-      </div>);
-  }
-}
+const Scoresheet = props => (
+  <div>
+    <TurnsNavbar
+      stepForward={props.stepForward}
+      stepBackward={props.stepBackward}
+      fastForward={props.fastForward}
+      fastBackward={props.fastBackward}
+    />
+    <div
+      style={{ height: 400, overflowY: 'scroll' }}
+      ref={(domNode) => {
+        if (domNode === null) {
+          return;
+        }
+        domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
+      }}
+    >
+      <GameSummary
+        player1={props.player1}
+        player2={props.player2}
+        turns={props.turns}
+        onTurnClick={props.onTurnClick}
+      />
+    </div>
+    <Pool
+      pool={poolMinusRack(props.pool, props.currentRack)}
+    />
+  </div>);
 
 Scoresheet.propTypes = {
   pool: PropTypes.object.isRequired,
@@ -129,6 +126,7 @@ Scoresheet.propTypes = {
   stepBackward: PropTypes.func.isRequired,
   fastForward: PropTypes.func.isRequired,
   fastBackward: PropTypes.func.isRequired,
+  onTurnClick: PropTypes.func.isRequired,
 };
 
 export default Scoresheet;
