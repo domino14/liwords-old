@@ -110,6 +110,16 @@ class BoardState {
       modification,
     );
   }
+  latestScore(nickname) {
+    if (!this.turns[nickname]) {
+      return 0;
+    }
+    const lastIdx = this.turns[nickname].length - 1;
+    if (lastIdx >= 0) {
+      return parseInt(this.turns[nickname][lastIdx].cumul, 10);
+    }
+    return 0;
+  }
 }
 
 function setCharAt(str, index, chr) {

@@ -97,6 +97,8 @@ describe('BoardStateCalculator', () => {
       R13C14: true,
       R14C14: true,
     });
+    expect(thisState.latestScore('leesa')).toBe(112);
+    expect(thisState.latestScore('cesar')).toBe(99);
   });
 
   it('Should calculate another reasonably complex board setup', () => {
@@ -158,6 +160,8 @@ describe('BoardStateCalculator', () => {
       R10C9: true,
       R11C9: true,
     });
+    expect(thisState.latestScore('leesa')).toBe(173);
+    expect(thisState.latestScore('cesar')).toBe(60);
   });
 
   it('Should calculate a game summary', () => {

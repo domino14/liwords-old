@@ -2,6 +2,7 @@ import React from 'react';
 
 import Board from '../board';
 import Rack from '../rack';
+import Scoreboard from '../scoreboard';
 import Scoresheet from '../scoresheet';
 import { BoardStateCalculator } from '../board_state';
 import { CrosswordGameDistribution } from '../tile_distributions';
@@ -435,6 +436,14 @@ class Viewer extends React.Component {
       <div className="row">
         <div className="col-lg-5">
           <div className="row">
+            <Scoreboard
+              player1={gameRepr.players[0]}
+              player2={gameRepr.players[1]}
+              player1score={boardState.latestScore(gameRepr.players[0].nick)}
+              player2score={boardState.latestScore(gameRepr.players[1].nick)}
+            />
+          </div>
+          <div className="row">
             <div className="col-lg-12">
               <Board
                 gridWidth={15}
@@ -450,7 +459,7 @@ class Viewer extends React.Component {
           </div>
           <div className="row">
             <div className="col-lg-1">
-              <span>{boardState.currentUser}</span>
+              <span><big>{boardState.currentUser}</big></span>
             </div>
             <div className="col-lg-8 col-lg-offset-1">
               <Rack
@@ -468,12 +477,13 @@ class Viewer extends React.Component {
             tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}
-            stepForward={() => this.setState({
-              currentTurn: Math.min(this.state.currentTurn + 1, maxTurnIndex),
+            stepForward={() => this.setState((prevState) => {
+              return { currentTurn: Math.min(prevState.currentTurn + 1, maxTurnIndex) };
             })}
-            stepBackward={() => this.setState({
-              currentTurn: Math.max(this.state.currentTurn - 1, -1),
+            stepBackward={() => this.setState((prevState) => {
+              return { currentTurn: Math.max(prevState.currentTurn - 1, -1) };
             })}
+
             fastForward={() => this.setState({
               currentTurn: maxTurnIndex,
             })}
