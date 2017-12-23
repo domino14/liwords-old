@@ -159,6 +159,9 @@ class BoardStateCalculator {
       this.moveList[moveIndex + 1].nick : '');
     for (let i = 0; i <= moveIndex; i += 1) {
       const item = this.moveList[i];
+      if (!item) {
+        break;
+      }
       switch (item.type) {
         case MoveTypesEnum.SCORING_PLAY:
           boardState = this.trackPlay(i, item, boardState, 'add');

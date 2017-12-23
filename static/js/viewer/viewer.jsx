@@ -435,12 +435,8 @@ class Viewer extends React.Component {
     this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
 
-    // window.onhashchange = this.hashChange;
-    this.lastClickedTurn = null;
-  }
-
-  componentDidMount() {
-   // this.hashChange();
+    window.onhashchange = this.hashChange;
+    this.lastClickedTurn = this.state.currentTurn + 1;
   }
 
   onTurnClick(idx) {
@@ -456,14 +452,14 @@ class Viewer extends React.Component {
     // turn zero (that's the start of the game, before anyone has gone).
     // Internally, we treat that as turn `-1` -- see above default
     // value of currentTurn
-    if (this.lastClickedTurn === window.location.hash) {
+    if (this.lastClickedTurn === window.location.hash.substring(1)) {
       // This hash change was created by clicking on a turn, so let's
       // ignore this. We only want to modify the state when the hash
       // changes on load or by typing in a new hash.
       return;
     }
     this.setState({
-      currentTurn: window.location.hash - 1 || -1,
+      currentTurn: window.location.hash.substring(1) - 1 || -1,
     });
   }
 
