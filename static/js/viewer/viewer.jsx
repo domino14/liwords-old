@@ -418,15 +418,25 @@ const boardStateCalculator = new BoardStateCalculator(
   CrosswordGameDistribution,
 );
 
+const turnFromLocation = () => {
+  if (window.location.hash.startsWith('#')) {
+    const turn = parseInt(window.location.hash.substring(1), 10);
+    if (Number.isNaN(turn)) {
+      return -1;
+    }
+    return Math.max(turn - 1, -1);
+  }
+  return -1;
+};
+
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
+    const currentTurn = turnFromLocation();
     this.state = {
       // 0 would mean the very first turn; this is -1 instead as we start
       // with a blank board.
-      currentTurn: (
-        window.location.hash !== '' ?
-          window.location.hash.substring(1) - 1 : -1) || -1,
+      currentTurn,
     };
     this.stepForward = this.stepForward.bind(this);
     this.stepBackward = this.stepBackward.bind(this);
@@ -436,7 +446,7 @@ class Viewer extends React.Component {
     this.onTurnClick = this.onTurnClick.bind(this);
 
     window.onhashchange = this.hashChange;
-    this.lastClickedTurn = this.state.currentTurn + 1;
+    this.lastClickedTurn = currentTurn;
   }
 
   onTurnClick(idx) {
@@ -459,7 +469,7 @@ class Viewer extends React.Component {
       return;
     }
     this.setState({
-      currentTurn: window.location.hash.substring(1) - 1 || -1,
+      currentTurn: turnFromLocation(),
     });
   }
 

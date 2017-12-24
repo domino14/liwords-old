@@ -57,11 +57,18 @@ const Pool = (props) => {
   const letters = poolGenerator(letterOrder, props.pool);
 
   return (
-    <div className="row">
-      <div className="col-lg-12">
-        <span style={{ fontFamily: 'monospace' }}>
-          <big>{letters.join(' ')}</big>
-        </span>
+    <div>
+      <div className="row">
+        <div className="col-lg-12">
+          {letters.length} unseen tiles:
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-lg-12">
+          <span style={{ fontFamily: 'monospace' }}>
+            <big>{letters.join(' ')}</big>
+          </span>
+        </div>
       </div>
     </div>);
 };
