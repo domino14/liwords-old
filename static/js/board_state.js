@@ -154,7 +154,6 @@ class BoardStateCalculator {
       boardState.currentRack = '';
     }
 
-
     boardState.currentUser = (this.moveList[moveIndex + 1] ?
       this.moveList[moveIndex + 1].nick : '');
     for (let i = 0; i <= moveIndex; i += 1) {
@@ -179,6 +178,7 @@ class BoardStateCalculator {
             score: '+0',
             cumul: item.cumul,
             turnIdx: i,
+            note: item.note,
           });
           break;
         case MoveTypesEnum.EXCHANGE:
@@ -188,6 +188,7 @@ class BoardStateCalculator {
             score: '+0',
             cumul: item.cumul,
             turnIdx: i,
+            note: item.note,
           });
           break;
         case MoveTypesEnum.ENDGAME_POINTS:
@@ -197,6 +198,7 @@ class BoardStateCalculator {
             score: `+${item.score}`,
             cumul: item.cumul,
             turnIdx: i,
+            note: item.note,
           });
           break;
         default:
@@ -246,6 +248,7 @@ class BoardStateCalculator {
         score: `+${item.score}`,
         cumul: item.cumul,
         turnIdx: idx,
+        note: item.note,
       });
     } else if (addOrRemove === 'remove') {
       // This is the only case in which we go back and edit the previous
@@ -254,6 +257,7 @@ class BoardStateCalculator {
         challengedOff: true,
         score: '+0',
         cumul: optRemovedItem.cumul,
+        note: optRemovedItem.note,
       });
     }
     return boardState;

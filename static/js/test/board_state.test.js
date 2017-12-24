@@ -176,6 +176,7 @@ describe('BoardStateCalculator', () => {
       score: '+61',
       cumul: '173',
       turnIdx: 6,
+      note: '',
     });
     expect(thisState.turns.cesar[2]).toEqual({
       pos: 'O7',
@@ -183,6 +184,11 @@ describe('BoardStateCalculator', () => {
       score: '+14',
       cumul: '60',
       turnIdx: 5,
+      note: [
+        'oh no, i wasn\'t sure of CENTRA for some reason, and eventually saw ',
+        'the possibility of a 9 with CONTEMN. CENTRA is clearly the star play ',
+        'here, but CONTEMN ended up working out better for me.',
+      ].join(''),
     });
   });
 
@@ -201,6 +207,7 @@ describe('BoardStateCalculator', () => {
       // This isn't really a bug but a choice. :P
       turnIdx: 6,
       challengedOff: true,
+      note: '',
     });
     expect(thisState.turns.cesar[3]).toEqual({
       pos: 'O7',
@@ -208,6 +215,10 @@ describe('BoardStateCalculator', () => {
       score: '+39',
       cumul: '99',
       turnIdx: 8,
+      note: [
+        'i didn\'t immediately see any bingoes ending in E or R so this ',
+        'seemed good. i sorta need a lot of good luck now',
+      ].join(''),
     });
   });
 });

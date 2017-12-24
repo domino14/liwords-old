@@ -8,7 +8,10 @@ const ClickableTurn = props => (
   <span
     onClick={props.onTurnClick(props.turnIdx)}
     role="link"
-    style={{ cursor: 'pointer' }}
+    style={{
+      cursor: 'pointer',
+      backgroundColor: props.hasNote ? '#f8fe64' : 'transparent',
+    }}
   >
     {props.turn}
   </span>
@@ -18,6 +21,7 @@ ClickableTurn.propTypes = {
   onTurnClick: PropTypes.func.isRequired,
   turnIdx: PropTypes.number.isRequired,
   turn: PropTypes.string.isRequired,
+  hasNote: PropTypes.bool.isRequired,
 };
 
 const TurnsTable = (props) => {
@@ -42,6 +46,7 @@ const TurnsTable = (props) => {
         onTurnClick={props.onTurnClick}
         turnIdx={props.turns[player2][i].turnIdx + 1}
         turn={secondColumn}
+        hasNote={props.turns[player2][i].note !== ''}
       />) : null;
     const row = (
       <tr key={`rowturn${i}`}>
@@ -50,6 +55,7 @@ const TurnsTable = (props) => {
             onTurnClick={props.onTurnClick}
             turnIdx={props.turns[player1][i].turnIdx + 1}
             turn={transformTurn(props.turns[player1][i])}
+            hasNote={props.turns[player1][i].note !== ''}
           />
         </td>
         {/* Only render second column if it exists */}

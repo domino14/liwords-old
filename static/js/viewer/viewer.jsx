@@ -4,6 +4,7 @@ import Board from '../board';
 import Rack from '../rack';
 import Scoreboard from '../scoreboard';
 import Scoresheet from '../scoresheet';
+import Notes from '../notes';
 import { BoardStateCalculator } from '../board_state';
 import { CrosswordGameDistribution } from '../tile_distributions';
 import { CrosswordGameSetup } from '../board_setups';
@@ -514,11 +515,19 @@ class Viewer extends React.Component {
   }
 
   render() {
-    console.log('current turn', this.state.currentTurn);
     const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
     const tilesLayout = boardState.tilesLayout();
     return (
       <div className="row">
+        <div className="col-lg-3">
+          <h4>Notes and comments</h4>
+          <Notes
+            turnIdx={this.state.currentTurn}
+            gcgNote={gameRepr.turns[this.state.currentTurn] ?
+              gameRepr.turns[this.state.currentTurn].note : ''}
+          />
+        </div>
+
         <div className="col-lg-5">
           <div className="row">
             <Scoreboard
@@ -558,7 +567,6 @@ class Viewer extends React.Component {
             player1={gameRepr.players[0]}
             player2={gameRepr.players[1]}
             turns={boardState.turns}
-            currentTurn={this.state.currentTurn}
             tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}
