@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 const ScoreBoard = props => (
   <div>
-    <div className="col-lg-4">
+    <div className="col-xs-4">
       <span><big>{props.player1.nick}</big></span>
       <h3> {props.player1score}</h3>
     </div>
-    <div className="col-lg-4">
+    <div className="col-xs-4">
       {/* A clock or something in the future */}
     </div>
-    <div className="col-lg-4">
+    <div className="col-xs-4">
       <span><big>{props.player2.nick}</big></span>
       <h3> {props.player2score}</h3>
     </div>

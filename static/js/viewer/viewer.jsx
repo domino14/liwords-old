@@ -22,7 +22,7 @@ const gameRepr = JSON.parse(`{
       "cumul": "26",
       "col": 3,
       "type": "move",
-      "note": ""
+      "note": "test wrung"
     },
     {
       "score": "22",
@@ -519,7 +519,7 @@ class Viewer extends React.Component {
     const tilesLayout = boardState.tilesLayout();
     return (
       <div className="row">
-        <div className="col-lg-3">
+        <div className="col-lg-3 col-md-2 hidden-sm hidden-xs">
           <h4>Notes and comments</h4>
           <Notes
             turnIdx={this.state.currentTurn}
@@ -528,7 +528,7 @@ class Viewer extends React.Component {
           />
         </div>
 
-        <div className="col-lg-5">
+        <div className="col-lg-5 col-md-6 col-sm-8 col-xs-12">
           <div className="row">
             <Scoreboard
               player1={gameRepr.players[0]}
@@ -538,7 +538,7 @@ class Viewer extends React.Component {
             />
           </div>
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-xs-12">
               <Board
                 gridWidth={15}
                 gridHeight={15}
@@ -552,17 +552,17 @@ class Viewer extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-1">
+            <div className="col-xs-1">
               <span><big>{boardState.currentUser}</big></span>
             </div>
-            <div className="col-lg-8 col-lg-offset-1">
+            <div className="col-xs-8 col-xs-offset-1">
               <Rack
                 letters={boardState.currentRack}
               />
             </div>
           </div>
         </div>
-        <div className="col-lg-4">
+        <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
           <Scoresheet
             player1={gameRepr.players[0]}
             player2={gameRepr.players[1]}
