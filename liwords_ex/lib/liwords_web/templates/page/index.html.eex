@@ -6,7 +6,7 @@
  -->  <title>Venezuelan Crosswords</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0,  maximum-scale=1, user-scalable=no">
 
-  <link href="js/lib/bootstrap.min.css?v=foo1" rel="stylesheet">
+  <link href="/crosswords/static/css/bootstrap.min.css?v=foo1" rel="stylesheet">
   <style>
   @media (min-width: 768px) {
     .modal .modal-xl {
