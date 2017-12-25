@@ -1,0 +1,9 @@
+defmodule LIWordsWeb.PageController do
+  use LIWordsWeb, :controller
+
+  def index(conn, _params) do
+    conn
+    |> put_layout(false)
+    |> render("test.html")
+  end
+end

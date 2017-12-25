@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const Notes = props => (
   <div>
     <span className="text-muted">{props.addlDescription}</span>
-    <div className="panel panel-default">
+    <div className={`panel panel-default ${props.gcgNote === '' ? 'hidden' : ''}`}>
       <div className="panel-body">
         {props.gcgNote}
       </div>
