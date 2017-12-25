@@ -14,8 +14,8 @@ class BoardState {
   // Board state has the layout of the board as well as the remaining pool.
   // Other state classes in the future may have more info, such as the scores,
   // time penalties, time remaining, etc.
-  constructor(tileDistribution, layout) {
-    this.layout = layout || blankLayout();
+  constructor(tileDistribution, players) {
+    this.layout = blankLayout();
     this.currentRack = '';
     this.currentUser = null;
     this.tileDistribution = tileDistribution;
@@ -24,6 +24,7 @@ class BoardState {
     this.pool = Object.assign({}, tileDistribution);
     this.turns = {};
     this.lastPlayedLetters = {};
+    this.players = players;
   }
 
   /**
@@ -120,6 +121,29 @@ class BoardState {
     }
     return 0;
   }
+  latestTurnForPlayer(nickname) {
+    if (!this.turns[nickname]) {
+      return null;
+    }
+    return this.turns[nickname][this.turns[nickname].length - 1];
+  }
+
+  latestTurn() {
+    const player1 = this.players[0].nick;
+    const player2 = this.players[1].nick;
+    if (!this.turns[player1]) {
+      return null;
+    }
+    if (!this.turns[player2]) {
+      return this.latestTurnForPlayer(player1);
+    }
+
+    if (this.turns[player1].length > this.turns[player2].length) {
+      return this.latestTurnForPlayer(player1);
+    }
+    // Otherwise, they are the same size, so player2 is the last turn.
+    return this.latestTurnForPlayer(player2);
+  }
 }
 
 function setCharAt(str, index, chr) {
@@ -130,8 +154,9 @@ function setCharAt(str, index, chr) {
 }
 
 class BoardStateCalculator {
-  constructor(moveList, tileDistribution) {
-    this.moveList = moveList;
+  constructor(gameRepr, tileDistribution) {
+    this.moveList = gameRepr.turns;
+    this.players = gameRepr.players;
     this.tileDistribution = tileDistribution;
   }
 
@@ -143,7 +168,7 @@ class BoardStateCalculator {
    * @return {BoardState}
    */
   computeLayout(moveIndex) {
-    let boardState = new BoardState(this.tileDistribution);
+    let boardState = new BoardState(this.tileDistribution, this.players);
     // The current rack is the rack that the move at moveIndex is being
     // made from. We should add 1 to to moveIndex to get the rack
     if (this.moveList[moveIndex + 1] &&
@@ -179,6 +204,9 @@ class BoardStateCalculator {
             cumul: item.cumul,
             turnIdx: i,
             note: item.note,
+            nick: item.nick,
+            type: MoveTypesEnum.PASS,
+            rack: item.rack,
           });
           break;
         case MoveTypesEnum.EXCHANGE:
@@ -189,6 +217,9 @@ class BoardStateCalculator {
             cumul: item.cumul,
             turnIdx: i,
             note: item.note,
+            nick: item.nick,
+            type: MoveTypesEnum.EXCHANGE,
+            rack: item.rack,
           });
           break;
         case MoveTypesEnum.ENDGAME_POINTS:
@@ -199,6 +230,9 @@ class BoardStateCalculator {
             cumul: item.cumul,
             turnIdx: i,
             note: item.note,
+            nick: item.nick,
+            type: MoveTypesEnum.ENDGAME_POINTS,
+            rack: item.rack,
           });
           break;
         default:
@@ -249,6 +283,9 @@ class BoardStateCalculator {
         cumul: item.cumul,
         turnIdx: idx,
         note: item.note,
+        nick: item.nick,
+        type: MoveTypesEnum.SCORING_PLAY,
+        rack: item.rack,
       });
     } else if (addOrRemove === 'remove') {
       // This is the only case in which we go back and edit the previous

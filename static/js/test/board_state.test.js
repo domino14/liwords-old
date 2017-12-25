@@ -44,8 +44,8 @@ describe('TileDistributions', () => {
 
 describe('BoardStateCalculator', () => {
   it('Should calculate a reasonably complex board setup', () => {
-    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(8);
     expect(thisState.tilesLayout()).toEqual([
       '               ',
@@ -99,11 +99,25 @@ describe('BoardStateCalculator', () => {
     });
     expect(thisState.latestScore('leesa')).toBe(112);
     expect(thisState.latestScore('cesar')).toBe(99);
+    expect(thisState.latestTurn()).toEqual({
+      pos: 'O7',
+      summary: 'CONTEMNER',
+      score: '+39',
+      cumul: '99',
+      turnIdx: 8,
+      note: [
+        'i didn\'t immediately see any bingoes ending in E or R so this ',
+        'seemed good. i sorta need a lot of good luck now',
+      ].join(''),
+      nick: 'cesar',
+      type: 'move',
+      rack: 'EEHIRRY',
+    });
   });
 
   it('Should calculate another reasonably complex board setup', () => {
-    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(6);
     expect(thisState.tilesLayout()).toEqual([
       '               ',
@@ -162,11 +176,22 @@ describe('BoardStateCalculator', () => {
     });
     expect(thisState.latestScore('leesa')).toBe(173);
     expect(thisState.latestScore('cesar')).toBe(60);
+    expect(thisState.latestTurn()).toEqual({
+      pos: 'J5',
+      summary: 'fICTIOUS',
+      score: '+61',
+      cumul: '173',
+      turnIdx: 6,
+      note: '',
+      nick: 'leesa',
+      type: 'move',
+      rack: '?CIOSTU',
+    });
   });
 
   it('Should calculate a game summary', () => {
-    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(6);
     expect(thisState.turns.leesa.length).toBe(4);
     expect(thisState.turns.cesar.length).toBe(3);
@@ -177,6 +202,9 @@ describe('BoardStateCalculator', () => {
       cumul: '173',
       turnIdx: 6,
       note: '',
+      nick: 'leesa',
+      type: 'move',
+      rack: '?CIOSTU',
     });
     expect(thisState.turns.cesar[2]).toEqual({
       pos: 'O7',
@@ -189,12 +217,15 @@ describe('BoardStateCalculator', () => {
         'the possibility of a 9 with CONTEMN. CENTRA is clearly the star play ',
         'here, but CONTEMN ended up working out better for me.',
       ].join(''),
+      nick: 'cesar',
+      type: 'move',
+      rack: 'CEMNNRT',
     });
   });
 
   it('Should calculate a game summary with a challenge', () => {
-    const moveList = require('./move_list_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(moveList, CrosswordGameDistribution);
+    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(8);
     expect(thisState.turns.leesa.length).toBe(4);
     expect(thisState.turns.cesar.length).toBe(4);
@@ -208,6 +239,9 @@ describe('BoardStateCalculator', () => {
       turnIdx: 6,
       challengedOff: true,
       note: '',
+      nick: 'leesa',
+      type: 'move',
+      rack: '?CIOSTU',
     });
     expect(thisState.turns.cesar[3]).toEqual({
       pos: 'O7',
@@ -219,6 +253,9 @@ describe('BoardStateCalculator', () => {
         'i didn\'t immediately see any bingoes ending in E or R so this ',
         'seemed good. i sorta need a lot of good luck now',
       ].join(''),
+      nick: 'cesar',
+      type: 'move',
+      rack: 'EEHIRRY',
     });
   });
 });
