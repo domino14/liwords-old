@@ -3,12 +3,12 @@ defmodule LIWords.User do
   import Ecto.Changeset
   alias LIWords.User
 
-
-  schema "users" do
+  # This uses the Aerolith database by default. All other tables
+  # for crosswords should use their own crosswords schema.
+  schema "auth_user" do
     field :email, :string
     field :username, :string
 
-    timestamps()
   end
 
   @doc false

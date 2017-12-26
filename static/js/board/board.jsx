@@ -7,7 +7,7 @@ import Tiles from './tiles';
 
 
 const Board = (props) => {
-  const labelRatio = 1 / 3;
+  const labelRatio = 1 / 2;
 
   const rowLabelWidth = props.boardWidth / ((props.gridWidth / labelRatio) + 1);
   const colLabelHeight = props.boardHeight / ((props.gridHeight / labelRatio) + 1);

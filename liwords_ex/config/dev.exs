@@ -39,8 +39,9 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :liwords, LIWords.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "cesar",
-  password: "password",
-  database: "liwords_dev",
+  username: "postgres",
+  password: "pass",
+  database: "djaerolith",
   hostname: "localhost",
+  port: 5437,
   pool_size: 10

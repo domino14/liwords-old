@@ -549,8 +549,8 @@ class Viewer extends React.Component {
               <Board
                 gridWidth={15}
                 gridHeight={15}
-                boardWidth={460}
-                boardHeight={460}
+                boardWidth={465}
+                boardHeight={465}
                 gridLayout={CrosswordGameSetup}
                 tilesLayout={tilesLayout}
                 lastPlayedLetters={boardState.lastPlayedLetters}
