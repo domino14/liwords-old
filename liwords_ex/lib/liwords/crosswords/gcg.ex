@@ -144,6 +144,7 @@ defmodule LIWords.Crosswords.GCG do
         last_token: nil,
         last_turn: nil
       },
+      version: 1,
     }, fn(line, game_repr) ->
       parse_line(line, game_repr)
     end)
@@ -160,8 +161,8 @@ defmodule LIWords.Crosswords.GCG do
     else
       game_repr[:turns]
     end
-
-    Poison.encode!(%{game_repr | turns: Enum.reverse(turns), state: nil})
+    Map.delete(%{game_repr | turns: Enum.reverse(turns)}, :state)
+    # Poison.encode!(%{game_repr | turns: Enum.reverse(turns), state: nil})
 
   end
 
