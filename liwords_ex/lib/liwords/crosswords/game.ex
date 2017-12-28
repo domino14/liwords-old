@@ -26,7 +26,8 @@ defmodule LIWords.Crosswords.Game do
   @doc false
   def changeset(%Game{} = game, attrs) do
     game
-    |> cast(attrs, [:repr, :in_app, :realm, :creator, :board, :user1, :user2])
-    |> validate_required([:repr, :creator])
+    |> cast(attrs, [:repr, :in_app, :realm, :creator_id, :board_id, :user1_id,
+            :user2_id, :uuid, :going])
+    |> validate_required([:repr, :creator_id, :uuid])
   end
 end

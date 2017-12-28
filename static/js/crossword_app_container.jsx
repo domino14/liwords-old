@@ -19,7 +19,7 @@ class CrosswordAppContainer extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     // Get this token from elsewhere.
-    const tkn = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJDXHUwMGU5c2FyRGVsU29sYXIiLCJzdWIiOjEsImV4cCI6MTUxNDQ2ODE1MH0.A5G887Tz27lH3PwNNUmsim_v7e8NgONxRWsoyVKFb2Q';
+    const tkn = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJDXHUwMGU5c2FyRGVsU29sYXIiLCJzdWIiOjEsImV4cCI6MTUxNDUxMzMwMX0.QusVRqciqHAj3PqCk6QHgvroyd-kmGt3oU0n-0OrOsw';
     this.crosswordsFetch = new CrosswordsFetch(tkn);
   }
 

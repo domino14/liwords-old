@@ -37,6 +37,12 @@ defmodule LIWordsWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/crosswords", LIWordsWeb do
+    pipe_through :browser
+    resources "/gcg_upload", GcgUploadController, only: [:show]
+  end
+
+
   def verify_function() do
     %Joken.Token{}
     |> Joken.with_signer(hs256(@jwt_secret))
