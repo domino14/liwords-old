@@ -40,7 +40,8 @@ defmodule LIWords.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:joken, "~> 1.5", path: "deps/joken"},
     ]
   end
 

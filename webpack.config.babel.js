@@ -23,6 +23,7 @@ export default {
   entry: {
     crosswordapp: [
       'babel-polyfill',
+      'bootstrap',
       './static/js/index',
     ],
   },

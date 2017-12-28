@@ -45,3 +45,6 @@ config :liwords, LIWords.Repo,
   hostname: "localhost",
   port: 5437,
   pool_size: 10
+
+config :liwords,
+  jwt_secret: "flmyqz_9zt$ya&%*vv=azt3h0&(z=fac90k(6dx5u^z&+8#xgl"

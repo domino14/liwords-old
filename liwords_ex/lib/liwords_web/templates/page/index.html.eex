@@ -20,9 +20,8 @@
   </style>
 
   <body>
-    <div class="container-fluid" style="padding-top: 10px;">
-      <div id="main-app-content"></div>
-    </div>
+
+  <div id="main-app-content"></div>
 
   <!-- replace with templates or something -->
   <script src="http://localhost:7001/static/dist/crosswordapp.js?v=foo1"></script>
