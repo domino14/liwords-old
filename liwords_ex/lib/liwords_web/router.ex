@@ -27,7 +27,7 @@ defmodule LIWordsWeb.Router do
 
   scope "/crosswords", LIWordsWeb do
     pipe_through :browser_protected
-    post "/gcg_upload", GcgUploadController, :create
+    post "/gcg_upload", GameController, :create_from_upload
   end
 
   # Since the following pipes through :browser instead of :browser_protected,
@@ -39,7 +39,7 @@ defmodule LIWordsWeb.Router do
 
   scope "/crosswords", LIWordsWeb do
     pipe_through :browser
-    resources "/gcg_upload", GcgUploadController, only: [:show]
+    resources "/game", GameController, only: [:show]
   end
 
 

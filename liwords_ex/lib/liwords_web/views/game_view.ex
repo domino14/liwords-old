@@ -1,10 +1,9 @@
-defmodule LIWordsWeb.GcgUploadView do
+defmodule LIWordsWeb.GameView do
   use LIWordsWeb, :view
-  alias LIWordsWeb.GcgUploadView
+  alias LIWordsWeb.GameView
 
-  # XXX: Consider renaming this GameView or similar.
   def render("show.json", %{game: game}) do
-    %{data: render_one(game, GcgUploadView, "game.json", as: :game)}
+    %{data: render_one(game, GameView, "game.json")}
   end
 
   def render("game.json", %{game: game}) do

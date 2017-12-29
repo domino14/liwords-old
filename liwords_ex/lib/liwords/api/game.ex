@@ -1,7 +1,7 @@
-defmodule LIWords.Crosswords.Game do
+defmodule LIWords.API.Game do
   use Ecto.Schema
   import Ecto.Changeset
-  alias LIWords.Crosswords.Game
+  alias LIWords.API.Game
 
   @schema_prefix "crosswords"   # Use the `crosswords` schema.
   schema "games" do

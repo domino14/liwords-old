@@ -1,10 +1,10 @@
-defmodule LIWordsWeb.GcgUploadController do
+defmodule LIWordsWeb.GameController do
   use LIWordsWeb, :controller
   alias LIWords.Crosswords.GCG
-  alias LIWords.Crosswords.Game
+  alias LIWords.API.Game
   alias LIWords.Repo
 
-  def create(conn, params) do
+  def create_from_upload(conn, params) do
     # User id is in the claims.
     # IO.inspect conn.assigns.joken_claims
     user_id = conn.assigns.joken_claims["sub"]
@@ -26,12 +26,12 @@ defmodule LIWordsWeb.GcgUploadController do
       user2_id: nil,
     }
 
-    IO.inspect game_params
-
     with {:ok, %Game{} = game} <- create_game(game_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", gcg_upload_path(conn, :show, game.uuid))
+      # Should make game.uuid a little prettier, use base64 version or
+      # something
+      |> put_resp_header("location", game_path(conn, :show, game.uuid))
       |> render("show.json", game: game)
     else
       {:error, changeset} ->
