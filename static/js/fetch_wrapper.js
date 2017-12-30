@@ -71,7 +71,10 @@ class CrosswordsFetch {
     });
 
     if (response.ok) {
-      return response.json();
+      // Only for this case (gcg upload) we return the game link in the
+      // Location header. So we don't even need the json.
+      // return response.json();
+      return response.headers.get('Location');
     }
     const errResp = await response.text();
     let jsonedError;

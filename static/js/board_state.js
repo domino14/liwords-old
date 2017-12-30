@@ -129,6 +129,9 @@ class BoardState {
   }
 
   latestTurn() {
+    if (!this.players[0]) {
+      return null;
+    }
     const player1 = this.players[0].nick;
     const player2 = this.players[1].nick;
     if (!this.turns[player1]) {

@@ -1,3 +1,6 @@
 import App from './app';
 
-App.initialize({});
+App.initialize({
+  gameRepr: window.Globals.gameRepr,
+  viewMode: window.Globals.viewMode,
+});

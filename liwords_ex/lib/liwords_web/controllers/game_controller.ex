@@ -50,4 +50,13 @@ defmodule LIWordsWeb.GameController do
     |> Repo.insert()
   end
 
+  def show(conn, %{"id" => uuid}) do
+    game = Repo.get_by!(Game, uuid: uuid)
+    conn
+    |> put_layout(false)
+    |> render(LIWordsWeb.PageView, "index.html", game: game, viewMode: "viewer")
+  end
+
+
+
 end

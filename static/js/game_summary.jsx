@@ -26,8 +26,8 @@ ClickableTurn.propTypes = {
 
 const TurnsTable = (props) => {
   const tableRows = [];
-  const player1 = props.player1.nick;
-  const player2 = props.player2.nick;
+  const player1 = props.player1 ? props.player1.nick : '';
+  const player2 = props.player2 ? props.player2.nick : '';
 
   if (!props.turns[player1]) {
     return null;
@@ -88,8 +88,8 @@ const GameSummary = props => (
   <table className="table">
     <thead>
       <tr>
-        <th>{props.player1.nick}</th>
-        <th>{props.player2.nick}</th>
+        <th>{props.player1 ? props.player1.nick : ''}</th>
+        <th>{props.player2 ? props.player2.nick : ''}</th>
       </tr>
     </thead>
     <tbody>

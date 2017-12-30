@@ -4,9 +4,12 @@ import ReactDOM from 'react-dom';
 import CrosswordAppContainer from './crossword_app_container';
 
 class App {
-  static initialize() {
+  static initialize(options) {
     ReactDOM.render(
-      <CrosswordAppContainer />,
+      <CrosswordAppContainer
+        gameRepr={options.gameRepr}
+        viewMode={options.viewMode}
+      />,
       document.getElementById('main-app-content'),
     );
   }

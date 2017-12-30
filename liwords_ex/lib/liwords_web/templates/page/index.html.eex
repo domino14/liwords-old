@@ -21,6 +21,19 @@
 
   <body>
 
+  <script>
+    var Globals = {
+      gameRepr: <%=
+        if @game != %{} do
+          Phoenix.HTML.raw Poison.encode! @game.repr
+        else
+          Phoenix.HTML.raw '{"version": 1, "turns": [], "players": []}'
+        end %>,
+      viewMode: '<%= @viewMode %>' || ''
+    };
+
+  </script>
+
   <div id="main-app-content"></div>
 
   <!-- replace with templates or something -->
