@@ -10,7 +10,9 @@ defmodule LIWordsWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug Joken.Plug, verify: &LIWordsWeb.Router.verify_function/0
+    if Mix.env != :test do
+      plug Joken.Plug, verify: &LIWordsWeb.Router.verify_function/0
+    end
   end
 
   # anything using the following pipeline requires JWT, as do the API

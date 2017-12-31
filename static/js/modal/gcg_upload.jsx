@@ -5,7 +5,13 @@ import Dropzone from 'react-dropzone';
 import ModalSkeleton from './modal_skeleton';
 
 const GCGLink = props => (
-  props.link ? <a href={`${props.link}`}>{props.link}</a> : null
+  props.link ?
+    <div>
+      Uploaded game! You can access it here:
+      <div style={{ marginTop: 5 }}>
+        <a href={`${props.link}`}>{props.link}</a>
+      </div>
+    </div> : null
 );
 
 GCGLink.propTypes = {
@@ -18,7 +24,6 @@ class GCGUploadModal extends React.Component {
   }
 
   render() {
-    console.log('curr gcg', this.props.currentGCG);
     return (
       <ModalSkeleton
         title="GCG Upload"
@@ -28,7 +33,7 @@ class GCGUploadModal extends React.Component {
           this.modal = el;
         }}
       >
-        <div className="modal-body" style={{ height: '60vh', overflowY: 'auto' }} >
+        <div className="modal-body">
           <div className="row">
             <div className="col-lg-12">
               <Dropzone
@@ -48,7 +53,7 @@ class GCGUploadModal extends React.Component {
             </div>
           </div>
 
-          <div className="row">
+          <div className="row" style={{ marginTop: '10px' }}>
             <div className="col-lg-12">
               <GCGLink
                 link={this.props.currentGCG}

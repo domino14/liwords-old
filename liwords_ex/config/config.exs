@@ -14,7 +14,7 @@ config :liwords,
 config :liwords, LIWordsWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "u4cphMtcCFPtARGBZdRhf+QvShxWvWreMYX4mPvEuea+DE5AM6poHUd0//BOjJbG",
-  render_errors: [view: LIWordsWeb.ErrorView, accepts: ~w(json)],
+  render_errors: [view: LIWordsWeb.ErrorView, accepts: ~w(json), format: "json"],
   pubsub: [name: LIWords.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

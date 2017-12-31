@@ -2,6 +2,10 @@ defmodule LIWords.Repo.Migrations.CreateBoards do
   use Ecto.Migration
 
   def change do
+    execute """
+    create schema if not exists crosswords
+    """
+
     create table(:boards, prefix: "crosswords") do
       add :board_repr, :text
       add :tiles_repr, :text

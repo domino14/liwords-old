@@ -1,0 +1,2 @@
+- Must create and fake auth_user migration when setting this up in a new machine. Should write this into whatever setup script I bake. 
+    - something like insert into schema_migrations 
