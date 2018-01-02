@@ -10,6 +10,7 @@ defmodule LIWordsWeb.GameView do
     %{uuid: game.uuid,
       in_app: game.in_app,
       realm: game.realm,
+      lexicon_id: game.lexicon_id,
       creator_id: game.creator_id}
   end
 

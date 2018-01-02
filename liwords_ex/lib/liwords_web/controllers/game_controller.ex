@@ -6,7 +6,6 @@ defmodule LIWordsWeb.GameController do
 
   def create_from_upload(conn, params) do
     # User id is in the claims.
-    # IO.inspect conn.assigns.joken_claims
     user_id = conn.assigns.joken_claims["sub"]
 
     converted = if upload = params["file"] do
@@ -21,6 +20,7 @@ defmodule LIWordsWeb.GameController do
       going: false,
       in_app: false,
       realm: "Tournament game",
+      lexicon_id: nil,   # XXX Make a parameter.
       board_id: nil,
       user1_id: nil,
       user2_id: nil,
@@ -61,7 +61,8 @@ defmodule LIWordsWeb.GameController do
     if game != nil do
       conn
       |> put_layout(false)
-      |> render(LIWordsWeb.PageView, "index.html", game: game, viewMode: "viewer")
+      |> render(LIWordsWeb.PageView, "index.html", game: game, viewMode: "viewer",
+          gameID: uuid)
     else
       # XXX: 404 JSON is not the best return page, but will fix later.
       conn

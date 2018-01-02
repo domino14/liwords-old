@@ -2,29 +2,14 @@ defmodule LIWords.Repo.Migrations.CreateBoards do
   use Ecto.Migration
 
   def change do
-    execute """
-    create schema if not exists crosswords
-    """
-
-    create table(:boards, prefix: "crosswords") do
+    create table(:phx_crosswords_boards) do
       add :board_repr, :text
       add :tiles_repr, :text
       add :hash, :string
-      add :user_id, :id
+      add :user_id, references(:auth_user)
 
       timestamps()
     end
-
-    # Ecto does not seem to support creating a cross-schema reference.
-    # We are placing any tables created by this app inside a special
-    # `crosswords` schema to maintain some semblance of separation,
-    # but we need to reference the user table.
-    execute """
-    alter table crosswords.boards
-      add constraint fk_boards_users
-      foreign key (user_id)
-      references public.auth_user(id)
-    """
 
   end
 end

@@ -3,8 +3,7 @@ defmodule LIWords.API.Game do
   import Ecto.Changeset
   alias LIWords.API.Game
 
-  @schema_prefix "crosswords"   # Use the `crosswords` schema.
-  schema "games" do
+  schema "phx_crosswords_games" do
 
     field :uuid, Ecto.UUID
     field :going, :boolean  # Is the game still going on?
@@ -15,6 +14,7 @@ defmodule LIWords.API.Game do
     field :realm, :string  # More details about where game was played.
                            # See `:in_app`
     # Winners later? Etc?
+    belongs_to :lexicon, LIWords.Lexicon
     belongs_to :board, LIWords.API.Board
     belongs_to :creator, LIWords.User  # The original uploader or creator
     belongs_to :user1, LIWords.User    # Player 1 - nullable
@@ -27,7 +27,7 @@ defmodule LIWords.API.Game do
   def changeset(%Game{} = game, attrs) do
     game
     |> cast(attrs, [:repr, :in_app, :realm, :creator_id, :board_id, :user1_id,
-            :user2_id, :uuid, :going])
+            :user2_id, :uuid, :going, :lexicon_id])
     |> validate_required([:repr, :creator_id, :uuid])
   end
 

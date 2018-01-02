@@ -3,8 +3,7 @@ defmodule LIWords.API.Board do
   import Ecto.Changeset
   alias LIWords.API.Board
 
-  @schema_prefix "crosswords"   # Use the `crosswords` schema.
-  schema "boards" do
+  schema "phx_crosswords_boards" do
     field :board_repr, :string
     field :hash, :string
     field :tiles_repr, :string

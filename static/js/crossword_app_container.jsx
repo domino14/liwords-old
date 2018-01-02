@@ -13,16 +13,17 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
+      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJDXHUwMGU5c2FyRGVsU29sYXIiLCJzdWIiOjEsImV4cCI6MTUxNDg4MjA2NX0.l0Zk4xmebB7NRRQiRpLCfzKAng2G4AtWvVgXzKCVT6o',
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
+    this.submitComment = this.submitComment.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     // Get this token from elsewhere.
-    const tkn = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJDXHUwMGU5c2FyRGVsU29sYXIiLCJzdWIiOjEsImV4cCI6MTUxNDY2NzAzMn0.X0siTfziPtGusQ-gCXxGRvD-vNYcEBOu76KQKlNzhXc';
-    this.crosswordsFetch = new CrosswordsFetch(tkn);
+    this.crosswordsFetch = new CrosswordsFetch(this.state.jwt);
   }
 
   onListUpload(acceptedFiles, rejectedFiles) {
@@ -32,7 +33,7 @@ class CrosswordAppContainer extends React.Component {
     }
     const data = new FormData();
     data.append('file', acceptedFiles[0]);
-    this.crosswordsFetch.uploadwrap('gcg_upload', data)
+    this.crosswordsFetch.uploadwrap(data)
       .then((result) => {
         const link = `${window.location.protocol}//${window.location.host}${result}`;
         window.console.log('Setting link to', link);
@@ -42,6 +43,26 @@ class CrosswordAppContainer extends React.Component {
       })
       .catch((error) => {
         // Could be an expired token; in that case, refresh token.
+        window.console.log(error.message);
+      });
+  }
+
+  submitComment(comment, turnNumber) {
+    const data = {
+      comment: {
+        comment,
+        turn_num: turnNumber,
+        game_id: this.props.gameID,
+      },
+    };
+    this.crosswordsFetch.restwrap(
+      'api/comments', 'POST',
+      JSON.stringify(data), 'application/json',
+    )
+      .then((result) => {
+        window.console.log('Result is', result);
+      })
+      .catch((error) => {
         window.console.log(error.message);
       });
   }
@@ -67,6 +88,7 @@ class CrosswordAppContainer extends React.Component {
           <Viewer
             gameRepr={this.props.gameRepr}
             viewMode={this.props.viewMode}
+            submitComment={this.submitComment}
           />
         </div>
 
@@ -93,6 +115,7 @@ CrosswordAppContainer.propTypes = {
     })),
   }),
   viewMode: PropTypes.string.isRequired,
+  gameID: PropTypes.string.isRequired,
 };
 
 export default CrosswordAppContainer;

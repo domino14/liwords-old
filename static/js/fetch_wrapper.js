@@ -41,6 +41,13 @@ class CrosswordsFetch {
     });
   }
 
+  /**
+   * This is used for the RPC API, which is the main gameplay API (mainly,
+   * submit a turn, challenge, pass, etc)
+   * @param  {string} method RPC Method name
+   * @param  {Object} params RPC Params
+   * @return {Promise}
+   */
   async rpcwrap(method, params) {
     // eslint-disable-next-line compat/compat
     const response = await fetch('/crosswords/rpc/', this.fetchdata(method, params));
@@ -54,30 +61,36 @@ class CrosswordsFetch {
   }
 
   /**
-   * This function is used for file uploads, and does not use the RPC interface.
-   * @param  {FormData} formData
-   * @return {Object}
+   * This is used for the REST API, which is the main resource API (submit
+   * comments, preferences, create new boards, etc.)
+   * @param {string} path
+   * @param {string} method The HTTP method
+   * @param {string} body The body of the request.
+   * @param {string} optContentType An optional content type
+   * @param {function} optResponseParser An optional parser for the response,
+   *   defaults to response.json()
+   * @return {Promise}
    */
-  async uploadwrap(path, formData) {
+  async restwrap(path, method, body, optContentType, optResponseParser) {
+    const headers = new Headers({
+      Authorization: `Bearer ${this.authToken}`,
+    });
+    if (optContentType) {
+      headers.set('Content-Type', optContentType);
+    }
     // eslint-disable-next-line compat/compat
     const response = await fetch(`/crosswords/${path}/`, {
-      method: 'POST',
-      headers: new Headers({
-        // No content-type header!
-        Authorization: `Bearer ${this.authToken}`,
-      }),
+      method,
+      headers,
+      body,
       credentials: 'omit',
-      body: formData,
     });
-
     if (response.ok) {
-      // Only for this case (gcg upload) we return the game link in the
-      // Location header. So we don't even need the json.
-      // return response.json();
-      return response.headers.get('Location');
+      return optResponseParser ? optResponseParser(response) : response.json();
     }
     const errResp = await response.text();
     let jsonedError;
+
     try {
       // XXX: This is a HACK. I should be able to try-catch on response.json()
       // however that does NOT work and I can't figure out why. Neither
@@ -92,6 +105,21 @@ class CrosswordsFetch {
     }
     // Throw an error with the JSON error message (from our well-formed API).
     throw new Error(jsonedError.error);
+  }
+
+  /**
+   * This function is used for file uploads, and does not use the RPC interface.
+   * @param  {FormData} formData
+   * @return {Object}
+   */
+  async uploadwrap(formData) {
+    return this.restwrap(
+      'gcg_upload', 'POST', formData,
+      // Only for this case (gcg upload) we return the game link in the
+      // Location header. So we don't even need the json.
+      null, // Don't use a content-type for gcg upload.
+      response => response.headers.get('Location'),
+    );
   }
 }
 

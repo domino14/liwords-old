@@ -9,6 +9,7 @@ class App {
       <CrosswordAppContainer
         gameRepr={options.gameRepr}
         viewMode={options.viewMode}
+        gameID={options.gameID}
       />,
       document.getElementById('main-app-content'),
     );

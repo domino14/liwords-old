@@ -25,6 +25,7 @@ defmodule LIWordsWeb.Router do
   scope "/crosswords/api", LIWordsWeb do
     pipe_through :api
     resources "/boards", BoardController, except: [:new, :edit]
+    resources "/comments", CommentController, except: [:new, :edit]
   end
 
   scope "/crosswords", LIWordsWeb do

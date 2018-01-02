@@ -6,6 +6,7 @@ import Rack from '../rack';
 import Scoreboard from '../scoreboard';
 import Scoresheet from '../scoresheet';
 import Notes from '../notes';
+import FetchWrapper from '../fetch_wrapper';
 import { MoveTypesEnum } from '../moves';
 
 import { BoardStateCalculator } from '../board_state';
@@ -50,6 +51,10 @@ class Viewer extends React.Component {
     this.setState({
       currentTurn: idx - 1,
     });
+  }
+
+  onSubmitComment(comment) {
+    this.props.submitComment(comment, this.state.currentTurn);
   }
 
   hashChange() {
@@ -128,6 +133,7 @@ class Viewer extends React.Component {
               `Last move: ${latestTurn.nick} played ${latestTurn.pos}
               ${latestTurn.summary} from a rack of ${latestTurn.rack}` : ''
             }
+            onSubmitComment={comment => this.onSubmitComment(comment)}
           />
         </div>
 
@@ -197,6 +203,7 @@ Viewer.propTypes = {
       nick: PropTypes.string,
     })),
   }).isRequired,
+  submitComment: PropTypes.func.isRequired,
 };
 
 export default Viewer;

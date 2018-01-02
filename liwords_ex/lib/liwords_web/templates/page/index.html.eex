@@ -29,7 +29,8 @@
         else
           Phoenix.HTML.raw '{"version": 1, "turns": [], "players": []}'
         end %>,
-      viewMode: '<%= @viewMode %>' || ''
+      viewMode: '<%= @viewMode %>' || '',
+      gameID: '<%= @gameID %>' || '',
     };
 
   </script>
