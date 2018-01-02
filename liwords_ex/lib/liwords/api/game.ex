@@ -20,7 +20,7 @@ defmodule LIWords.API.Game do
     belongs_to :user1, LIWords.User    # Player 1 - nullable
     belongs_to :user2, LIWords.User    # Player 2 - nullable
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

@@ -8,7 +8,7 @@ defmodule LIWords.Repo.Migrations.CreateBoards do
       add :hash, :string
       add :user_id, references(:auth_user)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
   end

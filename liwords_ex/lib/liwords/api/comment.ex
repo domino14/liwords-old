@@ -10,7 +10,7 @@ defmodule LIWords.API.Comment do
 
     belongs_to :user, LIWords.User
     belongs_to :game, LIWords.API.Game
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

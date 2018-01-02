@@ -15,7 +15,7 @@ defmodule LIWords.Repo.Migrations.AddGames do
       add :user1_id, references(:auth_user)
       add :user2_id, references(:auth_user)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create index("phx_crosswords_games", [:uuid])

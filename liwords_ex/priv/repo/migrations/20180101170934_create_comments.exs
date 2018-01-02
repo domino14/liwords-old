@@ -9,7 +9,7 @@ defmodule LIWords.Repo.Migrations.CreateComments do
       add :user_id, references(:auth_user)
       add :game_id, references(:phx_crosswords_games)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create index("phx_crosswords_comments", [:uuid])

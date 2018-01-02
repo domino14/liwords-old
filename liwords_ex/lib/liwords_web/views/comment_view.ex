@@ -10,7 +10,8 @@ defmodule LIWordsWeb.CommentView do
     %{uuid: comment.uuid,
       comment: comment.comment,
       turn_num: comment.turn_num,
-      user_id: comment.user.username,   # XXX Learn how to load username.
+      user_id: comment.user.username,
+      created: comment.inserted_at,
       }
   end
 

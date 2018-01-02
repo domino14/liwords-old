@@ -9,7 +9,7 @@ defmodule LIWords.API.Board do
     field :tiles_repr, :string
     belongs_to :user, LIWords.User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
