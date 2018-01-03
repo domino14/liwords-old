@@ -13,17 +13,19 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
-      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJDXHUwMGU5c2FyRGVsU29sYXIiLCJzdWIiOjEsImV4cCI6MTUxNDg4MjA2NX0.l0Zk4xmebB7NRRQiRpLCfzKAng2G4AtWvVgXzKCVT6o',
+      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNDk3MzU3MH0.b1pGOJ_RoSZ1TfnDxOIK6LUuAhtuvSyTjIkd6viCnAs',
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
+    this.requestComments = this.requestComments.bind(this);
+
+    this.crosswordsFetch = new CrosswordsFetch(this.state.jwt);
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     // Get this token from elsewhere.
-    this.crosswordsFetch = new CrosswordsFetch(this.state.jwt);
   }
 
   onListUpload(acceptedFiles, rejectedFiles) {
@@ -57,7 +59,7 @@ class CrosswordAppContainer extends React.Component {
     };
     this.crosswordsFetch.restwrap(
       'api/comments', 'POST',
-      JSON.stringify(data), 'application/json',
+      data, 'application/json',
     )
       .then((result) => {
         window.console.log('Result is', result);
@@ -65,6 +67,14 @@ class CrosswordAppContainer extends React.Component {
       .catch((error) => {
         window.console.log(error.message);
       });
+  }
+
+  requestComments() {
+    this.crosswordsFetch.restwrap('api/comments', 'GET', {
+      game_id: this.props.gameID,
+    })
+      .then(result => window.console.log('REsult is', result))
+      .catch(error => window.console.log(error.message));
   }
 
   showUploadModal() {
@@ -89,6 +99,8 @@ class CrosswordAppContainer extends React.Component {
             gameRepr={this.props.gameRepr}
             viewMode={this.props.viewMode}
             submitComment={this.submitComment}
+            requestComments={this.requestComments}
+            gameID={this.props.gameID}
           />
         </div>
 

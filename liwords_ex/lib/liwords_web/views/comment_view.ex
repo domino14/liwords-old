@@ -6,11 +6,15 @@ defmodule LIWordsWeb.CommentView do
     %{data: render_one(comment, CommentView, "comment.json")}
   end
 
+  def render("index.json", %{comments: comments}) do
+    %{data: render_many(comments, CommentView, "comment.json")}
+  end
+
   def render("comment.json", %{comment: comment}) do
     %{uuid: comment.uuid,
       comment: comment.comment,
       turn_num: comment.turn_num,
-      user_id: comment.user.username,
+      username: comment.user.username,
       created: comment.inserted_at,
       }
   end

@@ -10,17 +10,17 @@ defmodule LIWordsWeb.CommentController do
 
   action_fallback LIWordsWeb.FallbackController
 
+  def index(conn, %{"game_id" => game_uuid}) do
+    game_id = get_game_fk(game_uuid)
+    comments = get_comments(game_id)
+    render(conn, "index.json", comments: comments)
+  end
+
   def create(conn, %{"comment" => comment_params}) do
     user_id = conn.assigns.joken_claims["sub"]
     game_uuid = comment_params["game_id"]
 
-    game_id = with {:ok, casted} <- Ecto.UUID.cast(game_uuid) do
-      game = Repo.get_by(Game, uuid: game_uuid)
-      if !game do nil else game.id end
-    else
-      :error ->
-        nil
-    end
+    game_id = get_game_fk(game_uuid)
 
     with {:ok, %Comment{} = comment} <- create_comment(
         Map.merge(comment_params, %{"user_id" => user_id, "game_id" => game_id})) do
@@ -39,6 +39,20 @@ defmodule LIWordsWeb.CommentController do
     %Comment{}
     |> Comment.changeset(Map.put(attrs, "uuid", uuid))
     |> Repo.insert()
+  end
+
+  def get_comments(game_id) do
+    from(c in Comment, where: c.game_id == ^game_id, preload: :user) |> Repo.all
+  end
+
+  defp get_game_fk(uuid) do
+    with {:ok, casted} <- Ecto.UUID.cast(uuid) do
+      game = Repo.get_by(Game, uuid: casted)
+      if !game do nil else game.id end
+    else
+      :error ->
+        nil
+    end
   end
 
 

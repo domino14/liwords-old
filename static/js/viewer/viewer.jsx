@@ -45,6 +45,14 @@ class Viewer extends React.Component {
     this.lastClickedTurn = currentTurn;
   }
 
+  componentDidMount() {
+    // The viewer should request all comments on mount, if there is a game ID.
+    if (!this.props.gameID) {
+      return;
+    }
+    this.props.requestComments();
+  }
+
   onTurnClick(idx) {
     this.lastClickedTurn = idx;
     window.location.hash = idx;
@@ -204,6 +212,8 @@ Viewer.propTypes = {
     })),
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
+  requestComments: PropTypes.func.isRequired,
+  gameID: PropTypes.string.isRequired,
 };
 
 export default Viewer;

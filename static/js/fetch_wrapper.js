@@ -9,6 +9,13 @@ function uniqueId() {
     + (new Date()).getTime().toString(36);
 }
 
+function getQueryString(params) {
+  const esc = encodeURIComponent;
+  return Object.keys(params)
+    .map(k => `${esc(k)}=${esc(params[k])}`)
+    .join('&');
+}
+
 class CrosswordsFetch {
   constructor(authToken) {
     this.authToken = authToken;
@@ -65,21 +72,30 @@ class CrosswordsFetch {
    * comments, preferences, create new boards, etc.)
    * @param {string} path
    * @param {string} method The HTTP method
-   * @param {string} body The body of the request.
+   * @param {Object} params The params of the request.
    * @param {string} optContentType An optional content type
    * @param {function} optResponseParser An optional parser for the response,
    *   defaults to response.json()
    * @return {Promise}
    */
-  async restwrap(path, method, body, optContentType, optResponseParser) {
+  async restwrap(path, method, params, optContentType, optResponseParser) {
     const headers = new Headers({
       Authorization: `Bearer ${this.authToken}`,
     });
     if (optContentType) {
       headers.set('Content-Type', optContentType);
     }
+    let qs = '';
+    let body;
+    if (method === 'GET' || method === 'DELETE') {
+      qs = `?${getQueryString(params)}`;
+    } else if (optContentType === 'application/json') {
+      body = JSON.stringify(params);
+    } else {
+      body = params;
+    }
     // eslint-disable-next-line compat/compat
-    const response = await fetch(`/crosswords/${path}/`, {
+    const response = await fetch(`/crosswords/${path}${qs}`, {
       method,
       headers,
       body,
