@@ -144,7 +144,8 @@ class BoardState {
     if (this.turns[player1].length > this.turns[player2].length) {
       return this.latestTurnForPlayer(player1);
     }
-    // Otherwise, they are the same size, so player2 is the last turn.
+    // Otherwise, they are the same size (or player2 is greater) so player2
+    // is the last turn.
     return this.latestTurnForPlayer(player2);
   }
 }

@@ -287,6 +287,7 @@ describe('BoardStateCalculator', () => {
       type: 'move',
       rack: 'AEIITVZ',
     });
+    expect(thisState.latestTurn()).toEqual(thisState.turns.leesa[15]);
   });
 
   it('should calculate end-of-game turn appropriately, player 2 ends', () => {
@@ -295,27 +296,6 @@ describe('BoardStateCalculator', () => {
     const thisState = calculator.computeLayout(27);
     expect(thisState.turns.doug.length).toBe(13);
     expect(thisState.turns.emely.length).toBe(14);
-    // expect(thisState.turns.leesa[15]).toEqual({
-    //   pos: '',
-    //   summary: '2 × (AEV)',
-    //   score: '+12',
-    //   cumul: '347',
-    //   turnIdx: 30,
-    //   note: '',
-    //   nick: 'leesa',
-    //   type: 'end_rack_points',
-    //   rack: 'AEV',
-    // });
-    // expect(thisState.turns.cesar[13]).toEqual({
-    //   pos: 'E12',
-    //   summary: 'ZITI',
-    //   score: '+25',
-    //   cumul: '417',
-    //   turnIdx: 28,
-    //   note: '',
-    //   nick: 'cesar',
-    //   type: 'move',
-    //   rack: 'AEIITVZ',
-    // });
+    expect(thisState.latestTurn()).toEqual(thisState.turns.emely[13]);
   });
 });
