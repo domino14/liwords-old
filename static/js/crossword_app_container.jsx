@@ -13,7 +13,7 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
-      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTUwODk3M30.WtNnWYolHo_8RY2jD7f2y4Qgrx5cMed44n6tmMVmsNA',
+      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTY2NjM3OH0.IfZ9nVbh2oHOGQydfIHgN5x7XbMoNUQo4-OT9baQUt0',
       gameComments: [],
     };
     this.showUploadModal = this.showUploadModal.bind(this);
@@ -64,7 +64,7 @@ class CrosswordAppContainer extends React.Component {
     )
       .then((result) => {
         this.setState((previousState) => {
-          previousState.gameComments.push(result);
+          previousState.gameComments.push(result.data);
           return {
             gameComments: previousState.gameComments,
           };

@@ -130,6 +130,8 @@ class Viewer extends React.Component {
     const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
     const tilesLayout = boardState.tilesLayout();
     const latestTurn = boardState.latestTurn();
+    const displayedComments = this.props.gameComments.filter(comment =>
+      comment.turn_num === this.state.currentTurn);
     return (
       <div className="row">
         <div className="col-lg-3 col-md-2 hidden-sm hidden-xs">
@@ -143,8 +145,7 @@ class Viewer extends React.Component {
               ${latestTurn.summary} from a rack of ${latestTurn.rack}` : ''
             }
             onSubmitComment={comment => this.onSubmitComment(comment)}
-            comments={this.props.gameComments.filter(comment =>
-              comment.turn_num === this.state.currentTurn)}
+            comments={displayedComments}
           />
         </div>
 
@@ -223,7 +224,7 @@ Viewer.propTypes = {
     turn_num: PropTypes.number,
     username: PropTypes.string,
     created: PropTypes.string,
-  })),
+  })).isRequired,
 };
 
 export default Viewer;

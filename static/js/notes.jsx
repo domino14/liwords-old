@@ -1,5 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+import 'moment-timezone';
+
+function timeFormatter(dtstring) {
+  return moment(dtstring).tz(moment.tz.guess()).format('MMMM Do YYYY, h:mm:ss a');
+}
+
+const Comment = props => (
+  <li className="media">
+    <div className="media-body">
+      <h5 className="media-heading">{props.username} @ {props.date}</h5>
+      {props.comment}
+    </div>
+  </li>
+);
+
+Comment.propTypes = {
+  username: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  comment: PropTypes.string.isRequired,
+};
+
+const Comments = (props) => {
+  const comments = props.comments.map(comment => (
+    <Comment
+      key={comment.uuid}
+      username={comment.username}
+      date={timeFormatter(comment.created)}
+      comment={comment.comment}
+    />));
+  return (
+    <ul className="media-list">
+      {comments}
+    </ul>
+  );
+};
+
+Comments.propTypes = {
+  comments: PropTypes.arrayOf(PropTypes.shape({
+    username: PropTypes.string,
+    created: PropTypes.string,
+    comment: PropTypes.string,
+    uuid: PropTypes.string,
+  })).isRequired,
+};
 
 class Notes extends React.Component {
   constructor(props) {
@@ -37,6 +82,11 @@ class Notes extends React.Component {
             {this.props.gcgNote}
           </div>
         </div>
+
+        <Comments
+          comments={this.props.comments}
+        />
+
         <hr />
         <form>
           <div className="form-group">
