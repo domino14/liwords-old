@@ -4,15 +4,19 @@ defmodule LIWordsWeb.Router do
 
   @jwt_secret Application.get_env(:liwords, :jwt_secret)
 
-  pipeline :browser do
+  pipeline :browser_unprotected do
     plug :accepts, ["html"]
   end
 
-  pipeline :api do
+  pipeline :api_protected do
     plug :accepts, ["json"]
     if Mix.env != :test do
       plug Joken.Plug, verify: &LIWordsWeb.Router.verify_function/0
     end
+  end
+
+  pipeline :api_unprotected do
+    plug :accepts, ["json"]
   end
 
   # anything using the following pipeline requires JWT, as do the API
@@ -23,9 +27,15 @@ defmodule LIWordsWeb.Router do
   end
 
   scope "/crosswords/api", LIWordsWeb do
-    pipe_through :api
+    pipe_through :api_protected
     resources "/boards", BoardController, except: [:new, :edit]
-    resources "/comments", CommentController, except: [:new, :edit]
+    # XXX: How to not protect show/index behind JWT?
+    resources "/comments", CommentController, except: [:new, :edit, :show, :index]
+  end
+
+  scope "/crosswords/api", LIWordsWeb do
+    pipe_through :api_unprotected
+    resources "/comments", CommentController, only: [:show, :index]
   end
 
   scope "/crosswords", LIWordsWeb do
@@ -36,12 +46,12 @@ defmodule LIWordsWeb.Router do
   # Since the following pipes through :browser instead of :browser_protected,
   # we don't require JWT for it.
   scope "/crosswords", LIWordsWeb do
-    pipe_through :browser
+    pipe_through :browser_unprotected
     get "/", PageController, :index
   end
 
   scope "/crosswords", LIWordsWeb do
-    pipe_through :browser
+    pipe_through :browser_unprotected
     resources "/game", GameController, only: [:show]
   end
 

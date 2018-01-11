@@ -13,7 +13,8 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
-      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNDk3MzU3MH0.b1pGOJ_RoSZ1TfnDxOIK6LUuAhtuvSyTjIkd6viCnAs',
+      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTUwODk3M30.WtNnWYolHo_8RY2jD7f2y4Qgrx5cMed44n6tmMVmsNA',
+      gameComments: [],
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
@@ -62,7 +63,12 @@ class CrosswordAppContainer extends React.Component {
       data, 'application/json',
     )
       .then((result) => {
-        window.console.log('Result is', result);
+        this.setState((previousState) => {
+          previousState.gameComments.push(result);
+          return {
+            gameComments: previousState.gameComments,
+          };
+        });
       })
       .catch((error) => {
         window.console.log(error.message);
@@ -73,7 +79,11 @@ class CrosswordAppContainer extends React.Component {
     this.crosswordsFetch.restwrap('api/comments', 'GET', {
       game_id: this.props.gameID,
     })
-      .then(result => window.console.log('REsult is', result))
+      .then((result) => {
+        this.setState({
+          gameComments: result.data,
+        });
+      })
       .catch(error => window.console.log(error.message));
   }
 
@@ -100,6 +110,7 @@ class CrosswordAppContainer extends React.Component {
             viewMode={this.props.viewMode}
             submitComment={this.submitComment}
             requestComments={this.requestComments}
+            gameComments={this.state.gameComments}
             gameID={this.props.gameID}
           />
         </div>

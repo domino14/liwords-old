@@ -33,6 +33,7 @@ class Viewer extends React.Component {
       // 0 would mean the very first turn; this is -1 instead as we start
       // with a blank board.
       currentTurn,
+      currentComments: [],
     };
     this.stepForward = this.stepForward.bind(this);
     this.stepBackward = this.stepBackward.bind(this);
@@ -142,6 +143,8 @@ class Viewer extends React.Component {
               ${latestTurn.summary} from a rack of ${latestTurn.rack}` : ''
             }
             onSubmitComment={comment => this.onSubmitComment(comment)}
+            comments={this.props.gameComments.filter(comment =>
+              comment.turn_num === this.state.currentTurn)}
           />
         </div>
 
@@ -214,6 +217,13 @@ Viewer.propTypes = {
   submitComment: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   gameID: PropTypes.string.isRequired,
+  gameComments: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string,
+    comment: PropTypes.string,
+    turn_num: PropTypes.number,
+    username: PropTypes.string,
+    created: PropTypes.string,
+  })),
 };
 
 export default Viewer;

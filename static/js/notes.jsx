@@ -26,6 +26,7 @@ class Notes extends React.Component {
   }
 
   render() {
+    console.log('Should render comments', this.props.comments);
     return (
       <div>
         <span className="text-muted">{this.props.addlDescription}</span>
@@ -63,6 +64,13 @@ Notes.propTypes = {
   gcgNote: PropTypes.string.isRequired,
   addlDescription: PropTypes.string.isRequired,
   onSubmitComment: PropTypes.func.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string,
+    comment: PropTypes.string,
+    turn_num: PropTypes.number,
+    username: PropTypes.string,
+    created: PropTypes.string,
+  })),
 };
 
 export default Notes;
