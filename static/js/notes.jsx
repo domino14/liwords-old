@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import 'moment-timezone';
+import ReactMarkdown from 'react-markdown';
+
 
 function timeFormatter(dtstring) {
   return moment(dtstring).tz(moment.tz.guess()).format('MMMM Do YYYY, h:mm:ss a');
@@ -9,9 +11,10 @@ function timeFormatter(dtstring) {
 
 const Comment = props => (
   <li className="media">
+    <hr />
     <div className="media-body">
       <h5 className="media-heading">{props.username} @ {props.date}</h5>
-      {props.comment}
+      <ReactMarkdown source={props.comment} />
     </div>
   </li>
 );
@@ -23,6 +26,7 @@ Comment.propTypes = {
 };
 
 const Comments = (props) => {
+  const divider = null;
   const comments = props.comments.map(comment => (
     <Comment
       key={comment.uuid}
@@ -31,9 +35,20 @@ const Comments = (props) => {
       comment={comment.comment}
     />));
   return (
-    <ul className="media-list">
-      {comments}
-    </ul>
+    <div
+      style={{ maxHeight: 350, overflowY: 'scroll' }}
+      ref={(domNode) => {
+        if (domNode === null) {
+          return;
+        }
+        domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
+      }}
+    >
+      {divider}
+      <ul className="media-list">
+        {comments}
+      </ul>
+    </div>
   );
 };
 

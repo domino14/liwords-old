@@ -13,7 +13,7 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
-      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTY2NjM3OH0.IfZ9nVbh2oHOGQydfIHgN5x7XbMoNUQo4-OT9baQUt0',
+      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTc0ODEzNH0.QI4l327koG74qg3adXsPPBcSqjyYkZ6p9gjab_HnE_4',
       gameComments: [],
     };
     this.showUploadModal = this.showUploadModal.bind(this);
