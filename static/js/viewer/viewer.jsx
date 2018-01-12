@@ -6,7 +6,6 @@ import Rack from '../rack';
 import Scoreboard from '../scoreboard';
 import Scoresheet from '../scoresheet';
 import Notes from '../notes';
-import FetchWrapper from '../fetch_wrapper';
 import { MoveTypesEnum } from '../moves';
 
 import { BoardStateCalculator } from '../board_state';
@@ -33,7 +32,6 @@ class Viewer extends React.Component {
       // 0 would mean the very first turn; this is -1 instead as we start
       // with a blank board.
       currentTurn,
-      currentComments: [],
     };
     this.stepForward = this.stepForward.bind(this);
     this.stepBackward = this.stepBackward.bind(this);
@@ -134,7 +132,7 @@ class Viewer extends React.Component {
       comment.turn_num === this.state.currentTurn);
     return (
       <div className="row">
-        <div className="col-lg-3 col-md-2 hidden-sm hidden-xs">
+        <div className="col-lg-4 col-md-2 hidden-sm hidden-xs">
           <h4>Notes and comments</h4>
           <Notes
             turnIdx={this.state.currentTurn}
@@ -185,11 +183,12 @@ class Viewer extends React.Component {
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <div className="col-lg-3 col-md-4 col-sm-4 col-xs-12">
           <Scoresheet
             player1={boardState.players[0]}
             player2={boardState.players[1]}
             turns={boardState.turns}
+            comments={this.props.gameComments}
             tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}

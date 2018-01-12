@@ -11,8 +11,7 @@ const ClickableTurn = props => (
       role="link"
       style={{
         cursor: 'pointer',
-        // f8fe64
-        backgroundColor: props.hasNote ? '#f864fe' : 'transparent',
+        backgroundColor: props.hasNote ? '#f8fe64' : 'transparent',
       }}
     >
       {props.turn}
@@ -66,6 +65,16 @@ function transformTurn(turn) {
   return `${turn.pos} ${turn.summary} ${challenged} ${turn.score}/${turn.cumul}`;
 }
 
+function hasNoteOrComment(turn, commentSet) {
+  if (!turn) {
+    return false;
+  }
+  if (turn.note !== '') {
+    return true;
+  }
+  return commentSet.has(turn.turnIdx);
+}
+
 const TurnsTable = (props) => {
   const player1 = props.player1 ? props.player1.nick : '';
   const player2 = props.player2 ? props.player2.nick : '';
@@ -95,8 +104,8 @@ const TurnsTable = (props) => {
         turnIdxRight={p2Turn ? p2Turn.turnIdx + 1 : -1}
         turnLeft={p1Turn ? transformTurn(p1Turn) : ''}
         turnRight={p2Turn ? transformTurn(p2Turn) : ''}
-        hasNoteLeft={p1Turn ? p1Turn.note !== '' : false}
-        hasNoteRight={p2Turn ? p2Turn.note !== '' : false}
+        hasNoteLeft={hasNoteOrComment(p1Turn, props.commentsOnTurns)}
+        hasNoteRight={hasNoteOrComment(p2Turn, props.commentsOnTurns)}
       />
     );
   });
@@ -115,27 +124,34 @@ TurnsTable.propTypes = {
     nick: PropTypes.string,
   }).isRequired,
   onTurnClick: PropTypes.func.isRequired,
+  commentsOnTurns: PropTypes.instanceOf(Set),
 };
 
-const GameSummary = props => (
-  <table className="table">
-    <thead>
-      <tr>
-        <th>{props.player1 ? props.player1.nick : ''}</th>
-        <th>{props.player2 ? props.player2.nick : ''}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <TurnsTable
-        player1={props.player1}
-        player2={props.player2}
-        turns={props.turns}
-        onTurnClick={props.onTurnClick}
-      />
-    </tbody>
-  </table>
-);
+const GameSummary = (props) => {
+  // Turn the list of comments into basically a set.
+  const commentObj = props.comments.reduce((acc, comment) =>
+    acc.add(comment.turn_num), new Set());
 
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          <th>{props.player1 ? props.player1.nick : ''}</th>
+          <th>{props.player2 ? props.player2.nick : ''}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <TurnsTable
+          player1={props.player1}
+          player2={props.player2}
+          turns={props.turns}
+          onTurnClick={props.onTurnClick}
+          commentsOnTurns={commentObj}
+        />
+      </tbody>
+    </table>
+  );
+};
 
 GameSummary.propTypes = {
   turns: PropTypes.object.isRequired,
@@ -150,6 +166,13 @@ GameSummary.propTypes = {
     nick: PropTypes.string,
   }).isRequired,
   onTurnClick: PropTypes.func.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string,
+    comment: PropTypes.string,
+    turn_num: PropTypes.number,
+    username: PropTypes.string,
+    created: PropTypes.string,
+  })).isRequired,
 };
 
 export default GameSummary;

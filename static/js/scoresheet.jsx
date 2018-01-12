@@ -108,6 +108,7 @@ const Scoresheet = props => (
         player2={props.player2}
         turns={props.turns}
         onTurnClick={props.onTurnClick}
+        comments={props.comments}
       />
     </div>
     <Pool
@@ -134,6 +135,14 @@ Scoresheet.propTypes = {
   fastForward: PropTypes.func.isRequired,
   fastBackward: PropTypes.func.isRequired,
   onTurnClick: PropTypes.func.isRequired,
+
+  comments: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string,
+    comment: PropTypes.string,
+    turn_num: PropTypes.number,
+    username: PropTypes.string,
+    created: PropTypes.string,
+  })).isRequired,
 };
 
 export default Scoresheet;

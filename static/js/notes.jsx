@@ -86,7 +86,6 @@ class Notes extends React.Component {
   }
 
   render() {
-    console.log('Should render comments', this.props.comments);
     return (
       <div>
         <span className="text-muted">{this.props.addlDescription}</span>
