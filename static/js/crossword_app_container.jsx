@@ -112,6 +112,8 @@ class CrosswordAppContainer extends React.Component {
             requestComments={this.requestComments}
             gameComments={this.state.gameComments}
             gameID={this.props.gameID}
+            windowWidth={this.state.windowWidth}
+            windowHeight={this.state.windowHeight}
           />
         </div>
 

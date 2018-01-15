@@ -24,6 +24,24 @@ const TILE_STYLES = {
   },
 };
 
+// Get the desired font size and weights as a function of the width.
+function tileProps(width) {
+  // This formula is not the most scientific. The tiles look optimal at 130%
+  // if the tile size is 31.
+  const size = (130 / 31) * width;
+  let weight = '500';
+  if (width < 24) {
+    weight = '300';
+  }
+  const valueSize = (60 / 31) * width;
+  return {
+    size,
+    weight,
+    valueSize,
+  };
+}
+
+
 const TileLetter = (props) => {
   let letterColor = props.tileStyle.textColor;
   let { rune } = props;
@@ -31,6 +49,9 @@ const TileLetter = (props) => {
     letterColor = props.tileStyle.blankTextColor;
     rune = rune.toUpperCase();
   }
+
+  const font = tileProps(props.width);
+
   return (
     <text
       x={(props.width / 2) - (props.width / 30)}
@@ -38,8 +59,8 @@ const TileLetter = (props) => {
       textAnchor="middle"
       dominantBaseline="central"
       fontFamily={fontFamily}
-      fontWeight="500"
-      fontSize="130%"
+      fontWeight={font.weight}
+      fontSize={`${font.size}%`}
       stroke={letterColor}
       fill={letterColor}
     >{rune}
@@ -63,6 +84,7 @@ const PointValue = (props) => {
   if (!props.value) {
     return null;
   }
+  const font = tileProps(props.width);
   return (
     <text
       x={8 * (props.width / 10)}
@@ -70,7 +92,7 @@ const PointValue = (props) => {
       textAnchor="middle"
       dominantBaseline="central"
       fontFamily={fontFamily}
-      fontSize="60%"
+      fontSize={`${font.valueSize}%`}
       stroke={props.tileStyle.textColor}
       strokeWidth="0.05px"
       fill={props.tileStyle.textColor}
@@ -144,3 +166,4 @@ Tile.propTypes = {
 };
 
 export default Tile;
+export { tileProps };

@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Board from '../board/board';
-import Rack from '../rack';
 import Scoreboard from '../scoreboard';
+import Pool from '../pool';
 import Scoresheet from '../scoresheet';
 import Notes from '../notes';
+import TurnsNavbar from './turns_navbar';
 import { MoveTypesEnum } from '../moves';
 
 import { BoardStateCalculator } from '../board_state';
@@ -132,7 +133,8 @@ class Viewer extends React.Component {
       comment.turn_num === this.state.currentTurn);
     return (
       <div className="row">
-        <div className="col-lg-4 col-md-2 hidden-sm hidden-xs">
+
+        <div className="col-lg-4 col-md-2 col-sm-4 hidden-xs">
           <h4>Notes and comments</h4>
           <Notes
             turnIdx={this.state.currentTurn}
@@ -148,7 +150,19 @@ class Viewer extends React.Component {
         </div>
 
         <div className="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+
           <div className="row">
+            <div className="col-lg-8 col-lg-offset-4">
+              <TurnsNavbar
+                stepForward={this.stepForward}
+                stepBackward={this.stepBackward}
+                fastForward={this.fastForward}
+                fastBackward={this.fastBackward}
+              />
+            </div>
+          </div>
+
+          <div className="row" style={{ marginTop: 8 }}>
             <Scoreboard
               player1={boardState.players[0]}
               player2={boardState.players[1]}
@@ -156,15 +170,21 @@ class Viewer extends React.Component {
                 boardState.latestScore(boardState.players[0].nick) : 0}
               player2score={boardState.players[1] ?
                 boardState.latestScore(boardState.players[1].nick) : 0}
+              currentUser={boardState.currentUser}
+              currentRack={boardState.currentRack}
+              windowWidth={this.props.windowWidth}
             />
           </div>
+
           <div className="row">
             <div className="col-xs-12">
               <Board
                 gridWidth={15}
                 gridHeight={15}
-                boardWidth={465}
-                boardHeight={465}
+                windowWidth={this.props.windowWidth}
+                windowHeight={this.props.windowHeight}
+                // boardWidth={465}
+                // boardHeight={465}
                 gridLayout={CrosswordGameSetup}
                 tilesLayout={tilesLayout}
                 lastPlayedLetters={boardState.lastPlayedLetters}
@@ -172,18 +192,10 @@ class Viewer extends React.Component {
               />
             </div>
           </div>
-          <div className="row">
-            <div className="col-xs-1">
-              <span><big>{boardState.currentUser}</big></span>
-            </div>
-            <div className="col-xs-8 col-xs-offset-1">
-              <Rack
-                letters={boardState.currentRack}
-              />
-            </div>
-          </div>
+
         </div>
-        <div className="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+
+        <div className="col-lg-3 col-md-4 hidden-sm hidden-xs">
           <Scoresheet
             player1={boardState.players[0]}
             player2={boardState.players[1]}
@@ -192,13 +204,17 @@ class Viewer extends React.Component {
             tilesLayout={tilesLayout}
             pool={boardState.pool}
             currentRack={boardState.currentRack}
-            stepForward={this.stepForward}
-            stepBackward={this.stepBackward}
-            fastForward={this.fastForward}
-            fastBackward={this.fastBackward}
             onTurnClick={idx => () => this.onTurnClick(idx)}
           />
         </div>
+
+        <div className="col-sm-12 col-xs-12 hidden-md hidden-lg">
+          <Pool
+            currentRack={boardState.currentRack}
+            pool={boardState.pool}
+          />
+        </div>
+
       </div>
     );
   }
@@ -224,6 +240,9 @@ Viewer.propTypes = {
     username: PropTypes.string,
     created: PropTypes.string,
   })).isRequired,
+
+  windowWidth: PropTypes.number.isRequired,
+  windowHeight: PropTypes.number.isRequired,
 };
 
 export default Viewer;
