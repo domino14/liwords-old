@@ -38,7 +38,7 @@
   <div id="main-app-content"></div>
 
   <!-- replace with templates or something -->
-  <script src="http://localhost:7001/static/dist/crosswordapp.js?v=foo1"></script>
+  <script src="/crosswords/static/dist/crosswordapp.js?v=foo1"></script>
 
 </body>
 </html>

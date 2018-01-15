@@ -5,7 +5,7 @@ const webpack = require('webpack');
 export default {
   output: {
     filename: '[name].js',
-    publicPath: 'http://localhost:7001/static/dist/',
+    publicPath: '/crosswords/static/dist/',
   },
   devtool: 'source-map',
   module: {
@@ -34,7 +34,9 @@ export default {
     }),
   ],
   devServer: {
-    port: 7001,
+    port: 7000,
+    host: '0.0.0.0',
+    public: 'vm.aerolith.org',
     headers: {
       'Access-Control-Allow-Origin': '*',
     },

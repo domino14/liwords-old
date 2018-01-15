@@ -42,8 +42,8 @@ config :liwords, LIWords.Repo,
   username: "postgres",
   password: "pass",
   database: "djaerolith",
-  hostname: "localhost",
-  port: 5437,
+  hostname: "pgdb",
+  port: 5432,
   pool_size: 10
 
 config :liwords,
