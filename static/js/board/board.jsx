@@ -43,8 +43,6 @@ const Board = (props) => {
   const boardSquareWidth = rowLabelWidth / labelRatio;
   const boardSquareHeight = colLabelHeight / labelRatio;
 
-  console.log('bsqw', boardSquareWidth);
-
   return (
     <svg
       width={boardWidth}

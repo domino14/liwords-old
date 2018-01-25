@@ -29,7 +29,6 @@ defmodule LIWordsWeb.Router do
   scope "/crosswords/api", LIWordsWeb do
     pipe_through :api_protected
     resources "/boards", BoardController, except: [:new, :edit]
-    # XXX: How to not protect show/index behind JWT?
     resources "/comments", CommentController, except: [:new, :edit, :show, :index]
   end
 

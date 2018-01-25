@@ -11,21 +11,21 @@ function uniqueId() {
 
 function getQueryString(params) {
   const esc = encodeURIComponent;
-  return Object.keys(params)
+  return Object.keys(params || {})
     .map(k => `${esc(k)}=${esc(params[k])}`)
     .join('&');
 }
 
 class CrosswordsFetch {
   constructor(authToken) {
-    this.authToken = authToken;
+    this.authToken = authToken || '';
     this.fetchInit = {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${authToken}`,
       }),
-      credentials: 'omit',
+      credentials: 'same-origin',
     };
   }
 
@@ -95,11 +95,11 @@ class CrosswordsFetch {
       body = params;
     }
     // eslint-disable-next-line compat/compat
-    const response = await fetch(`/crosswords/${path}${qs}`, {
+    const response = await fetch(`${path}${qs}`, {
       method,
       headers,
       body,
-      credentials: 'omit',
+      credentials: 'same-origin',
     });
     if (response.ok) {
       return optResponseParser ? optResponseParser(response) : response.json();
@@ -112,15 +112,22 @@ class CrosswordsFetch {
       // however that does NOT work and I can't figure out why. Neither
       // can IRC. So we do this instead so I don't tear my hair out.
       jsonedError = JSON.parse(errResp);
+
+      // Throw an error with the JSON error message (from our well-formed API).
+      throw new Error(jsonedError.error);
     } catch (err) {
       if (response.status === 401) {
         // XXX Here: Refresh JWT and retry.
-        throw new Error('Need to refresh JWT.');
+        // throw new Error('Need to refresh JWT.');
+        await this.restwrap('/jwt/', 'GET')
+          .then(result => this.setAuthToken(result.token))
+          .catch(error => window.console.log(error));
+        // retry request.
+        return this.restwrap(path, method, params, optContentType, optResponseParser);
       }
+      // Otherwise, throw an error.
       throw new Error(response.statusText);
     }
-    // Throw an error with the JSON error message (from our well-formed API).
-    throw new Error(jsonedError.error);
   }
 
   /**
@@ -130,7 +137,7 @@ class CrosswordsFetch {
    */
   async uploadwrap(formData) {
     return this.restwrap(
-      'gcg_upload', 'POST', formData,
+      '/crosswords/gcg_upload', 'POST', formData,
       // Only for this case (gcg upload) we return the game link in the
       // Location header. So we don't even need the json.
       null, // Don't use a content-type for gcg upload.

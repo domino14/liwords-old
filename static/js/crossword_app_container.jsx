@@ -13,20 +13,20 @@ class CrosswordAppContainer extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       currentGCGLink: '',
-      jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZXJvbGl0aC5vcmciLCJ1c24iOiJjZXNhcjIiLCJzdWIiOjIsImV4cCI6MTUxNTc5OTg4NH0.VLZilcYomP0XXlrcF3De6R7izGnBc4D1xANTH_CbesI',
       gameComments: [],
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
     this.requestComments = this.requestComments.bind(this);
-
-    this.crosswordsFetch = new CrosswordsFetch(this.state.jwt);
+    this.crosswordsFetch = new CrosswordsFetch();
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
-    // Get this token from elsewhere.
+    this.crosswordsFetch.restwrap('/jwt/', 'GET', {})
+      .then(result => this.crosswordsFetch.setAuthToken(result.token))
+      .catch(error => window.console.log(error));
   }
 
   onListUpload(acceptedFiles, rejectedFiles) {
@@ -59,7 +59,7 @@ class CrosswordAppContainer extends React.Component {
       },
     };
     this.crosswordsFetch.restwrap(
-      'api/comments', 'POST',
+      '/crosswords/api/comments', 'POST',
       data, 'application/json',
     )
       .then((result) => {
@@ -76,7 +76,7 @@ class CrosswordAppContainer extends React.Component {
   }
 
   requestComments() {
-    this.crosswordsFetch.restwrap('api/comments', 'GET', {
+    this.crosswordsFetch.restwrap('/crosswords/api/comments', 'GET', {
       game_id: this.props.gameID,
     })
       .then((result) => {
