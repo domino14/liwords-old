@@ -207,7 +207,7 @@ class Viewer extends React.Component {
             onTurnClick={idx => () => this.onTurnClick(idx)}
           />
         </div>
-
+        {/* The following is an extra stand-alone pool for small screens */}
         <div className="col-sm-12 col-xs-12 hidden-md hidden-lg">
           <Pool
             currentRack={boardState.currentRack}

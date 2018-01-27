@@ -12,7 +12,7 @@ const Scoresheet = props => (
     />
 
     <div
-      style={{ marginTop: 10, height: 500, overflowY: 'scroll' }}
+      style={{ marginTop: 10, maxHeight: 500, overflowY: 'scroll' }}
       ref={(domNode) => {
         if (domNode === null) {
           return;

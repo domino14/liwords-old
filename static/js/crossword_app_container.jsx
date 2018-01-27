@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Navbar from './navbar';
+import ErrorView from './error_view';
 import Viewer from './viewer/viewer';
 import GCGUploadModal from './modal/gcg_upload';
-import CrosswordsFetch from './fetch_wrapper';
+import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
 
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
@@ -14,11 +15,13 @@ class CrosswordAppContainer extends React.Component {
       windowHeight: window.innerHeight,
       currentGCGLink: '',
       gameComments: [],
+      errorMsg: '',
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
     this.requestComments = this.requestComments.bind(this);
+    this.handleFetchError = this.handleFetchError.bind(this);
     this.crosswordsFetch = new CrosswordsFetch();
   }
 
@@ -26,7 +29,7 @@ class CrosswordAppContainer extends React.Component {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.crosswordsFetch.restwrap('/jwt/', 'GET', {})
       .then(result => this.crosswordsFetch.setAuthToken(result.token))
-      .catch(error => window.console.log(error));
+      .catch((error) => { this.handleFetchError(error); });
   }
 
   onListUpload(acceptedFiles, rejectedFiles) {
@@ -71,7 +74,7 @@ class CrosswordAppContainer extends React.Component {
         });
       })
       .catch((error) => {
-        window.console.log(error.message);
+        this.handleFetchError(error);
       });
   }
 
@@ -84,7 +87,7 @@ class CrosswordAppContainer extends React.Component {
           gameComments: result.data,
         });
       })
-      .catch(error => window.console.log(error.message));
+      .catch((error) => { this.handleFetchError(error); });
   }
 
   showUploadModal() {
@@ -98,11 +101,24 @@ class CrosswordAppContainer extends React.Component {
     });
   }
 
+  handleFetchError(error) {
+    if (error.message === FetchErrors.CouldNotRefreshToken) {
+      this.setState({
+        errorMsg: 'Please log back in and try again.',
+      });
+    } else {
+      window.console.log('caught another type of error', error);
+    }
+  }
+
   render() {
     return (
       <div>
         <Navbar
           handleUpload={this.showUploadModal}
+        />
+        <ErrorView
+          errorMsg={this.state.errorMsg}
         />
         <div className="container-fluid">
           <Viewer
@@ -138,7 +154,7 @@ CrosswordAppContainer.propTypes = {
       p_number: PropTypes.string,
       nick: PropTypes.string,
     })),
-  }),
+  }).isRequired,
   viewMode: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
 };

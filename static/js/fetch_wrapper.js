@@ -4,6 +4,10 @@
 
 import _ from 'underscore';
 
+const FetchErrors = {
+  CouldNotRefreshToken: 'Could not refresh token.',
+};
+
 function uniqueId() {
   return Math.random().toString(36).substring(2)
     + (new Date()).getTime().toString(36);
@@ -118,10 +122,11 @@ class CrosswordsFetch {
     } catch (err) {
       if (response.status === 401) {
         // XXX Here: Refresh JWT and retry.
-        // throw new Error('Need to refresh JWT.');
-        await this.restwrap('/jwt/', 'GET')
+        await this.restwrap('/jwt2/', 'GET')
           .then(result => this.setAuthToken(result.token))
-          .catch(error => window.console.log(error));
+          .catch(() => {
+            throw new Error(FetchErrors.CouldNotRefreshToken);
+          });
         // retry request.
         return this.restwrap(path, method, params, optContentType, optResponseParser);
       }
@@ -147,4 +152,5 @@ class CrosswordsFetch {
 }
 
 export default CrosswordsFetch;
+export { FetchErrors };
 

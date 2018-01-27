@@ -38,6 +38,9 @@ const Navbar = props => (
               <li><a href="#something">One more separated link</a></li>
             </ul>
           </li>
+          <li>
+            {props.errorMsg}
+          </li>
         </ul>
 
       </div>
@@ -47,6 +50,7 @@ const Navbar = props => (
 
 Navbar.propTypes = {
   handleUpload: PropTypes.func.isRequired,
+  errorMsg: PropTypes.string.isRequired,
 };
 
 export default Navbar;
