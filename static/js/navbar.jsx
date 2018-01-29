@@ -50,7 +50,6 @@ const Navbar = props => (
 
 Navbar.propTypes = {
   handleUpload: PropTypes.func.isRequired,
-  errorMsg: PropTypes.string.isRequired,
 };
 
 export default Navbar;

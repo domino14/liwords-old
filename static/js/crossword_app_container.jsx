@@ -7,6 +7,8 @@ import Viewer from './viewer/viewer';
 import GCGUploadModal from './modal/gcg_upload';
 import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
 
+import Utils from './util';
+
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +17,8 @@ class CrosswordAppContainer extends React.Component {
       windowHeight: window.innerHeight,
       currentGCGLink: '',
       gameComments: [],
-      errorMsg: '',
+      errorType: '',
+      username: '',
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
@@ -28,8 +31,16 @@ class CrosswordAppContainer extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.crosswordsFetch.restwrap('/jwt/', 'GET', {})
-      .then(result => this.crosswordsFetch.setAuthToken(result.token))
-      .catch((error) => { this.handleFetchError(error); });
+      .then((result) => {
+        this.crosswordsFetch.setAuthToken(result.token);
+        const parsedToken = Utils.parseJWT(result.token);
+        this.setState({
+          username: parsedToken.usn,
+        });
+      })
+      .catch(() => {
+        this.handleFetchError(new Error(FetchErrors.CouldNotObtainToken));
+      });
   }
 
   onListUpload(acceptedFiles, rejectedFiles) {
@@ -102,13 +113,10 @@ class CrosswordAppContainer extends React.Component {
   }
 
   handleFetchError(error) {
-    if (error.message === FetchErrors.CouldNotRefreshToken) {
-      this.setState({
-        errorMsg: 'Please log back in and try again.',
-      });
-    } else {
-      window.console.log('caught another type of error', error);
-    }
+    window.console.log('Caught an error', error);
+    this.setState({
+      errorType: error.message,
+    });
   }
 
   render() {
@@ -117,9 +125,13 @@ class CrosswordAppContainer extends React.Component {
         <Navbar
           handleUpload={this.showUploadModal}
         />
-        <ErrorView
-          errorMsg={this.state.errorMsg}
-        />
+        <div className="row">
+          <div className="col-lg-6 col-md-5 col-lg-offset-3 col-md-offset-3">
+            <ErrorView
+              errorType={this.state.errorType}
+            />
+          </div>
+        </div>
         <div className="container-fluid">
           <Viewer
             gameRepr={this.props.gameRepr}
@@ -130,6 +142,7 @@ class CrosswordAppContainer extends React.Component {
             gameID={this.props.gameID}
             windowWidth={this.state.windowWidth}
             windowHeight={this.state.windowHeight}
+            username={this.state.username}
           />
         </div>
 

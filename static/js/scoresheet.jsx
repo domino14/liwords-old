@@ -52,6 +52,7 @@ Scoresheet.propTypes = {
     turn_num: PropTypes.number,
     username: PropTypes.string,
     created: PropTypes.string,
+    edited: PropTypes.bool,
   })).isRequired,
 };
 

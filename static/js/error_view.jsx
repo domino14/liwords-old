@@ -1,12 +1,72 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ErrorView = (props) => {
-  if (!props.errorMsg) {
-    return null;
+import { FetchErrors } from './fetch_wrapper';
+
+const AlertText = (props) => {
+  let heading = null;
+  if (props.errorHeading) {
+    heading = <strong>Error: </strong>;
   }
   return (
-    <div className="alert alert-danger alert-dismissible" role="alert">
+    <span>
+      {heading}{props.preamble}
+      <a href={props.href} className="alert-link">{props.linkText}</a>
+      {props.postamble}
+    </span>
+  );
+};
+
+AlertText.defaultProps = {
+  errorHeading: false,
+};
+
+AlertText.propTypes = {
+  errorHeading: PropTypes.bool,
+  preamble: PropTypes.string.isRequired,
+  href: PropTypes.string.isRequired,
+  linkText: PropTypes.string.isRequired,
+  postamble: PropTypes.string.isRequired,
+};
+
+function loc() {
+  return `${window.location.pathname}${window.location.hash}`;
+}
+
+const ErrorView = (props) => {
+  if (!props.errorType) {
+    return null;
+  }
+  let err;
+  let alertType;
+  switch (props.errorType) {
+    case FetchErrors.CouldNotRefreshToken:
+      err = (
+        <AlertText
+          href={`/accounts/login?next=${loc()}`}
+          preamble="Please "
+          linkText="log back in"
+          postamble=" and try again."
+          errorHeading
+        />);
+      alertType = 'danger';
+      break;
+
+    case FetchErrors.CouldNotObtainToken:
+      err = (
+        <AlertText
+          href={`/accounts/login?next=${loc()}`}
+          preamble="If you would like to participate in this discussion please "
+          linkText="log in"
+          postamble="."
+        />);
+      alertType = 'info';
+      break;
+    default:
+      err = null;
+  }
+  return (
+    <div className={`alert alert-${alertType} alert-dismissible`} role="alert">
       <button
         type="button"
         className="close"
@@ -14,13 +74,13 @@ const ErrorView = (props) => {
         aria-label="Close"
       ><span aria-hidden="true">&times;</span>
       </button>
-      <strong>Error:</strong> {props.errorMsg}
+      {err}
     </div>
   );
 };
 
 ErrorView.propTypes = {
-  errorMsg: PropTypes.string.isRequired,
+  errorType: PropTypes.string.isRequired,
 };
 
 export default ErrorView;

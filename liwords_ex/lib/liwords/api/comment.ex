@@ -7,6 +7,7 @@ defmodule LIWords.API.Comment do
     field :uuid, Ecto.UUID
     field :comment, :string
     field :turn_num, :integer
+    field :edited, :boolean, default: false, null: false
 
     belongs_to :user, LIWords.User
     belongs_to :game, LIWords.API.Game

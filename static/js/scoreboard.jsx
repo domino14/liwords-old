@@ -8,7 +8,7 @@ const PlayerScore = (props) => {
   let playerDisplay = <small>{props.displayName}</small>;
 
   if (props.highlight) {
-    playerDisplay = <span className="label label-primary">{props.displayName}</span>;
+    playerDisplay = <span className="label label-warning">{props.displayName}</span>;
   }
 
   return (

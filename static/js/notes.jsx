@@ -4,35 +4,67 @@ import moment from 'moment';
 import 'moment-timezone';
 import ReactMarkdown from 'react-markdown';
 
+import EditCommentModal from './edit_comment_modal';
 
 function timeFormatter(dtstring) {
   return moment(dtstring).tz(moment.tz.guess()).format('MMMM Do YYYY, h:mm:ss a');
 }
 
-const Comment = props => (
-  <li className="media">
-    <hr />
-    <div className="media-body">
-      <h5 className="media-heading">{props.username} @ {props.date}</h5>
-      <ReactMarkdown source={props.comment} />
+const Comment = (props) => {
+  let commentToolbar = null;
+  if (props.loggedInUsername === props.username) {
+    commentToolbar = (
+      <span className="text-danger">
+        <span
+          className="glyphicon glyphicon-pencil"
+          aria-hidden="true"
+          onClick={props.onEdit}
+        />&nbsp;
+        <span
+          className="glyphicon glyphicon-trash"
+          aria-hidden="true"
+          onClick={props.onDelete}
+        />
+      </span>
+    );
+  }
+  return (
+    <div>
+      <hr />
+      <div>
+        <h5>{props.username} @ {props.date} {commentToolbar}</h5>
+        <ReactMarkdown source={props.comment} />
+      </div>
     </div>
-  </li>
-);
+  );
+};
+
+Comment.defaultProps = {
+  edited: false,
+};
 
 Comment.propTypes = {
   username: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   comment: PropTypes.string.isRequired,
+  edited: PropTypes.bool,
+  loggedInUsername: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 const Comments = (props) => {
   const divider = null;
+  const { onEdit, onDelete } = props;
   const comments = props.comments.map(comment => (
     <Comment
       key={comment.uuid}
       username={comment.username}
       date={timeFormatter(comment.created)}
       comment={comment.comment}
+      loggedInUsername={props.loggedInUsername}
+      onEdit={() => onEdit(comment)}
+      onDelete={() => onDelete(comment.uuid)}
     />));
   return (
     <div
@@ -45,9 +77,9 @@ const Comments = (props) => {
       }}
     >
       {divider}
-      <ul className="media-list">
+      <div>
         {comments}
-      </ul>
+      </div>
     </div>
   );
 };
@@ -58,22 +90,35 @@ Comments.propTypes = {
     created: PropTypes.string,
     comment: PropTypes.string,
     uuid: PropTypes.string,
+    edited: PropTypes.bool,
   })).isRequired,
+  loggedInUsername: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
-class Notes extends React.Component {
+class NotesAndComments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       currentComment: '',
+      commentToEdit: null,
     };
-    this.onCommentEdit = this.onCommentEdit.bind(this);
+    this.onCommentTyping = this.onCommentTyping.bind(this);
+    this.onEditCommentClicked = this.onEditCommentClicked.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onCommentEdit(event) {
+  onCommentTyping(event) {
     this.setState({
       currentComment: event.target.value,
+    });
+  }
+
+  onEditCommentClicked(comment) {
+    this.editCommentModal.show();
+    this.setState({
+      commentToEdit: comment,
     });
   }
 
@@ -99,6 +144,15 @@ class Notes extends React.Component {
 
         <Comments
           comments={this.props.comments}
+          loggedInUsername={this.props.loggedInUsername}
+          onEdit={this.onEditCommentClicked}
+          onDelete={this.props.onDeleteComment}
+        />
+        <EditCommentModal
+          commentToEdit={this.state.commentToEdit}
+          ref={(el) => {
+            this.editCommentModal = el;
+          }}
         />
 
         <hr />
@@ -107,7 +161,7 @@ class Notes extends React.Component {
             <textarea
               className="form-control"
               rows="4"
-              onChange={this.onCommentEdit}
+              onChange={this.onCommentTyping}
               value={this.state.currentComment}
               placeholder="Add a comment for this turn..."
             />
@@ -123,8 +177,7 @@ class Notes extends React.Component {
   }
 }
 
-Notes.propTypes = {
-  turnIdx: PropTypes.number.isRequired,
+NotesAndComments.propTypes = {
   gcgNote: PropTypes.string.isRequired,
   addlDescription: PropTypes.string.isRequired,
   onSubmitComment: PropTypes.func.isRequired,
@@ -134,7 +187,11 @@ Notes.propTypes = {
     turn_num: PropTypes.number,
     username: PropTypes.string,
     created: PropTypes.string,
-  })),
+    edited: PropTypes.bool,
+  })).isRequired,
+  loggedInUsername: PropTypes.string.isRequired,
+
+  onDeleteComment: PropTypes.func.isRequired,
 };
 
-export default Notes;
+export default NotesAndComments;

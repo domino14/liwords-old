@@ -40,6 +40,8 @@ class Viewer extends React.Component {
     this.fastBackward = this.fastBackward.bind(this);
     this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
+    this.onEditComment = this.onEditComment.bind(this);
+    this.onDeleteComment = this.onDeleteComment.bind(this);
 
     window.onhashchange = this.hashChange;
     this.lastClickedTurn = currentTurn;
@@ -64,6 +66,15 @@ class Viewer extends React.Component {
   onSubmitComment(comment) {
     this.props.submitComment(comment, this.state.currentTurn);
   }
+
+  onEditComment(uuid) {
+    console.log('Want to edit comment with uuid', uuid);
+  }
+
+  onDeleteComment(uuid) {
+    console.log('Want to delete comment iwth uuid', uuid);
+  }
+
 
   hashChange() {
     // -1 because we use user-friendly hashes for turns -- there is no
@@ -134,7 +145,7 @@ class Viewer extends React.Component {
     return (
       <div className="row">
 
-        <div className="col-lg-4 col-md-2 col-sm-4 hidden-xs">
+        <div className="col-lg-4 col-md-3 col-sm-5 hidden-xs">
           <h4>Notes and comments</h4>
           <Notes
             turnIdx={this.state.currentTurn}
@@ -146,10 +157,13 @@ class Viewer extends React.Component {
             }
             onSubmitComment={comment => this.onSubmitComment(comment)}
             comments={displayedComments}
+            loggedInUsername={this.props.username}
+            onEditComment={this.onEditComment}
+            onDeleteComment={this.onDeleteComment}
           />
         </div>
 
-        <div className="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+        <div className="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 
           <div className="row">
             <div className="col-lg-8 col-lg-offset-4">
@@ -239,10 +253,12 @@ Viewer.propTypes = {
     turn_num: PropTypes.number,
     username: PropTypes.string,
     created: PropTypes.string,
+    edited: PropTypes.bool,
   })).isRequired,
 
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 export default Viewer;

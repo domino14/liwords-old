@@ -5,6 +5,7 @@ import BoardCoordLabels from './coord_labels';
 import BoardSpaces from './spaces';
 import Tiles from './tiles';
 
+const MAX_BOARD_SIZE = 500;
 
 const Board = (props) => {
   const labelRatio = 1 / 2;
@@ -12,7 +13,7 @@ const Board = (props) => {
   // Do some math here to calculate the proper board width / board height.
 
   // board width should be roughly the width of the holding column.
-  // col-lg-5 col-md-6 col-sm-8 col-xs-12 is the class name for the column.
+  // col-lg-5 col-md-5 col-sm-8 col-xs-12 is the class name for the column.
   // Not sure how to get this so we'll have to change this formula if we
   // change those classes.
   //
@@ -21,9 +22,9 @@ const Board = (props) => {
   if (props.windowWidth >= 1200) {
     numCols = 5;
   } else if (props.windowWidth >= 992) {
-    numCols = 6;
+    numCols = 5;
   } else if (props.windowWidth >= 768) {
-    numCols = 8;
+    numCols = 7;
   } else {
     numCols = 12;
   }
@@ -31,9 +32,9 @@ const Board = (props) => {
   let boardWidth = ((numCols / 12) * props.windowWidth) - 30;
   let boardHeight = boardWidth;
 
-  if (boardWidth > 700) {
-    boardWidth = 700;
-    boardHeight = 700;
+  if (boardWidth > MAX_BOARD_SIZE) {
+    boardWidth = MAX_BOARD_SIZE;
+    boardHeight = MAX_BOARD_SIZE;
   }
 
 

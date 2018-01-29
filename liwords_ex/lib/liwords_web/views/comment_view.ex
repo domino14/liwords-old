@@ -16,6 +16,7 @@ defmodule LIWordsWeb.CommentView do
       turn_num: comment.turn_num,
       username: comment.user.username,
       created: comment.inserted_at,
+      edited: comment.edited,
       }
   end
 

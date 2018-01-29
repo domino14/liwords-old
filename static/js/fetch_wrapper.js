@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 const FetchErrors = {
   CouldNotRefreshToken: 'Could not refresh token.',
+  CouldNotObtainToken: 'Could not obtain token.',
 };
 
 function uniqueId() {
@@ -121,8 +122,10 @@ class CrosswordsFetch {
       throw new Error(jsonedError.error);
     } catch (err) {
       if (response.status === 401) {
-        // XXX Here: Refresh JWT and retry.
-        await this.restwrap('/jwt2/', 'GET')
+        await this.restwrap('/jwt/', 'GET')
+          // XXX Note this doesn't set the username back in the main app,
+          // but we should already have the username from the first fetch.
+          // If it changes, that would be such a weird edge case anyway.
           .then(result => this.setAuthToken(result.token))
           .catch(() => {
             throw new Error(FetchErrors.CouldNotRefreshToken);
