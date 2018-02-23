@@ -41,7 +41,7 @@ defmodule LIWords.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:poison, "~> 3.1"},
-      {:joken, "~> 1.5", path: "deps/joken"},
+      {:joken, "~> 1.5"},
     ]
   end
 
