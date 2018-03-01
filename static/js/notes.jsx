@@ -32,7 +32,7 @@ const Comment = (props) => {
     <div>
       <hr />
       <div>
-        <h5>{props.username} @ {props.date} {commentToolbar}</h5>
+        <h5>{`${props.username} @ ${props.date}${props.edited ? '*' : ''}`} {commentToolbar}</h5>
         <ReactMarkdown source={props.comment} />
       </div>
     </div>
@@ -63,6 +63,7 @@ const Comments = (props) => {
       date={timeFormatter(comment.created)}
       comment={comment.comment}
       loggedInUsername={props.loggedInUsername}
+      edited={comment.edited}
       onEdit={() => onEdit(comment)}
       onDelete={() => onDelete(comment.uuid)}
     />));
@@ -150,6 +151,7 @@ class NotesAndComments extends React.Component {
         />
         <EditCommentModal
           commentToEdit={this.state.commentToEdit}
+          onSubmitComment={this.props.onEditComment}
           ref={(el) => {
             this.editCommentModal = el;
           }}
@@ -192,6 +194,7 @@ NotesAndComments.propTypes = {
   loggedInUsername: PropTypes.string.isRequired,
 
   onDeleteComment: PropTypes.func.isRequired,
+  onEditComment: PropTypes.func.isRequired,
 };
 
 export default NotesAndComments;

@@ -42,7 +42,9 @@ defmodule LIWordsWeb.CommentController do
   end
 
   def get_comments(game_id) do
-    from(c in Comment, where: c.game_id == ^game_id, preload: :user) |> Repo.all
+    from(c in Comment, where: c.game_id == ^game_id, preload: :user)
+      |> order_by(asc: :inserted_at)
+      |> Repo.all
   end
 
   defp get_game_fk(uuid) do
@@ -55,14 +57,25 @@ defmodule LIWordsWeb.CommentController do
     end
   end
 
+  def update_comment(%Comment{} = comment, attrs) do
+    comment
+    |> Comment.changeset(Map.put(attrs, "edited", true))
+    |> Repo.update()
+  end
 
-  # def update(conn, %{"id" => id, "board" => board_params}) do
-  #   board = API.get_board!(id)
+  def update(conn, %{"id" => id, "comment" => commentText}) do
+    user_id = conn.assigns.joken_claims["sub"]
+    comment = Repo.get_by!(Comment, uuid: id)
+    with {:ok, %Comment{} = comment} <- update_comment(comment,
+        %{"comment" => commentText}) do
+      render(conn, "show.json", comment: Repo.preload(comment, :user))
+    end
+    # board = API.get_board!(id)
 
-  #   with {:ok, %Board{} = board} <- API.update_board(board, board_params) do
-  #     render(conn, "show.json", board: board)
-  #   end
-  # end
+    # with {:ok, %Board{} = board} <- API.update_board(board, board_params) do
+    #   render(conn, "show.json", board: board)
+    # end
+  end
 
   # def delete(conn, %{"id" => id}) do
   #   board = API.get_board!(id)

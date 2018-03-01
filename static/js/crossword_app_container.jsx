@@ -23,6 +23,7 @@ class CrosswordAppContainer extends React.Component {
     this.showUploadModal = this.showUploadModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
+    this.editComment = this.editComment.bind(this);
     this.requestComments = this.requestComments.bind(this);
     this.handleFetchError = this.handleFetchError.bind(this);
     this.crosswordsFetch = new CrosswordsFetch();
@@ -89,6 +90,22 @@ class CrosswordAppContainer extends React.Component {
       });
   }
 
+  editComment(uuid, newComment) {
+    const data = {
+      comment: newComment,
+    };
+    this.crosswordsFetch.restwrap(
+      `/crosswords/api/comments/${uuid}`, 'PUT',
+      data, 'application/json',
+    )
+      .then((result) => {
+        console.log('The result was', result);
+      })
+      .catch((error) => {
+        this.handleFetchError(error);
+      });
+  }
+
   requestComments() {
     this.crosswordsFetch.restwrap('/crosswords/api/comments', 'GET', {
       game_id: this.props.gameID,
@@ -137,6 +154,7 @@ class CrosswordAppContainer extends React.Component {
             gameRepr={this.props.gameRepr}
             viewMode={this.props.viewMode}
             submitComment={this.submitComment}
+            editComment={this.editComment}
             requestComments={this.requestComments}
             gameComments={this.state.gameComments}
             gameID={this.props.gameID}

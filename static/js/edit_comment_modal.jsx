@@ -36,7 +36,10 @@ class EditCommentModal extends React.Component {
   }
 
   onSubmit(event) {
-    this.props.onSubmitComment(this.state.currentComment);
+    this.props.onSubmitComment(
+      this.props.commentToEdit.uuid,
+      this.state.currentComment,
+    );
     this.setState({
       currentComment: '',
     });
@@ -71,6 +74,7 @@ class EditCommentModal extends React.Component {
                   />
                 </div>
                 <button
+                  type="button"
                   className="btn btn-primary"
                   onClick={this.onSubmit}
                 >Submit

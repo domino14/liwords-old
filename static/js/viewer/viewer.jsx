@@ -40,7 +40,6 @@ class Viewer extends React.Component {
     this.fastBackward = this.fastBackward.bind(this);
     this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
-    this.onEditComment = this.onEditComment.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
 
     window.onhashchange = this.hashChange;
@@ -65,10 +64,6 @@ class Viewer extends React.Component {
 
   onSubmitComment(comment) {
     this.props.submitComment(comment, this.state.currentTurn);
-  }
-
-  onEditComment(uuid) {
-    console.log('Want to edit comment with uuid', uuid);
   }
 
   onDeleteComment(uuid) {
@@ -158,7 +153,7 @@ class Viewer extends React.Component {
             onSubmitComment={comment => this.onSubmitComment(comment)}
             comments={displayedComments}
             loggedInUsername={this.props.username}
-            onEditComment={this.onEditComment}
+            onEditComment={this.props.editComment}
             onDeleteComment={this.onDeleteComment}
           />
         </div>
@@ -245,6 +240,7 @@ Viewer.propTypes = {
     })),
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
+  editComment: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   gameID: PropTypes.string.isRequired,
   gameComments: PropTypes.arrayOf(PropTypes.shape({

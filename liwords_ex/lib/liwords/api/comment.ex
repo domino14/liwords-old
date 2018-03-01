@@ -17,7 +17,7 @@ defmodule LIWords.API.Comment do
   @doc false
   def changeset(%Comment{} = comment, attrs) do
     comment
-    |> cast(attrs, [:uuid, :comment, :turn_num, :user_id, :game_id])
+    |> cast(attrs, [:uuid, :comment, :turn_num, :user_id, :game_id, :edited])
     |> validate_required([:uuid, :comment, :turn_num, :user_id, :game_id])
   end
 end
