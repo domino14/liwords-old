@@ -74,7 +74,10 @@ const Comments = (props) => {
         if (domNode === null) {
           return;
         }
-        domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
+        if (domNode.scrollTop === 0) {
+          // Only scroll down if we are at the very top.
+          domNode.scrollTop = domNode.scrollHeight; // eslint-disable-line no-param-reassign
+        }
       }}
     >
       {divider}

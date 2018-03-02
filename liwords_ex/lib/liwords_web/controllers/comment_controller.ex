@@ -63,12 +63,22 @@ defmodule LIWordsWeb.CommentController do
     |> Repo.update()
   end
 
+  def unpermitted_user(conn) do
+    conn
+    |> put_status(:forbidden)
+    |> render(LIWordsWeb.ErrorView, :"403")
+  end
+
   def update(conn, %{"id" => id, "comment" => commentText}) do
     user_id = conn.assigns.joken_claims["sub"]
     comment = Repo.get_by!(Comment, uuid: id)
-    with {:ok, %Comment{} = comment} <- update_comment(comment,
-        %{"comment" => commentText}) do
-      render(conn, "show.json", comment: Repo.preload(comment, :user))
+    if comment.user_id != user_id do
+      unpermitted_user(conn)
+    else
+      with {:ok, %Comment{} = comment} <- update_comment(comment,
+          %{"comment" => commentText}) do
+        render(conn, "show.json", comment: Repo.preload(comment, :user))
+      end
     end
     # board = API.get_board!(id)
 

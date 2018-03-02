@@ -44,6 +44,7 @@ class EditCommentModal extends React.Component {
       currentComment: '',
     });
     event.preventDefault();
+    this.modal.dismiss();
   }
 
   show() {

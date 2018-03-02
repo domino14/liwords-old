@@ -7,6 +7,7 @@ import Viewer from './viewer/viewer';
 import GCGUploadModal from './modal/gcg_upload';
 import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
 
+import CommentHelper from './comment_helper';
 import Utils from './util';
 
 class CrosswordAppContainer extends React.Component {
@@ -99,7 +100,13 @@ class CrosswordAppContainer extends React.Component {
       data, 'application/json',
     )
       .then((result) => {
-        console.log('The result was', result);
+        console.log('result is', result);
+        this.setState({
+          gameComments: CommentHelper.mergeComment(
+            result.data,
+            this.state.gameComments,
+          ),
+        });
       })
       .catch((error) => {
         this.handleFetchError(error);

@@ -17,4 +17,5 @@ defmodule LIWordsWeb.FallbackController do
     |> put_status(:not_found)
     |> render(LIWordsWeb.ErrorView, :"404")
   end
+
 end
