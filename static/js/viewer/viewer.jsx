@@ -68,6 +68,7 @@ class Viewer extends React.Component {
 
   onDeleteComment(uuid) {
     console.log('Want to delete comment iwth uuid', uuid);
+    this.props.deleteComment(uuid);
   }
 
 
@@ -241,6 +242,7 @@ Viewer.propTypes = {
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,
+  deleteComment: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   gameID: PropTypes.string.isRequired,
   gameComments: PropTypes.arrayOf(PropTypes.shape({

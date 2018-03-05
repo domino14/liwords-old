@@ -80,11 +80,18 @@ defmodule LIWordsWeb.CommentController do
         render(conn, "show.json", comment: Repo.preload(comment, :user))
       end
     end
-    # board = API.get_board!(id)
+  end
 
-    # with {:ok, %Board{} = board} <- API.update_board(board, board_params) do
-    #   render(conn, "show.json", board: board)
-    # end
+  def delete(conn, %{"id" => id}) do
+    user_id = conn.assigns.joken_claims["sub"]
+    comment = Repo.get_by!(Comment, uuid: id)
+    if comment.user_id != user_id do
+      unpermitted_user(conn)
+    else
+      with {:ok, %Comment{}} <- Repo.delete(comment) do
+        send_resp(conn, :no_content, "")
+      end
+    end
   end
 
   # def delete(conn, %{"id" => id}) do

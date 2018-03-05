@@ -25,6 +25,7 @@ class CrosswordAppContainer extends React.Component {
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
     this.editComment = this.editComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
     this.requestComments = this.requestComments.bind(this);
     this.handleFetchError = this.handleFetchError.bind(this);
     this.crosswordsFetch = new CrosswordsFetch();
@@ -100,7 +101,6 @@ class CrosswordAppContainer extends React.Component {
       data, 'application/json',
     )
       .then((result) => {
-        console.log('result is', result);
         this.setState({
           gameComments: CommentHelper.mergeComment(
             result.data,
@@ -111,6 +111,25 @@ class CrosswordAppContainer extends React.Component {
       .catch((error) => {
         this.handleFetchError(error);
       });
+  }
+
+  deleteComment(uuid) {
+    this.crosswordsFetch.restwrap(
+      `/crosswords/api/comments/${uuid}`,
+      'DELETE', null, null,
+      // Don't parse the response. Must specify a dummy fn since it
+      // would default to .json()
+      () => null,
+    ).then(() => {
+      this.setState({
+        gameComments: CommentHelper.deleteComment(
+          uuid,
+          this.state.gameComments,
+        ),
+      });
+    }).catch((error) => {
+      this.handleFetchError(error);
+    });
   }
 
   requestComments() {
@@ -162,6 +181,7 @@ class CrosswordAppContainer extends React.Component {
             viewMode={this.props.viewMode}
             submitComment={this.submitComment}
             editComment={this.editComment}
+            deleteComment={this.deleteComment}
             requestComments={this.requestComments}
             gameComments={this.state.gameComments}
             gameID={this.props.gameID}

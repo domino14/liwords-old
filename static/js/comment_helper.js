@@ -20,6 +20,14 @@ class CommentHelper {
       return c;
     });
   }
+  /**
+   * Delete the comment and return a new list without the comment.
+   * @param {string} uuid
+   * @param {Array.<Object>} commentList
+   */
+  static deleteComment(uuid, commentList) {
+    return commentList.filter(c => uuid !== c.uuid);
+  }
 }
 
 export default CommentHelper;
