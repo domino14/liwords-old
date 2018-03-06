@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import BootstrapDialog from 'bootstrap3-dialog';
 
 import Navbar from './navbar';
 import ErrorView from './error_view';
 import Viewer from './viewer/viewer';
 import GCGUploadModal from './modal/gcg_upload';
 import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
-
 import CommentHelper from './comment_helper';
 import Utils from './util';
 
@@ -114,6 +114,20 @@ class CrosswordAppContainer extends React.Component {
   }
 
   deleteComment(uuid) {
+    BootstrapDialog.confirm({
+      title: 'Delete?',
+      message: 'Are you sure you wish to delete this comment?',
+      type: BootstrapDialog.TYPE_WARNING,
+      btnOKLabel: 'Delete',
+      callback: (result) => {
+        if (result) {
+          this.performCommentDeletion(uuid);
+        }
+      },
+    });
+  }
+
+  performCommentDeletion(uuid) {
     this.crosswordsFetch.restwrap(
       `/crosswords/api/comments/${uuid}`,
       'DELETE', null, null,

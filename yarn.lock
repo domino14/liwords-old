@@ -990,6 +990,10 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
+bootstrap3-dialog@^1.35.4:
+  version "1.35.4"
+  resolved "https://registry.yarnpkg.com/bootstrap3-dialog/-/bootstrap3-dialog-1.35.4.tgz#07323b5654dae5b65ac5ea2471a8437c70964d3c"
+
 bootstrap@^3.3.7:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
