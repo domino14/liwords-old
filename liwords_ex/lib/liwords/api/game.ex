@@ -13,6 +13,10 @@ defmodule LIWords.API.Game do
                        # For more details, see gcg.ex.
     field :realm, :string  # More details about where game was played.
                            # See `:in_app`
+    # These fields are used for uploaded games, in which the nicknames
+    # might not match any users currently in the system.
+    field :user1_nick, :string
+    field :user2_nick, :string
     # Winners later? Etc?
     belongs_to :lexicon, LIWords.Lexicon
     belongs_to :board, LIWords.API.Board
@@ -27,7 +31,7 @@ defmodule LIWords.API.Game do
   def changeset(%Game{} = game, attrs) do
     game
     |> cast(attrs, [:repr, :in_app, :realm, :creator_id, :board_id, :user1_id,
-            :user2_id, :uuid, :going, :lexicon_id])
+            :user2_id, :uuid, :going, :lexicon_id, :user1_nick, :user2_nick])
     |> validate_required([:repr, :creator_id, :uuid])
   end
 

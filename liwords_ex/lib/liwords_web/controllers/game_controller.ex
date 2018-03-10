@@ -17,7 +17,6 @@ defmodule LIWordsWeb.GameController do
     else
       nil
     end
-
     game_params = %{
       repr: converted,
       creator_id: user_id,
@@ -26,8 +25,10 @@ defmodule LIWordsWeb.GameController do
       realm: "Tournament game",
       lexicon_id: nil,   # XXX Make a parameter.
       board_id: nil,
-      user1_id: nil,
+      user1_id: nil,  # Eventually we can associate these
       user2_id: nil,
+      user1_nick: Enum.at(converted[:players], 0)["nick"],
+      user2_nick: Enum.at(converted[:players], 1)["nick"],
     }
 
     with {:ok, %Game{} = game} <- create_game(game_params) do
@@ -80,7 +81,7 @@ defmodule LIWordsWeb.GameController do
     fetch_query_params(conn)
     limit = Enum.min([String.to_integer(conn.query_params["limit"]), @page_limit])
     offset = String.to_integer(conn.query_params["offset"])
-    games = from(g in Game, preload: [:user1, :user2])
+    games = from(g in Game)
       |> order_by(desc: :inserted_at)
       |> limit(^limit)
       |> offset(^offset)

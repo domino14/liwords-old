@@ -20,8 +20,8 @@ defmodule LIWordsWeb.GameView do
 
   def render("game_index.json", %{game: game}) do
     %{uuid: game.uuid,
-      user1: game.user1,
-      user2: game.user2,
+      user1: game.user1_nick,
+      user2: game.user2_nick,
       date: game.inserted_at}
   end
 
