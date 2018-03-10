@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events,
+  jsx-a11y/no-static-element-interactions,
+  jsx-a11y/anchor-is-valid */
 /**
  * @fileOverview A modal that shows a list of games currently existing
  * in the crossword games database.
@@ -7,10 +10,45 @@ import PropTypes from 'prop-types';
 
 import ModalSkeleton from './modal/modal_skeleton';
 
-const ListGamesTable = (props) => (
-  <div />
+const ListGamesRow = props => (
+  <tr>
+    <td>
+      <a href={`/crosswords/games/${props.uuid}`}>View Game</a>
+    </td>
+    <td>
+      {props.user1}
+    </td>
+    <td>
+      {props.user2}
+    </td>
+  </tr>
 );
 
+ListGamesRow.propTypes = {
+  user1: PropTypes.string.isRequired,
+  user2: PropTypes.string.isRequired,
+  uuid: PropTypes.string.isRequired,
+};
+
+
+const ListGamesTable = props => (
+  props.games.map((game, i) => (
+    <ListGamesRow
+      key={`gamerow${i + 0}`}
+      user1={game.user1}
+      user2={game.user2}
+      uuid={game.uuid}
+    />
+  ))
+);
+
+ListGamesTable.propTypes = {
+  games: PropTypes.arrayOf(PropTypes.shape({
+    user1: PropTypes.string,
+    user2: PropTypes.string,
+    uuid: PropTypes.string,
+  })).isRequired,
+};
 
 class ListGamesModal extends React.Component {
   show() {
@@ -30,11 +68,13 @@ class ListGamesModal extends React.Component {
         <div className="modal-body">
           <div className="row">
             <div className="col-lg-12">
-              <table className="table">
+              <table className="table table-condensed">
                 <thead>
-                  <th>Game</th>
-                  <th>Player 1</th>
-                  <th>Player 2</th>
+                  <tr>
+                    <th>Game</th>
+                    <th>Player 1</th>
+                    <th>Player 2</th>
+                  </tr>
                 </thead>
                 <tbody>
                   <ListGamesTable
@@ -46,12 +86,28 @@ class ListGamesModal extends React.Component {
           </div>
 
           <div className="row">
-            <nav>
-              <ul className="pager">
-                <li><a href="#">Previous</a></li>
-                <li><a href="#">Next</a></li>
-              </ul>
-            </nav>
+            <div className="col-lg-12">
+              <nav>
+                <ul className="pager">
+                  <li
+                    className={`previous ${!this.props.hasPrevious ? 'disabled' : ''}`}
+                  >
+                    <a
+                      onClick={this.props.fetchPrevious}
+                    ><span aria-hidden="true">&larr;</span> Older
+                    </a>
+                  </li>
+                  <li
+                    className={`next ${!this.props.hasNext ? 'disabled' : ''}`}
+                  >
+                    <a
+                      onClick={this.props.fetchNext}
+                    >Newer <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
 
@@ -62,11 +118,14 @@ class ListGamesModal extends React.Component {
 
 ListGamesModal.propTypes = {
   games: PropTypes.arrayOf(PropTypes.shape({
-    player1: PropTypes.string,
-    player2: PropTypes.string,
-    creator: PropTypes.string,
+    user1: PropTypes.string,
+    user2: PropTypes.string,
     uuid: PropTypes.string,
   })).isRequired,
+  fetchPrevious: PropTypes.func.isRequired,
+  fetchNext: PropTypes.func.isRequired,
+  hasPrevious: PropTypes.bool.isRequired,
+  hasNext: PropTypes.bool.isRequired,
 };
 
 export default ListGamesModal;

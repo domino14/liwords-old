@@ -6,8 +6,10 @@ defmodule LIWordsWeb.GameView do
     %{data: render_one(game, GameView, "game.json")}
   end
 
-  def render("index.json", %{games: games}) do
-    %{data: render_many(games, GameView, "game_index.json")}
+  def render("index.json", %{games: games, total_games: total_games}) do
+    %{data: render_many(games, GameView, "game_index.json"),
+      total_games: total_games
+    }
   end
 
   def render("game.json", %{game: game}) do

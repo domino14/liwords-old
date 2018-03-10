@@ -11,6 +11,8 @@ import CommentHelper from './comment_helper';
 import Utils from './util';
 import ListGamesModal from './list_games_modal';
 
+const GAME_LIST_LIMIT = 20;
+
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +24,8 @@ class CrosswordAppContainer extends React.Component {
       errorType: '',
       username: '',
       gamesOnDisplay: [],
+      numPossibleGamesOnDisplay: 0,
+      gameListOffset: 0,
     };
     this.showUploadModal = this.showUploadModal.bind(this);
     this.showListGamesModal = this.showListGamesModal.bind(this);
@@ -31,6 +35,9 @@ class CrosswordAppContainer extends React.Component {
     this.deleteComment = this.deleteComment.bind(this);
     this.requestComments = this.requestComments.bind(this);
     this.handleFetchError = this.handleFetchError.bind(this);
+    this.fetchPreviousGames = this.fetchPreviousGames.bind(this);
+    this.fetchNextGames = this.fetchNextGames.bind(this);
+
     this.crosswordsFetch = new CrosswordsFetch();
   }
 
@@ -165,18 +172,43 @@ class CrosswordAppContainer extends React.Component {
     this.gcgUploadModal.show();
   }
 
-  showListGamesModal() {
+  fetchGameList(offset) {
     this.crosswordsFetch.restwrap('/crosswords/api/games', 'GET', {
-      limit: 100,
-      offset: 0,
+      limit: GAME_LIST_LIMIT,
+      offset,
     })
       .then((result) => {
         this.setState({
           gamesOnDisplay: result.data,
+          numPossibleGamesOnDisplay: result.total_games,
         });
       })
       .catch((error) => { this.handleFetchError(error); });
+  }
+
+  showListGamesModal() {
+    this.fetchGameList(this.state.gameListOffset);
     this.listGamesModal.show();
+  }
+
+  fetchPreviousGames() {
+    this.setState((prevState) => {
+      const newOffset = prevState.gameListOffset + GAME_LIST_LIMIT;
+      this.fetchGameList(newOffset);
+      return {
+        gameListOffset: newOffset,
+      };
+    });
+  }
+
+  fetchNextGames() {
+    this.setState((prevState) => {
+      const newOffset = Math.max(prevState.gameListOffset - GAME_LIST_LIMIT, 0);
+      this.fetchGameList(newOffset);
+      return {
+        gameListOffset: newOffset,
+      };
+    });
   }
 
   handleResize() {
@@ -236,6 +268,12 @@ class CrosswordAppContainer extends React.Component {
             this.listGamesModal = el;
           }}
           games={this.state.gamesOnDisplay}
+          fetchPrevious={this.fetchPreviousGames}
+          fetchNext={this.fetchNextGames}
+          hasPrevious={
+            this.state.numPossibleGamesOnDisplay >
+            this.state.gameListOffset + GAME_LIST_LIMIT}
+          hasNext={this.state.gameListOffset > 0}
         />
       </div>
     );

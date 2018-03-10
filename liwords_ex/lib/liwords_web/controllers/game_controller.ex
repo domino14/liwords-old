@@ -86,6 +86,7 @@ defmodule LIWordsWeb.GameController do
       |> limit(^limit)
       |> offset(^offset)
       |> Repo.all
-    render(conn, "index.json", games: games)
+    total_games = Repo.one(from g in Game, select: count(g.id))
+    render(conn, "index.json", games: games, total_games: total_games)
   end
 end
