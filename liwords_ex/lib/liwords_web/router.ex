@@ -35,6 +35,7 @@ defmodule LIWordsWeb.Router do
   scope "/crosswords/api", LIWordsWeb do
     pipe_through :api_unprotected
     resources "/comments", CommentController, only: [:show, :index]
+    resources "/games", GameController, only: [:index]
   end
 
   scope "/crosswords", LIWordsWeb do
@@ -51,7 +52,7 @@ defmodule LIWordsWeb.Router do
 
   scope "/crosswords", LIWordsWeb do
     pipe_through :browser_unprotected
-    resources "/game", GameController, only: [:show]
+    resources "/games", GameController, only: [:show]
   end
 
 

@@ -35,7 +35,7 @@ const Navbar = props => (
             <ul className="dropdown-menu">
               <li><a onClick={props.handleUpload}>Upload New Game</a></li>
               <li role="separator" className="divider" />
-              <li><a href="#something">One more separated link</a></li>
+              <li><a onClick={props.handleListGames}>Game List</a></li>
             </ul>
           </li>
           <li>
@@ -50,6 +50,7 @@ const Navbar = props => (
 
 Navbar.propTypes = {
   handleUpload: PropTypes.func.isRequired,
+  handleListGames: PropTypes.func.isRequired,
 };
 
 export default Navbar;

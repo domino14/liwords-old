@@ -1,8 +1,12 @@
 defmodule LIWordsWeb.GameController do
   use LIWordsWeb, :controller
+  import Ecto.Query
+
   alias LIWords.Crosswords.GCG
   alias LIWords.API.Game
   alias LIWords.Repo
+
+  @page_limit 100
 
   def create_from_upload(conn, params) do
     # User id is in the claims.
@@ -72,6 +76,15 @@ defmodule LIWordsWeb.GameController do
     end
   end
 
-
-
+  def index(conn, _params) do
+    fetch_query_params(conn)
+    limit = Enum.min([String.to_integer(conn.query_params["limit"]), @page_limit])
+    offset = String.to_integer(conn.query_params["offset"])
+    games = from(g in Game, preload: [:user1, :user2])
+      |> order_by(desc: :inserted_at)
+      |> limit(^limit)
+      |> offset(^offset)
+      |> Repo.all
+    render(conn, "index.json", games: games)
+  end
 end

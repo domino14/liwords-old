@@ -9,6 +9,7 @@ import GCGUploadModal from './modal/gcg_upload';
 import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
 import CommentHelper from './comment_helper';
 import Utils from './util';
+import ListGamesModal from './list_games_modal';
 
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
@@ -20,8 +21,10 @@ class CrosswordAppContainer extends React.Component {
       gameComments: [],
       errorType: '',
       username: '',
+      gamesOnDisplay: [],
     };
     this.showUploadModal = this.showUploadModal.bind(this);
+    this.showListGamesModal = this.showListGamesModal.bind(this);
     this.onListUpload = this.onListUpload.bind(this);
     this.submitComment = this.submitComment.bind(this);
     this.editComment = this.editComment.bind(this);
@@ -162,6 +165,20 @@ class CrosswordAppContainer extends React.Component {
     this.gcgUploadModal.show();
   }
 
+  showListGamesModal() {
+    this.crosswordsFetch.restwrap('/crosswords/api/games', 'GET', {
+      limit: 100,
+      offset: 0,
+    })
+      .then((result) => {
+        this.setState({
+          gamesOnDisplay: result.data,
+        });
+      })
+      .catch((error) => { this.handleFetchError(error); });
+    this.listGamesModal.show();
+  }
+
   handleResize() {
     this.setState({
       windowWidth: window.innerWidth,
@@ -181,6 +198,7 @@ class CrosswordAppContainer extends React.Component {
       <div>
         <Navbar
           handleUpload={this.showUploadModal}
+          handleListGames={this.showListGamesModal}
         />
         <div className="row">
           <div className="col-lg-6 col-md-5 col-lg-offset-3 col-md-offset-3">
@@ -211,6 +229,13 @@ class CrosswordAppContainer extends React.Component {
           }}
           onListUpload={this.onListUpload}
           currentGCG={this.state.currentGCGLink}
+        />
+
+        <ListGamesModal
+          ref={(el) => {
+            this.listGamesModal = el;
+          }}
+          games={this.state.gamesOnDisplay}
         />
       </div>
     );
