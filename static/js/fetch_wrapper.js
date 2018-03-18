@@ -9,6 +9,13 @@ const FetchErrors = {
   CouldNotObtainToken: 'Could not obtain token.',
 };
 
+const MAX_RETRY_DELAY = 10;
+
+function sleep(ms) {
+  // eslint-disable-next-line compat/compat
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function uniqueId() {
   return Math.random().toString(36).substring(2)
     + (new Date()).getTime().toString(36);
@@ -81,9 +88,10 @@ class CrosswordsFetch {
    * @param {string} optContentType An optional content type
    * @param {function} optResponseParser An optional parser for the response,
    *   defaults to response.json()
+   * @param {number?} optRetryDelay
    * @return {Promise}
    */
-  async restwrap(path, method, params, optContentType, optResponseParser) {
+  async restwrap(path, method, params, optContentType, optResponseParser, optRetryDelay) {
     const headers = new Headers({
       Authorization: `Bearer ${this.authToken}`,
     });
@@ -111,7 +119,6 @@ class CrosswordsFetch {
     }
     const errResp = await response.text();
     let jsonedError;
-
     try {
       // XXX: This is a HACK. I should be able to try-catch on response.json()
       // however that does NOT work and I can't figure out why. Neither
@@ -131,7 +138,11 @@ class CrosswordsFetch {
             throw new Error(FetchErrors.CouldNotRefreshToken);
           });
         // retry request.
-        return this.restwrap(path, method, params, optContentType, optResponseParser);
+        await sleep((1.9 ** optRetryDelay) * 100);
+        return this.restwrap(
+          path, method, params, optContentType, optResponseParser,
+          Math.min(optRetryDelay ? optRetryDelay + 1 : 1, MAX_RETRY_DELAY),
+        );
       }
       // Otherwise, throw an error.
       throw new Error(response.statusText);

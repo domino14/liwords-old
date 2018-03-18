@@ -142,7 +142,7 @@ class NotesAndComments extends React.Component {
           className={`panel panel-default ${this.props.gcgNote === '' ? 'hidden' : ''}`}
         >
           <div className="panel-body">
-            {this.props.gcgNote}
+            <ReactMarkdown source={this.props.gcgNote} />
           </div>
         </div>
 
