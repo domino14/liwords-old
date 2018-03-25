@@ -8,6 +8,7 @@ import Scoresheet from '../scoresheet';
 import Notes from '../notes';
 import TurnsNavbar from './turns_navbar';
 import { MoveTypesEnum } from '../moves';
+import Analyzer from './analyzer';
 
 import { BoardStateCalculator } from '../board_state';
 import { CrosswordGameDistribution } from '../tile_distributions';
@@ -33,17 +34,26 @@ class Viewer extends React.Component {
       // 0 would mean the very first turn; this is -1 instead as we start
       // with a blank board.
       currentTurn,
+      showAnalyzer: false,
     };
     this.stepForward = this.stepForward.bind(this);
     this.stepBackward = this.stepBackward.bind(this);
     this.fastForward = this.fastForward.bind(this);
     this.fastBackward = this.fastBackward.bind(this);
+    this.analyze = this.analyze.bind(this);
+
     this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
 
     window.onhashchange = this.hashChange;
     this.lastClickedTurn = currentTurn;
+    // The player whose turn it is (0 or 1)
+    this.curPlayerID = 0;
+    // The current turn number with regards to the player. Turn 8 here
+    // is the player's 8th turn, as opposed to the global "currentTurn"
+    // above which is a bit more like an event counter.
+    this.curPlayerTurn = 0;
   }
 
   componentDidMount() {
@@ -128,6 +138,13 @@ class Viewer extends React.Component {
     });
   }
 
+  analyze() {
+    this.analyzer.setup();
+    this.setState({
+      showAnalyzer: true,
+    });
+  }
+
   render() {
     const boardStateCalculator = new BoardStateCalculator(
       this.props.gameRepr,
@@ -138,36 +155,66 @@ class Viewer extends React.Component {
     const latestTurn = boardState.latestTurn();
     const displayedComments = this.props.gameComments.filter(comment =>
       comment.turn_num === this.state.currentTurn);
+
+    const player1 = this.props.gameRepr.players[0].nick;
+    const player2 = this.props.gameRepr.players[1].nick;
+    let playerID = 0;
+    if (boardState.turns[player2].length !== boardState.turns[player1].length) {
+      playerID = 1;
+    }
+    const turnNumber = Math.min(
+      boardState.turns[player1].length,
+      boardState.turns[player2].length,
+    ) + 1; // turn number seems to be 1-based
+
     return (
       <div className="row">
 
         <div className="col-lg-4 col-md-3 col-sm-5 hidden-xs">
-          <h4>Notes and comments</h4>
-          <Notes
-            turnIdx={this.state.currentTurn}
-            gcgNote={latestTurn ? latestTurn.note : ''}
-            addlDescription={
-              latestTurn && latestTurn.type === MoveTypesEnum.SCORING_PLAY ?
-              `Last move: ${latestTurn.nick} played ${latestTurn.pos}
-              ${latestTurn.summary} from a rack of ${latestTurn.rack}` : ''
-            }
-            onSubmitComment={comment => this.onSubmitComment(comment)}
-            comments={displayedComments}
-            loggedInUsername={this.props.username}
-            onEditComment={this.props.editComment}
-            onDeleteComment={this.onDeleteComment}
-          />
+          <div className="row">
+            <div className="col-lg-12">
+              <Analyzer
+                playerID={playerID}
+                turnNumber={turnNumber}
+                gcg={this.props.gameRepr.originalGCG}
+                show={this.state.showAnalyzer}
+                ref={(node) => {
+                  this.analyzer = node;
+                }}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-12">
+              <h4>Notes and comments</h4>
+              <Notes
+                turnIdx={this.state.currentTurn}
+                gcgNote={latestTurn ? latestTurn.note : ''}
+                addlDescription={
+                  latestTurn && latestTurn.type === MoveTypesEnum.SCORING_PLAY ?
+                  `Last move: ${latestTurn.nick} played ${latestTurn.pos}
+                  ${latestTurn.summary} from a rack of ${latestTurn.rack}` : ''
+                }
+                onSubmitComment={comment => this.onSubmitComment(comment)}
+                comments={displayedComments}
+                loggedInUsername={this.props.username}
+                onEditComment={this.props.editComment}
+                onDeleteComment={this.onDeleteComment}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 
           <div className="row">
-            <div className="col-lg-8 col-lg-offset-4">
+            <div className="col-lg-8 col-lg-offset-3">
               <TurnsNavbar
                 stepForward={this.stepForward}
                 stepBackward={this.stepBackward}
                 fastForward={this.fastForward}
                 fastBackward={this.fastBackward}
+                analyze={this.analyze}
               />
             </div>
           </div>
@@ -239,6 +286,7 @@ Viewer.propTypes = {
       p_number: PropTypes.string,
       nick: PropTypes.string,
     })),
+    originalGCG: PropTypes.string,
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,

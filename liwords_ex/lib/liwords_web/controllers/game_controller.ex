@@ -12,13 +12,20 @@ defmodule LIWordsWeb.GameController do
     # User id is in the claims.
     user_id = conn.assigns.joken_claims["sub"]
 
-    converted = if upload = params["file"] do
-      GCG.parse_file(upload.path)
+    contents = if upload = params["file"] do
+      File.read!(upload.path)
     else
       nil
     end
+
+    converted = if contents != nil do
+      GCG.parse(contents)
+    else
+      nil
+    end
+
     game_params = %{
-      repr: converted,
+      repr: Map.put(converted, :originalGCG, contents),
       creator_id: user_id,
       going: false,
       in_app: false,

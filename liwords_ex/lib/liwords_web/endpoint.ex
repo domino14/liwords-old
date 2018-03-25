@@ -9,7 +9,8 @@ defmodule LIWordsWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/crosswords/static/", from: :liwords, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images js favicon.ico robots.txt),
+    content_types: %{"scriptackle.wasm" => "application/wasm"}
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

@@ -12,6 +12,11 @@ const TurnsNavbar = props => (
       </button>
     </div>
     <div className="btn-group" role="group">
+      <button type="button" className="btn btn-default" onClick={props.analyze}>
+        <span className="glyphicon glyphicon-education" />
+      </button>
+    </div>
+    <div className="btn-group" role="group">
       <button type="button" className="btn btn-default" onClick={props.stepForward}>
         <span className="glyphicon glyphicon-step-forward" />
       </button>
@@ -27,6 +32,7 @@ TurnsNavbar.propTypes = {
   stepBackward: PropTypes.func.isRequired,
   fastForward: PropTypes.func.isRequired,
   fastBackward: PropTypes.func.isRequired,
+  analyze: PropTypes.func.isRequired,
 };
 
 export default TurnsNavbar;

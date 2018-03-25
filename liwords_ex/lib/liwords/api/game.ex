@@ -35,22 +35,4 @@ defmodule LIWords.API.Game do
     |> validate_required([:repr, :creator_id, :uuid])
   end
 
-  @doc
-  """
-  Convert the given Ecto.uuid to a short uuid.
-  """
-  def uuid_to_short_id(uuid) do
-    {:ok, bin} = Ecto.UUID.dump(uuid)
-    bl = :binary.bin_to_list(bin)
-    y = Enum.reduce(bl, {0, 15}, fn (x, acc) ->
-      exponent = elem(acc, 1)
-      multiplier = Utils.Pow.pow(256, exponent)
-      {elem(acc, 0) + (x * multiplier), exponent - 1} end)
-    Utils.Base58.int_to_base58(elem(y, 0))
-  end
-
-  def short_id_to_uuid(shortid) do
-    toint = Utils.Base58.base58_to_int(shortid)
-    Ecto.UUID.cast(<< toint:: 128 >>)
-  end
 end

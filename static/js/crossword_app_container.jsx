@@ -289,6 +289,7 @@ CrosswordAppContainer.propTypes = {
       p_number: PropTypes.string,
       nick: PropTypes.string,
     })),
+    originalGCG: PropTypes.string,
   }).isRequired,
   viewMode: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,

@@ -31,6 +31,10 @@
         end %>,
       viewMode: '<%= @viewMode %>' || '',
       gameID: '<%= @gameID %>' || '',
+
+      getGameGCG: function() {
+        return Globals.gameRepr.originalGCG || '';
+      }
     };
 
   </script>
@@ -39,6 +43,16 @@
 
   <!-- replace with templates or something -->
   <script src="/crosswords/static/dist/crosswordapp.js?v=foo1"></script>
+  <script>
+    Module = {
+      // Need this otherwise Emscripten files can't find the data/wasm
+      locateFile: function(theUrl) {
+        return "/crosswords/static/js/scriptackle/" + theUrl;
+      }
+    };
+    ScriptackleInitialized = false;
+  </script>
+  <script src="/crosswords/static/js/scriptackle/scriptackle.js"></script>
 
 </body>
 </html>
