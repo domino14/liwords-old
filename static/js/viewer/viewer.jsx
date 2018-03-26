@@ -156,16 +156,23 @@ class Viewer extends React.Component {
     const displayedComments = this.props.gameComments.filter(comment =>
       comment.turn_num === this.state.currentTurn);
 
+    window.console.log(this.props.gameRepr);
+    window.console.log(boardState);
+
     const player1 = this.props.gameRepr.players[0].nick;
     const player2 = this.props.gameRepr.players[1].nick;
     let playerID = 0;
-    if (boardState.turns[player2].length !== boardState.turns[player1].length) {
-      playerID = 1;
+    let turnNumber = 1;
+    if (boardState.turns[player1]) {
+      if (!boardState.turns[player2] ||
+          boardState.turns[player1].length !== boardState.turns[player2].length) {
+        playerID = 1;
+      }
+      turnNumber = Math.min(
+        boardState.turns[player1].length,
+        boardState.turns[player2] ? boardState.turns[player2].length : 0,
+      ) + 1; // turn number seems to be 1-based
     }
-    const turnNumber = Math.min(
-      boardState.turns[player1].length,
-      boardState.turns[player2].length,
-    ) + 1; // turn number seems to be 1-based
 
     return (
       <div className="row">

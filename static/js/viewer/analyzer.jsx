@@ -1,11 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Utils from './analyzer_utils';
+// look for kibitzAs for using CP in near endgame.
+
 const MoveDisplayer = (props) => {
   const moves = props.moves.map(move => (
-    <li>
-      {move.order} {move.pos} {move.play} {move.score} {move.equity} {move.winPct}
-    </li>
+    <tr key={move.order}>
+      <td>
+        {move.pos} {move.play}
+      </td>
+      <td>
+        {move.score}
+      </td>
+      <td>
+        {move.leave}
+      </td>
+      <td>
+        {move.equity.toFixed(1)}
+      </td>
+      <td>
+        {move.winPct.toFixed(2)}
+      </td>
+    </tr>
   ));
 
   const iterations = props.iterationCounter ? (
@@ -14,15 +31,24 @@ const MoveDisplayer = (props) => {
 
   return (
     <div>
-      <ul>
-        {moves}
-      </ul>
+      <table className="table table-condensed">
+        <thead>
+          <tr>
+            <th>Play</th>
+            <th>Score</th>
+            <th>Leave</th>
+            <th>Valuation</th>
+            <th>Win %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {moves}
+        </tbody>
+      </table>
       {iterations}
     </div>
   );
 };
-
-const MOVE_PARSE_REGEX = /(\w+) ([\w.]+) \(score = (\d+), equity = ([\d.]+), win% = ([\d.]+)\)/;
 
 MoveDisplayer.defaultProps = {
   iterationCounter: null,
@@ -33,7 +59,8 @@ MoveDisplayer.propTypes = {
     order: PropTypes.number.isRequired,
     pos: PropTypes.string.isRequired,
     play: PropTypes.string.isRequired,
-    score: PropTypes.string.isRequired,
+    score: PropTypes.number.isRequired,
+    leave: PropTypes.string.isRequired,
     equity: PropTypes.number.isRequired, // equity is king
     winPct: PropTypes.number.isRequired,
   })).isRequired,
@@ -51,6 +78,8 @@ class Analyzer extends React.Component {
     this.toggleSimulation = this.toggleSimulation.bind(this);
     this.simulate = this.simulate.bind(this);
     this.simulateTimer = null;
+
+    this.quackle = null;
   }
 
   setup() {
@@ -58,56 +87,25 @@ class Analyzer extends React.Component {
       window.console.log('Error - no original game');
       return;
     }
-    if (!window.ScriptackleInitialized) {
-      window.Module.startup();
+    if (!this.quackle) {
+      this.quackle = new window.Module.API();
+      this.quackle.startup();
       // XXX: Search for Module.getPreloadedPackage() to handle data download.
-      window.ScriptackleInitialized = true;
     }
     // This function loads the game and players inside the c++ emscripten code.
     // That c++ function _calls_ Globals.getGameGCG to get the GCG string.
     // We do it this way because Unicode handling still sucks in 2018.
     // Javascript uses UTF-16 and they haven't fixed this yet.
-    window.Module.loadGameAndPlayers();
-    const kibitzResults = window.Module.setupSimulator(
+    this.quackle.loadGameAndPlayers();
+    const kibitzResults = this.quackle.setupSimulator(
       this.props.playerID,
       this.props.turnNumber,
     );
-    const parseRes = this.parseMoves(kibitzResults);
+    const parseRes = Utils.parseMoves(kibitzResults);
     this.setState({
       moves: parseRes.moves,
       iterationCounter: parseRes.iterationCounter,
     });
-  }
-
-  parseMoves(moveString, hasIterationCounter) {
-    window.console.log(moveString);
-    // if (hasIterationCounter) {
-    //   window.console.log(hasIterationCounter);
-    // }
-    this.shutup = true;
-    // Split and remove empty values.
-    const moves = moveString.split('\n').filter(String);
-
-    let iterationCounter = null;
-    if (hasIterationCounter) {
-      iterationCounter = parseInt(moves[moves.length - 1], 10);
-      moves.pop();
-    }
-
-    return {
-      moves: moves.map((moveStr, idx) => {
-        const matches = moveStr.match(MOVE_PARSE_REGEX);
-        return {
-          order: idx,
-          pos: matches[1],
-          play: matches[2],
-          score: parseFloat(matches[3]),
-          equity: parseFloat(matches[4]),
-          winPct: parseFloat(matches[5]),
-        };
-      }),
-      iterationCounter,
-    };
   }
 
   toggleSimulation() {
@@ -131,8 +129,8 @@ class Analyzer extends React.Component {
   simulate() {
     const stepSize = 10;
     const plies = 2;
-    const result = window.Module.simulateIter(stepSize, plies);
-    const parseRes = this.parseMoves(result, true);
+    const result = this.quackle.simulateIter(stepSize, plies);
+    const parseRes = Utils.parseMoves(result, true);
     this.setState({
       moves: parseRes.moves,
       iterationCounter: parseRes.iterationCounter,
