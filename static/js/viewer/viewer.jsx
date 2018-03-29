@@ -158,9 +158,14 @@ class Viewer extends React.Component {
 
     window.console.log(this.props.gameRepr);
     window.console.log(boardState);
-
-    const player1 = this.props.gameRepr.players[0].nick;
-    const player2 = this.props.gameRepr.players[1].nick;
+    let player1;
+    let player2;
+    // FIXME: Rewrite, this is horrible, this code.
+    if (this.props.gameRepr && this.props.gameRepr.players &&
+      this.props.gameRepr.players[0]) {
+      player1 = this.props.gameRepr.players[0].nick;
+      player2 = this.props.gameRepr.players[1].nick;
+    }
     let playerID = 0;
     let turnNumber = 1;
     if (boardState.turns[player1]) {

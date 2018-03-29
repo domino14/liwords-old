@@ -5,3 +5,4 @@ coverage
 *.sublime-workspace
 *.code-workspace
 .vscode
+scriptackle.*

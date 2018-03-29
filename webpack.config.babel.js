@@ -41,5 +41,9 @@ export default {
       'Access-Control-Allow-Origin': '*',
     },
   },
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+  },
 };
 
