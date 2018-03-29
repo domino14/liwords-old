@@ -1,15 +1,11 @@
 // XXX Need scoreAddition too
 
-// const MOVE_PARSE_REGEX = /(\w+) ([()\w.]+) \(score = (-*\d+), equity = (-*[\d.]+), win% = (-*[\d.]+)\)/;
-
-
 class AnalyzerUtils {
   static parseMoves(moveString, hasIterationCounter) {
     // if (hasIterationCounter) {
     //   window.console.log(hasIterationCounter);
     // }
     // Split and remove empty values.
-    window.console.log(moveString);
     const moves = moveString.split('\n').filter(String);
 
     let iterationCounter = null;
@@ -20,14 +16,22 @@ class AnalyzerUtils {
 
     return {
       moves: moves.map((moveStr, idx) => {
-        const matches = moveStr.match(MOVE_PARSE_REGEX);
+        const reducer = (accum, curValue) => {
+          const token = curValue.split(':');
+          accum[token[0]] = token[1];
+          return accum;
+        };
+
+        const tokens = moveStr.split(',').reduce(reducer, {});
+
         return {
           order: idx,
-          pos: matches[1],
-          play: matches[2],
-          score: parseFloat(matches[3]),
-          equity: parseFloat(matches[4]),
-          winPct: parseFloat(matches[5]) * 100,
+          pos: tokens.pos,
+          play: tokens.tiles,
+          leave: tokens.leave,
+          score: parseFloat(tokens.score),
+          equity: parseFloat(tokens.equity),
+          winPct: parseFloat(tokens.win) * 100,
         };
       }),
       iterationCounter,
