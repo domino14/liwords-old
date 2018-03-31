@@ -17,8 +17,9 @@ class AnalyzerUtils {
     return {
       moves: moves.map((moveStr, idx) => {
         const reducer = (accum, curValue) => {
-          const token = curValue.split(':');
-          accum[token[0]] = token[1];
+          const [key, value] = curValue.split(':');
+          // -- how the hell else is a reducer supposed to work? :
+          accum[key] = value; // eslint-disable-line no-param-reassign
           return accum;
         };
 
