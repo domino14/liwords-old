@@ -1,6 +1,7 @@
+// XXX DELETE ME SOON
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import CrosswordAppContainer from './crossword_app_container';
 
 class App {
