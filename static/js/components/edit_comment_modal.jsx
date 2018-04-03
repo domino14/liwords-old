@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ModalSkeleton from './modal/modal_skeleton';
+import ModalSkeleton from './modal_skeleton';
 
 class EditCommentModal extends React.Component {
   constructor(props) {

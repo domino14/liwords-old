@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CrosswordGameTileValues, runeToValues } from '../tile_values';
-import Tile from '../tile';
+import { CrosswordGameTileValues, runeToValues } from '../constants/tile_values';
+import Tile from './tile';
 
 
 const Tiles = (props) => {

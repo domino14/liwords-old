@@ -14,6 +14,9 @@ export default {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: [/node_modules/],
+        query: {
+          presets: ['react', 'stage-2', 'env'],
+        },
       },
     ],
   },

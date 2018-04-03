@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Utils from './analyzer_utils';
+import Utils from '../utils/analyzer_utils';
 // look for kibitzAs for using CP in near endgame.
 
 const MoveDisplayer = (props) => {

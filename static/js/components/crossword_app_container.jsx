@@ -4,11 +4,11 @@ import BootstrapDialog from 'bootstrap3-dialog';
 
 import Navbar from './navbar';
 import ErrorView from './error_view';
-import Viewer from './viewer/viewer';
-import GCGUploadModal from './modal/gcg_upload';
-import CrosswordsFetch, { FetchErrors } from './fetch_wrapper';
-import CommentHelper from './comment_helper';
-import Utils from './util';
+import Viewer from './viewer';
+import GCGUploadModal from './gcg_upload';
+import CrosswordsFetch, { FetchErrors } from '../fetch_wrapper';
+import CommentHelper from '../utils/comment_helper';
+import Utils from '../utils/util';
 import ListGamesModal from './list_games_modal';
 
 const GAME_LIST_LIMIT = 20;

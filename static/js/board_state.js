@@ -3,7 +3,7 @@
  * of `Move`s and a move index.
  */
 
-import { MoveTypesEnum } from './moves';
+import { MoveTypesEnum } from './constants/moves';
 
 /* TODO: should be dependent on board dimensions in future.  */
 function blankLayout() {

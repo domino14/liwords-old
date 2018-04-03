@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Board from '../board/board';
-import Scoreboard from '../scoreboard';
-import Pool from '../pool';
-import Scoresheet from '../scoresheet';
-import Notes from '../notes';
+import Board from './board';
+import Scoreboard from './scoreboard';
+import Pool from './pool';
+import Scoresheet from './scoresheet';
+import Notes from './notes';
 import TurnsNavbar from './turns_navbar';
-import { MoveTypesEnum } from '../moves';
+import { MoveTypesEnum } from '../constants/moves';
 import Analyzer from './analyzer';
 
 import { BoardStateCalculator } from '../board_state';
-import { CrosswordGameDistribution } from '../tile_distributions';
-import { CrosswordGameSetup } from '../board_setups';
+import { CrosswordGameDistribution } from '../constants/tile_distributions';
+import { CrosswordGameSetup } from '../constants/board_setups';
 
 const turnFromLocation = () => {
   if (window.location.hash.startsWith('#')) {
