@@ -1,2 +1,8 @@
 export const ON_ANALYZE = 'ON_ANALYZE';
 export const WINDOW_RESIZE = 'WINDOW_RESIZE';
+
+export const GAME_LOAD = 'GAME_LOAD';
+export const GAME_FORWARD = 'GAME_FORWARD';
+export const GAME_FAST_FORWARD = 'GAME_FAST_FORWARD';
+export const GAME_BACKWARD = 'GAME_BACKWARD';
+export const GAME_FAST_BACKWARD = 'GAME_FAST_BACKWARD';

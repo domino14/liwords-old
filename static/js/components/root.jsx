@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 class Root extends React.Component {
   componentWillMount() {
-    const { initEnvironment } = this.props;
-    console.log('initEnvironment', initEnvironment);
+    const { initEnvironment, loadGame } = this.props;
     initEnvironment();
+    loadGame();
   }
 
   render() {
@@ -19,6 +19,7 @@ class Root extends React.Component {
 
 Root.propTypes = {
   initEnvironment: PropTypes.func.isRequired,
+  loadGame: PropTypes.func.isRequired,
 };
 
 export default Root;

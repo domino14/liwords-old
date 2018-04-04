@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const environment = (state = initialState, action) => {
+  console.log('Environment reducer, state, action', state, action);
   switch (action.type) {
     case types.WINDOW_RESIZE:
       return {

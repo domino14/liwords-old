@@ -2,14 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 
 import rootReducer from './reducers/index';
 
-import CrosswordAppContainer from './components/crossword_app_container';
 import RootContainer from './containers/root_container';
 
-const store = createStore(rootReducer);
+const createStoreWithMiddleware = applyMiddleware(thunkMiddleware)(createStore);
+
+const store = createStoreWithMiddleware(rootReducer, {
+  game: window.Globals.gameRepr,
+});
 
 ReactDOM.render(
   <Provider store={store}>

@@ -6,17 +6,11 @@ export const windowResize = (height, width) => ({
   width,
 });
 
-// export const initEnvironment = () => (dispatch) => {
-//   dispatch(windowResize(window.innerHeight, window.innerWidth));
+export const initEnvironment = () => (dispatch) => {
+  dispatch(windowResize(window.innerHeight, window.innerWidth));
 
-//   window.onresize = () => {
-//     dispatch(windowResize(window.innerHeight, window.innerWidth));
-//   };
-// };
-
-export const initEnvironment = (dispatch) => {
-  return {
-    type: 'nothing',
-    foo: 'bar',
+  window.onresize = () => {
+    dispatch(windowResize(window.innerHeight, window.innerWidth));
   };
 };
+
