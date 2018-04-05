@@ -1,10 +1,40 @@
 import * as types from '../constants/action_types';
+import { CrosswordGameDistribution } from '../constants/tile_distributions';
+import { MoveTypesEnum } from '../constants/moves';
 
-const computeHelperState = (state) => {
-  // This should be the meat of that board_state.js class, basically.
-  console.log('Computing helper state from ', state);
+
+/* TODO: should be dependent on board dimensions in future.  */
+function blankLayout() {
+  return new Array(225).fill(' ');
+}
+
+function computeMoveIndexState(state, moveIndex) {
+  let currentRack = '';
+
+  if (state.turns[moveIndex + 1] &&
+      state.turns[moveIndex + 1].type !== MoveTypesEnum.CHALLENGE_OFF &&
+      state.turns[moveIndex + 1].type !== MoveTypesEnum.ENDGAME_POINTS) {
+    currentRack = state.turns[moveIndex + 1].rack;
+  }
+
   return {
-    foo: 'bar',
+    currentRack,
+
+  };
+}
+
+const computeGameLoadState = (state) => {
+
+  return {
+    ...computeMoveIndexState(state, 0),
+
+    layout: blankLayout(),
+    currentUser: null,
+    pool: {
+      ...CrosswordGameDistribution,
+    },
+    turns: {},
+    lastPlayerLetters: {},
   };
 };
 
@@ -21,8 +51,20 @@ const game = (state = initialState, action) => {
       console.log('um here, game load called');
       return {
         ...state,
-        ...computeHelperState(state),
+        ...computeGameLoadState(state),
       };
+    case types.GAME_FORWARD:
+      return {
+        ...state,
+        ...computeMoveIndexState(state, state.moveIndex + 1),
+        moveIndex: state.moveIndex + 1,
+      };
+    case types.GAME_BACKWARD:
+      return {
+        // moveIndex - 1, and so on.
+      },
+
+
 
     default:
       // Must always define a default.
