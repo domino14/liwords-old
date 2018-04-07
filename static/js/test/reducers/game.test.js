@@ -28,6 +28,7 @@ describe('Base Reducer', () => {
       },
       lastPlayedLetters: {},
       tilesLayout: tilesLayout(blankLayout()),
+      scores: {},
     });
   });
 });
@@ -117,7 +118,7 @@ describe('Initial game load with first turn', () => {
   });
 });
 
-describe('Reducer with cases', () => {
+describe('Reducer with seek cases', () => {
   it('Should calculate a reasonably complex board setup', () => {
     const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
     const firstState = game(undefined, {
@@ -420,5 +421,191 @@ describe('Reducer with cases', () => {
     expect(state.perPlayerTurns.doug.length).toBe(13);
     expect(state.perPlayerTurns.emely.length).toBe(14);
     expect(state.latestTurn).toEqual(state.perPlayerTurns.emely[13]);
+  });
+});
+
+describe('Reducer single step cases', () => {
+  it('Should calculate a step forward', () => {
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const firstSeekState = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: -1,
+    });
+
+    // Now move forward a step.
+    const forwardState = game(firstSeekState, {
+      type: types.GAME_FORWARD,
+    });
+
+    expect(forwardState.tilesLayout).toEqual([
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '   WRUNG       ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+    ]);
+  });
+
+  it('Should calculate a single step backward', () => {
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const firstSeekState = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 7,
+    });
+
+    // Now move backward a step.
+    const backwardState = game(firstSeekState, {
+      type: types.GAME_BACKWARD,
+    });
+
+    expect(backwardState.tilesLayout).toEqual([
+      '               ',
+      '               ',
+      '               ',
+      '           K   ',
+      '         f N   ',
+      '      HALITES  ',
+      '     XU  C A  C',
+      '   WRUNG T DODO',
+      '         I    N',
+      '         O    T',
+      '         U    E',
+      '         S    M',
+      '              N',
+      '               ',
+      '               ',
+    ]);
+    expect(backwardState.pool).toEqual({
+      A: 7,
+      B: 2,
+      C: 0,
+      D: 2,
+      E: 10,
+      F: 2,
+      G: 2,
+      H: 1,
+      I: 7,
+      J: 1,
+      K: 0,
+      L: 3,
+      M: 1,
+      N: 2,
+      O: 5,
+      P: 2,
+      Q: 1,
+      R: 5,
+      S: 2,
+      T: 3,
+      U: 1,
+      V: 2,
+      W: 1,
+      X: 0,
+      Y: 2,
+      Z: 1,
+      '?': 1,
+    });
+    expect(backwardState.lastPlayedLetters).toEqual({
+      R4C9: true,
+      R6C9: true,
+      R7C9: true,
+      R8C9: true,
+      R9C9: true,
+      R10C9: true,
+      R11C9: true,
+    });
+    expect(backwardState.scores.leesa).toBe(173);
+    expect(backwardState.scores.cesar).toBe(60);
+    expect(backwardState.latestTurn).toEqual({
+      pos: 'J5',
+      summary: 'fICTIOUS',
+      score: '+61',
+      cumul: '173',
+      turnIdx: 6,
+      note: '',
+      nick: 'leesa',
+      type: 'move',
+      rack: '?CIOSTU',
+    });
+  });
+
+  it('Should calculate a fast forward', () => {
+    const testGame = require('../test_game_2.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const firstSeekState = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: -1,
+    });
+
+    // Now fast forward.
+    const forwardState = game(firstSeekState, {
+      type: types.GAME_FAST_FORWARD,
+    });
+
+    expect(forwardState.perPlayerTurns.doug.length).toBe(13);
+    expect(forwardState.perPlayerTurns.emely.length).toBe(14);
+    expect(forwardState.latestTurn).toEqual(forwardState.perPlayerTurns.emely[13]);
+    expect(forwardState.scores).toEqual({
+      emely: 345,
+      doug: 451,
+    });
+  });
+
+  it('Should calculate a fast backward', () => {
+    const testGame = require('../test_game_2.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const firstSeekState = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: -1,
+    });
+
+    // Now fast forward.
+    const forwardState = game(firstSeekState, {
+      type: types.GAME_FAST_FORWARD,
+    });
+    // Then fast backward
+    const backwardState = game(forwardState, {
+      type: types.GAME_FAST_BACKWARD,
+    });
+
+    expect(backwardState.perPlayerTurns).toEqual({});
+    expect(backwardState.scores).toEqual({
+      doug: 0,
+      emely: 0,
+    });
+    expect(backwardState.moveIndex).toBe(-1);
+    expect(backwardState.currentRack).toBe('DINNVWY');
+    expect(backwardState.currentUser).toBe('doug');
   });
 });
