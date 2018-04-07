@@ -1,3 +1,8 @@
+/**
+ * @fileOverview The game state reducer. This is fairly complex, but
+ * the main reducer is named 'game' and is defined at the bottom of this
+ * file. The remainder are helper classes that the reducer calls.
+ */
 import * as types from '../constants/action_types';
 import { CrosswordGameDistribution } from '../constants/tile_distributions';
 import { MoveTypesEnum } from '../constants/moves';
@@ -297,7 +302,7 @@ function computeMoveIndexState(state, moveIndex) {
   // the game to this point. We should change this if it's slow, but
   // crossword games are short and fairly simple.
   const finalGameState = state
-    .turns.slice(0, moveIndex + 1)
+    .turns.slice(0, moveIndex + 1) // only evaluate up to the move index
     .reduce(processGameItem, addlGameState);
 
   return {
@@ -327,6 +332,8 @@ const initialState = {
   lastPlayedLetters: {},
   tilesLayout: tilesLayout(blankLayout()),
 };
+
+// The main reducer for this function is defined here.
 
 const game = (state = initialState, action) => {
   switch (action.type) {

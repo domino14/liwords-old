@@ -182,6 +182,7 @@ describe('Reducer with cases', () => {
     });
     expect(state.scores.leesa).toBe(112);
     expect(state.scores.cesar).toBe(99);
+    console.log('State is', state);
     // expect(thisState.latestTurn()).toEqual({
     //   pos: 'O7',
     //   summary: 'CONTEMNER',
