@@ -1,4 +1,4 @@
-import Utils from '../util';
+import Utils from '../utils/util';
 
 describe('JWT', () => {
   it('Should decode a token with unicode info', () => {

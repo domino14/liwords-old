@@ -1,12 +1,40 @@
-import { BoardState, BoardStateCalculator } from '../board_state';
+import * as types from '../../constants/action_types';
+
+import game, {
+  GameStateHelper, tilesLayout,
+  blankLayout,
+} from '../../reducers/game';
+
 import { CrosswordGameDistribution,
-  WorldWildlifeFundDistribution } from '../constants/tile_distributions';
+  WorldWildlifeFundDistribution } from '../../constants/tile_distributions';
 
 let boardState;
 
-describe('BoardState', () => {
+describe('Base Reducer', () => {
+  it('Should return the default initialState', () => {
+    const state = game(undefined, {
+      type: 'FAKE_TEST_ACTION',
+    });
+    expect(state).toEqual({
+      players: [],
+      version: null,
+      turns: [],
+      moveIndex: -1,
+      currentRack: '',
+      currentUser: '',
+      perPlayerTurns: {},
+      pool: {
+        ...CrosswordGameDistribution,
+      },
+      lastPlayedLetters: {},
+      tilesLayout: tilesLayout(blankLayout()),
+    });
+  });
+});
+
+describe('GameStateHelper', () => {
   beforeEach(() => {
-    boardState = new BoardState(CrosswordGameDistribution);
+    boardState = new GameStateHelper(CrosswordGameDistribution);
   });
 
   describe('Tracking', () => {
@@ -42,12 +70,67 @@ describe('TileDistributions', () => {
   });
 });
 
-describe('BoardStateCalculator', () => {
+describe('Initial game load', () => {
+  const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+  const firstState = game(undefined, {
+    type: types.GAME_LOAD,
+    payload: {
+      ...testGame,
+    },
+  });
+  expect(firstState.players[0].nick).toBe('leesa');
+  expect(firstState.players[1].nick).toBe('cesar');
+  expect(firstState.turns.length).toBe(31);
+  expect(firstState.moveIndex).toBe(-1);
+});
+
+describe('Initial game load with first turn', () => {
+  // We should model this as two actions; the initial game load, and
+  // then a "seek" to the current move index (-1).
+  // XXX: This might be a bit ugly and worth revisiting.
+  const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+  const firstState = game(undefined, {
+    type: types.GAME_LOAD,
+    payload: {
+      ...testGame,
+    },
+  });
+  const seekState = game(firstState, {
+    type: types.GAME_VIEWER_SEEK,
+    turnIdx: -1,
+  });
+  expect(seekState.players[0].nick).toBe('leesa');
+  expect(seekState.players[1].nick).toBe('cesar');
+  expect(seekState.turns.length).toBe(31);
+  expect(seekState.moveIndex).toBe(-1);
+  expect(seekState.currentRack).toBe('GNRUW');
+  expect(seekState.currentUser).toBe('leesa');
+  // Still an empty board:
+  expect(seekState.tilesLayout).toEqual(tilesLayout(blankLayout()));
+  // The state's pool tracks the letters that have not been played.
+  // It is up to the display logic to subtract the current rack letters.
+  // This is easiest and makes most sense.
+  expect(seekState.pool).toEqual(CrosswordGameDistribution);
+  expect(seekState.scores).toEqual({
+    cesar: 0,
+    leesa: 0,
+  });
+});
+
+describe('Reducer with cases', () => {
   it('Should calculate a reasonably complex board setup', () => {
-    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(8);
-    expect(thisState.tilesLayout()).toEqual([
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 8,
+    });
+    expect(state.tilesLayout).toEqual([
       '               ',
       '               ',
       '               ',
@@ -64,7 +147,7 @@ describe('BoardStateCalculator', () => {
       '              E',
       '              R',
     ]);
-    expect(thisState.pool).toEqual({
+    expect(state.pool).toEqual({
       A: 7,
       B: 2,
       C: 1,
@@ -93,26 +176,26 @@ describe('BoardStateCalculator', () => {
       Z: 1,
       '?': 2,
     });
-    expect(thisState.lastPlayedLetters).toEqual({
+    expect(state.lastPlayedLetters).toEqual({
       R13C14: true,
       R14C14: true,
     });
-    expect(thisState.latestScore('leesa')).toBe(112);
-    expect(thisState.latestScore('cesar')).toBe(99);
-    expect(thisState.latestTurn()).toEqual({
-      pos: 'O7',
-      summary: 'CONTEMNER',
-      score: '+39',
-      cumul: '99',
-      turnIdx: 8,
-      note: [
-        'i didn\'t immediately see any bingoes ending in E or R so this ',
-        'seemed good. i sorta need a lot of good luck now',
-      ].join(''),
-      nick: 'cesar',
-      type: 'move',
-      rack: 'EEHIRRY',
-    });
+    expect(state.scores.leesa).toBe(112);
+    expect(state.scores.cesar).toBe(99);
+    // expect(thisState.latestTurn()).toEqual({
+    //   pos: 'O7',
+    //   summary: 'CONTEMNER',
+    //   score: '+39',
+    //   cumul: '99',
+    //   turnIdx: 8,
+    //   note: [
+    //     'i didn\'t immediately see any bingoes ending in E or R so this ',
+    //     'seemed good. i sorta need a lot of good luck now',
+    //   ].join(''),
+    //   nick: 'cesar',
+    //   type: 'move',
+    //   rack: 'EEHIRRY',
+    // });
   });
 
   it('Should calculate another reasonably complex board setup', () => {
@@ -224,7 +307,7 @@ describe('BoardStateCalculator', () => {
   });
 
   it('Should calculate a game summary with a challenge', () => {
-    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
     const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(8);
     expect(thisState.turns.leesa.length).toBe(4);
@@ -260,7 +343,7 @@ describe('BoardStateCalculator', () => {
   });
 
   it('should calculate end-of-game turn appropriately, player 1 ends', () => {
-    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
     const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(30);
     expect(thisState.turns.leesa.length).toBe(16);
@@ -291,7 +374,7 @@ describe('BoardStateCalculator', () => {
   });
 
   it('should calculate end-of-game turn appropriately, player 2 ends', () => {
-    const testGame = require('./test_game_2.json'); // eslint-disable-line global-require
+    const testGame = require('../test_game_2.json'); // eslint-disable-line global-require
     const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
     const thisState = calculator.computeLayout(27);
     expect(thisState.turns.doug.length).toBe(13);
