@@ -121,6 +121,7 @@ export class GameStateHelper {
     }
     this.turns[nickname].push(turnRepr);
     this.scores[nickname] = parseInt(turnRepr.cumul, 10);
+    this.latestTurn = turnRepr;
   }
   modifyLastTurn(nickname, modification) {
     const lastIdx = this.turns[nickname].length - 1;
@@ -129,6 +130,7 @@ export class GameStateHelper {
       modification,
     );
     this.scores[nickname] = parseInt(this.turns[nickname][lastIdx].cumul, 10);
+    this.latestTurn = this.turns[nickname][lastIdx];
   }
   latestScore(nickname) {
     if (!this.turns[nickname]) {
@@ -140,33 +142,33 @@ export class GameStateHelper {
     }
     return 0;
   }
-  latestTurnForPlayer(nickname) {
-    if (!this.turns[nickname]) {
-      return null;
-    }
-    return this.turns[nickname][this.turns[nickname].length - 1];
-  }
+  // latestTurnForPlayer(nickname) {
+  //   if (!this.turns[nickname]) {
+  //     return null;
+  //   }
+  //   return this.turns[nickname][this.turns[nickname].length - 1];
+  // }
 
-  latestTurn() {
-    if (!this.players[0]) {
-      return null;
-    }
-    const player1 = this.players[0].nick;
-    const player2 = this.players[1].nick;
-    if (!this.turns[player1]) {
-      return null;
-    }
-    if (!this.turns[player2]) {
-      return this.latestTurnForPlayer(player1);
-    }
+  // latestTurn() {
+  //   if (!this.players[0]) {
+  //     return null;
+  //   }
+  //   const player1 = this.players[0].nick;
+  //   const player2 = this.players[1].nick;
+  //   if (!this.turns[player1]) {
+  //     return null;
+  //   }
+  //   if (!this.turns[player2]) {
+  //     return this.latestTurnForPlayer(player1);
+  //   }
 
-    if (this.turns[player1].length > this.turns[player2].length) {
-      return this.latestTurnForPlayer(player1);
-    }
-    // Otherwise, they are the same size (or player2 is greater) so player2
-    // is the last turn.
-    return this.latestTurnForPlayer(player2);
-  }
+  //   if (this.turns[player1].length > this.turns[player2].length) {
+  //     return this.latestTurnForPlayer(player1);
+  //   }
+  //   // Otherwise, they are the same size (or player2 is greater) so player2
+  //   // is the last turn.
+  //   return this.latestTurnForPlayer(player2);
+  // }
 
   clearLastPlayedLetters() {
     this.lastPlayedLetters = {};
@@ -183,6 +185,7 @@ export class GameStateHelper {
       scores: this.scores,
       pool: this.pool,
       tilesLayout: tilesLayout(this.layout),
+      latestTurn: this.latestTurn,
     };
   }
 }

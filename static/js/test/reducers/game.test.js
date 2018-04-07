@@ -182,28 +182,35 @@ describe('Reducer with cases', () => {
     });
     expect(state.scores.leesa).toBe(112);
     expect(state.scores.cesar).toBe(99);
-    console.log('State is', state);
-    // expect(thisState.latestTurn()).toEqual({
-    //   pos: 'O7',
-    //   summary: 'CONTEMNER',
-    //   score: '+39',
-    //   cumul: '99',
-    //   turnIdx: 8,
-    //   note: [
-    //     'i didn\'t immediately see any bingoes ending in E or R so this ',
-    //     'seemed good. i sorta need a lot of good luck now',
-    //   ].join(''),
-    //   nick: 'cesar',
-    //   type: 'move',
-    //   rack: 'EEHIRRY',
-    // });
+    expect(state.latestTurn).toEqual({
+      pos: 'O7',
+      summary: 'CONTEMNER',
+      score: '+39',
+      cumul: '99',
+      turnIdx: 8,
+      note: [
+        'i didn\'t immediately see any bingoes ending in E or R so this ',
+        'seemed good. i sorta need a lot of good luck now',
+      ].join(''),
+      nick: 'cesar',
+      type: 'move',
+      rack: 'EEHIRRY',
+    });
   });
 
   it('Should calculate another reasonably complex board setup', () => {
-    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(6);
-    expect(thisState.tilesLayout()).toEqual([
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 6,
+    });
+    expect(state.tilesLayout).toEqual([
       '               ',
       '               ',
       '               ',
@@ -220,7 +227,7 @@ describe('Reducer with cases', () => {
       '               ',
       '               ',
     ]);
-    expect(thisState.pool).toEqual({
+    expect(state.pool).toEqual({
       A: 7,
       B: 2,
       C: 0,
@@ -249,7 +256,7 @@ describe('Reducer with cases', () => {
       Z: 1,
       '?': 1,
     });
-    expect(thisState.lastPlayedLetters).toEqual({
+    expect(state.lastPlayedLetters).toEqual({
       R4C9: true,
       R6C9: true,
       R7C9: true,
@@ -258,9 +265,9 @@ describe('Reducer with cases', () => {
       R10C9: true,
       R11C9: true,
     });
-    expect(thisState.latestScore('leesa')).toBe(173);
-    expect(thisState.latestScore('cesar')).toBe(60);
-    expect(thisState.latestTurn()).toEqual({
+    expect(state.scores.leesa).toBe(173);
+    expect(state.scores.cesar).toBe(60);
+    expect(state.latestTurn).toEqual({
       pos: 'J5',
       summary: 'fICTIOUS',
       score: '+61',
@@ -274,12 +281,20 @@ describe('Reducer with cases', () => {
   });
 
   it('Should calculate a game summary', () => {
-    const testGame = require('./test_game_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(6);
-    expect(thisState.turns.leesa.length).toBe(4);
-    expect(thisState.turns.cesar.length).toBe(3);
-    expect(thisState.turns.leesa[3]).toEqual({
+    const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 6,
+    });
+    expect(state.perPlayerTurns.leesa.length).toBe(4);
+    expect(state.perPlayerTurns.cesar.length).toBe(3);
+    expect(state.perPlayerTurns.leesa[3]).toEqual({
       pos: 'J5',
       summary: 'fICTIOUS',
       score: '+61',
@@ -290,7 +305,7 @@ describe('Reducer with cases', () => {
       type: 'move',
       rack: '?CIOSTU',
     });
-    expect(thisState.turns.cesar[2]).toEqual({
+    expect(state.perPlayerTurns.cesar[2]).toEqual({
       pos: 'O7',
       summary: 'CONTEMN',
       score: '+14',
@@ -309,11 +324,19 @@ describe('Reducer with cases', () => {
 
   it('Should calculate a game summary with a challenge', () => {
     const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(8);
-    expect(thisState.turns.leesa.length).toBe(4);
-    expect(thisState.turns.cesar.length).toBe(4);
-    expect(thisState.turns.leesa[3]).toEqual({
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 8,
+    });
+    expect(state.perPlayerTurns.leesa.length).toBe(4);
+    expect(state.perPlayerTurns.cesar.length).toBe(4);
+    expect(state.perPlayerTurns.leesa[3]).toEqual({
       pos: 'J5',
       summary: 'fICTIOUS',
       score: '+0',
@@ -327,7 +350,7 @@ describe('Reducer with cases', () => {
       type: 'move',
       rack: '?CIOSTU',
     });
-    expect(thisState.turns.cesar[3]).toEqual({
+    expect(state.perPlayerTurns.cesar[3]).toEqual({
       pos: 'O7',
       summary: 'CONTEMNER',
       score: '+39',
@@ -345,11 +368,19 @@ describe('Reducer with cases', () => {
 
   it('should calculate end-of-game turn appropriately, player 1 ends', () => {
     const testGame = require('../test_game_1.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(30);
-    expect(thisState.turns.leesa.length).toBe(16);
-    expect(thisState.turns.cesar.length).toBe(14);
-    expect(thisState.turns.leesa[15]).toEqual({
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 30,
+    });
+    expect(state.perPlayerTurns.leesa.length).toBe(16);
+    expect(state.perPlayerTurns.cesar.length).toBe(14);
+    expect(state.perPlayerTurns.leesa[15]).toEqual({
       pos: '',
       summary: '2 × (AEV)',
       score: '+12',
@@ -360,7 +391,7 @@ describe('Reducer with cases', () => {
       type: 'end_rack_points',
       rack: 'AEV',
     });
-    expect(thisState.turns.cesar[13]).toEqual({
+    expect(state.perPlayerTurns.cesar[13]).toEqual({
       pos: 'E12',
       summary: 'ZITI',
       score: '+25',
@@ -371,15 +402,23 @@ describe('Reducer with cases', () => {
       type: 'move',
       rack: 'AEIITVZ',
     });
-    expect(thisState.latestTurn()).toEqual(thisState.turns.leesa[15]);
+    expect(state.latestTurn).toEqual(state.perPlayerTurns.leesa[15]);
   });
 
   it('should calculate end-of-game turn appropriately, player 2 ends', () => {
     const testGame = require('../test_game_2.json'); // eslint-disable-line global-require
-    const calculator = new BoardStateCalculator(testGame, CrosswordGameDistribution);
-    const thisState = calculator.computeLayout(27);
-    expect(thisState.turns.doug.length).toBe(13);
-    expect(thisState.turns.emely.length).toBe(14);
-    expect(thisState.latestTurn()).toEqual(thisState.turns.emely[13]);
+    const firstState = game(undefined, {
+      type: types.GAME_LOAD,
+      payload: {
+        ...testGame,
+      },
+    });
+    const state = game(firstState, {
+      type: types.GAME_VIEWER_SEEK,
+      turnIdx: 27,
+    });
+    expect(state.perPlayerTurns.doug.length).toBe(13);
+    expect(state.perPlayerTurns.emely.length).toBe(14);
+    expect(state.latestTurn).toEqual(state.perPlayerTurns.emely[13]);
   });
 });
