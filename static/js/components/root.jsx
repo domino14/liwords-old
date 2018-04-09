@@ -5,7 +5,9 @@ class Root extends React.Component {
   componentWillMount() {
     const { initEnvironment, loadGame } = this.props;
     initEnvironment();
-    loadGame();
+    loadGame({
+      ...window.Globals.gameRepr,
+    });
   }
 
   render() {

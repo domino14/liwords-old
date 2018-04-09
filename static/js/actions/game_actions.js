@@ -1,7 +1,8 @@
 import * as types from '../constants/action_types';
 
-export const loadGame = () => ({
+export const loadGame = payload => ({
   type: types.GAME_LOAD,
+  payload,
 });
 
 export const gameForward = () => ({

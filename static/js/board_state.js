@@ -2,6 +2,7 @@
  * @fileOverview Computes the layout of the tiles on a board, given a set
  * of `Move`s and a move index.
  */
+// TODO: THIS FILE IS OBSOLETE, DELETE ME.
 
 import { MoveTypesEnum } from './constants/moves';
 

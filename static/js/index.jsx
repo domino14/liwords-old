@@ -11,9 +11,7 @@ import RootContainer from './containers/root_container';
 
 const createStoreWithMiddleware = applyMiddleware(thunkMiddleware)(createStore);
 
-const store = createStoreWithMiddleware(rootReducer, {
-  game: window.Globals.gameRepr,
-});
+const store = createStoreWithMiddleware(rootReducer, {});
 
 ReactDOM.render(
   <Provider store={store}>
