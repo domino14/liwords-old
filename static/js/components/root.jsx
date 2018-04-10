@@ -7,11 +7,12 @@ import Viewer from './viewer';
 
 class Root extends React.Component {
   componentWillMount() {
-    const { initEnvironment, loadGame } = this.props;
+    const { initEnvironment, loadGame, gameViewerSeek } = this.props;
     initEnvironment();
     loadGame({
       ...this.props.gameRepr,
     });
+    gameViewerSeek(-1);
   }
 
   render() {
@@ -28,6 +29,11 @@ class Root extends React.Component {
 
         <div className="container-fluid">
           <Viewer
+            gameViewerSeek={this.props.gameViewerSeek}
+            gameViewerBackward={this.props.gameViewerBackward}
+            gameViewerFastBackward={this.props.gameViewerFastBackward}
+            gameViewerForward={this.props.gameViewerForward}
+            gameViewerFastForward={this.props.gameViewerFastForward}
 
             game={this.props.game}
             viewMode={this.props.viewMode}
@@ -50,6 +56,11 @@ class Root extends React.Component {
 Root.propTypes = {
   initEnvironment: PropTypes.func.isRequired,
   loadGame: PropTypes.func.isRequired,
+  gameViewerForward: PropTypes.func.isRequired,
+  gameViewerBackward: PropTypes.func.isRequired,
+  gameViewerFastForward: PropTypes.func.isRequired,
+  gameViewerFastBackward: PropTypes.func.isRequired,
+  gameViewerSeek: PropTypes.func.isRequired,
 
   gameID: PropTypes.string.isRequired,
   viewMode: PropTypes.string.isRequired,
@@ -71,6 +82,17 @@ Root.propTypes = {
   username: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
+
+  gameRepr: PropTypes.shape({
+    version: PropTypes.number.isRequired,
+    turns: PropTypes.arrayOf(PropTypes.object).isRequired,
+    players: PropTypes.arrayOf(PropTypes.shape({
+      real_name: PropTypes.string,
+      p_number: PropTypes.string,
+      nick: PropTypes.string,
+    })),
+    originalGCG: PropTypes.string,
+  }).isRequired,
 };
 
 export default Root;

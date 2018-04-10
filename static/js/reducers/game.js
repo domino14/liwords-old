@@ -314,12 +314,14 @@ const game = (state = initialState, action) => {
         turns: action.payload.turns,
       };
     case types.GAME_FORWARD:
+      // TODO: don't allow going beyond max
       return {
         ...state,
         ...computeMoveIndexState(state, state.moveIndex + 1),
         moveIndex: state.moveIndex + 1,
       };
     case types.GAME_BACKWARD:
+      // TODO: don't allow going beyond min
       return {
         ...state,
         ...computeMoveIndexState(state, state.moveIndex - 1),

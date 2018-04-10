@@ -10,7 +10,6 @@ import TurnsNavbar from './turns_navbar';
 import { MoveTypesEnum } from '../constants/moves';
 import Analyzer from './analyzer';
 
-import { CrosswordGameDistribution } from '../constants/tile_distributions';
 import { CrosswordGameSetup } from '../constants/board_setups';
 
 const turnFromLocation = () => {
@@ -27,18 +26,11 @@ const turnFromLocation = () => {
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
-
     const currentTurn = turnFromLocation();
     this.state = {
-      // 0 would mean the very first turn; this is -1 instead as we start
-      // with a blank board.
-      currentTurn,
       showAnalyzer: false,
     };
-    this.stepForward = this.stepForward.bind(this);
-    this.stepBackward = this.stepBackward.bind(this);
-    this.fastForward = this.fastForward.bind(this);
-    this.fastBackward = this.fastBackward.bind(this);
+
     this.analyze = this.analyze.bind(this);
 
     this.hashChange = this.hashChange.bind(this);
@@ -47,12 +39,6 @@ class Viewer extends React.Component {
 
     window.onhashchange = this.hashChange;
     this.lastClickedTurn = currentTurn;
-    // The player whose turn it is (0 or 1)
-    this.curPlayerID = 0;
-    // The current turn number with regards to the player. Turn 8 here
-    // is the player's 8th turn, as opposed to the global "currentTurn"
-    // above which is a bit more like an event counter.
-    this.curPlayerTurn = 0;
   }
 
   componentDidMount() {
@@ -60,7 +46,12 @@ class Viewer extends React.Component {
     if (!this.props.gameID) {
       return;
     }
-    this.props.requestComments();
+    if (this.props.requestComments) {
+      this.props.requestComments();
+    }
+    if (this.lastClickedTurn !== -1) {
+      this.props.gameViewerSeek(this.lastClickedTurn);
+    }
   }
 
   onTurnClick(idx) {
@@ -94,46 +85,6 @@ class Viewer extends React.Component {
     }
     this.setState({
       currentTurn: turnFromLocation(),
-    });
-  }
-
-  stepForward() {
-    const maxTurnIndex = this.props.gameRepr.turns.length - 1;
-    this.setState((prevState) => {
-      const newTurn = Math.min(prevState.currentTurn + 1, maxTurnIndex);
-      this.lastClickedTurn = newTurn + 1;
-      window.location.hash = newTurn + 1;
-      return {
-        currentTurn: newTurn,
-      };
-    });
-  }
-
-  stepBackward() {
-    this.setState((prevState) => {
-      const newTurn = Math.max(prevState.currentTurn - 1, -1);
-      window.location.hash = newTurn + 1;
-      this.lastClickedTurn = newTurn + 1;
-      return {
-        currentTurn: newTurn,
-      };
-    });
-  }
-
-  fastForward() {
-    const maxTurnIndex = this.props.gameRepr.turns.length - 1;
-    window.location.hash = maxTurnIndex + 1;
-    this.lastClickedTurn = maxTurnIndex + 1;
-    this.setState({
-      currentTurn: maxTurnIndex,
-    });
-  }
-
-  fastBackward() {
-    window.location.hash = 0;
-    this.lastClickedTurn = 0;
-    this.setState({
-      currentTurn: -1,
     });
   }
 
@@ -194,10 +145,10 @@ class Viewer extends React.Component {
           <div className="row">
             <div className="col-lg-8 col-lg-offset-3">
               <TurnsNavbar
-                stepForward={this.stepForward}
-                stepBackward={this.stepBackward}
-                fastForward={this.fastForward}
-                fastBackward={this.fastBackward}
+                stepForward={this.props.gameViewerForward}
+                stepBackward={this.props.gameViewerBackward}
+                fastForward={this.props.gameViewerFastForward}
+                fastBackward={this.props.gameViewerFastBackward}
                 analyze={this.analyze}
               />
             </div>
@@ -297,6 +248,12 @@ Viewer.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
+
+  gameViewerForward: PropTypes.func.isRequired,
+  gameViewerBackward: PropTypes.func.isRequired,
+  gameViewerFastForward: PropTypes.func.isRequired,
+  gameViewerFastBackward: PropTypes.func.isRequired,
+  gameViewerSeek: PropTypes.func.isRequired,
 };
 
 export default Viewer;

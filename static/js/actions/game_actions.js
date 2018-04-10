@@ -5,18 +5,23 @@ export const loadGame = payload => ({
   payload,
 });
 
-export const gameForward = () => ({
+export const gameViewerForward = () => ({
   type: types.GAME_FORWARD,
 });
 
-export const gameBackward = () => ({
+export const gameViewerBackward = () => ({
   type: types.GAME_BACKWARD,
 });
 
-export const gameFastForward = () => ({
+export const gameViewerFastForward = () => ({
   type: types.GAME_FAST_FORWARD,
 });
 
-export const gameFastBackward = () => ({
+export const gameViewerFastBackward = () => ({
   type: types.GAME_FAST_BACKWARD,
+});
+
+export const gameViewerSeek = turnIdx => ({
+  type: types.GAME_VIEWER_SEEK,
+  turnIdx,
 });
