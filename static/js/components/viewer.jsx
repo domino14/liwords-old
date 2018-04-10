@@ -71,7 +71,6 @@ class Viewer extends React.Component {
     this.props.deleteComment(uuid);
   }
 
-
   hashChange() {
     // -1 because we use user-friendly hashes for turns -- there is no
     // turn zero (that's the start of the game, before anyone has gone).
@@ -83,9 +82,7 @@ class Viewer extends React.Component {
       // changes on load or by typing in a new hash.
       return;
     }
-    this.setState({
-      currentTurn: turnFromLocation(),
-    });
+    this.props.gameViewerSeek(turnFromLocation());
   }
 
   analyze() {

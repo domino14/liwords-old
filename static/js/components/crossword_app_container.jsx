@@ -1,3 +1,4 @@
+// XXX: I am obsolete, delete me soon.
 import React from 'react';
 import PropTypes from 'prop-types';
 import BootstrapDialog from 'bootstrap3-dialog';
