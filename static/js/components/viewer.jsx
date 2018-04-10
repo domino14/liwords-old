@@ -10,7 +10,6 @@ import TurnsNavbar from './turns_navbar';
 import { MoveTypesEnum } from '../constants/moves';
 import Analyzer from './analyzer';
 
-import { BoardStateCalculator } from '../board_state';
 import { CrosswordGameDistribution } from '../constants/tile_distributions';
 import { CrosswordGameSetup } from '../constants/board_setups';
 
@@ -146,39 +145,12 @@ class Viewer extends React.Component {
   }
 
   render() {
-    const boardStateCalculator = new BoardStateCalculator(
-      this.props.gameRepr,
-      CrosswordGameDistribution,
-    );
-    const boardState = boardStateCalculator.computeLayout(this.state.currentTurn);
-    const tilesLayout = boardState.tilesLayout();
-    const latestTurn = boardState.latestTurn();
     const displayedComments = this.props.gameComments.filter(comment =>
       comment.turn_num === this.state.currentTurn);
 
-    window.console.log(this.props.gameRepr);
-    window.console.log(boardState);
-    let player1;
-    let player2;
-    // FIXME: Rewrite, this is horrible, this code.
-    if (this.props.gameRepr && this.props.gameRepr.players &&
-      this.props.gameRepr.players[0]) {
-      player1 = this.props.gameRepr.players[0].nick;
-      player2 = this.props.gameRepr.players[1].nick;
-    }
-    let playerID = 0;
-    let turnNumber = 1;
-    if (boardState.turns[player1]) {
-      if (!boardState.turns[player2] ||
-          boardState.turns[player1].length !== boardState.turns[player2].length) {
-        playerID = 1;
-      }
-      turnNumber = Math.min(
-        boardState.turns[player1].length,
-        boardState.turns[player2] ? boardState.turns[player2].length : 0,
-      ) + 1; // turn number seems to be 1-based
-    }
+    window.console.log('props are', this.props);
 
+    const { latestTurn } = this.props.game;
     return (
       <div className="row">
 
@@ -186,9 +158,9 @@ class Viewer extends React.Component {
           <div className="row">
             <div className="col-lg-12">
               <Analyzer
-                playerID={playerID}
-                turnNumber={turnNumber}
-                gcg={this.props.gameRepr.originalGCG}
+                // FIXME reducer should calculate these
+                // playerID={playerID}
+                // turnNumber={turnNumber}
                 show={this.state.showAnalyzer}
                 ref={(node) => {
                   this.analyzer = node;
@@ -233,14 +205,14 @@ class Viewer extends React.Component {
 
           <div className="row" style={{ marginTop: 8 }}>
             <Scoreboard
-              player1={boardState.players[0]}
-              player2={boardState.players[1]}
-              player1score={boardState.players[0] ?
-                boardState.latestScore(boardState.players[0].nick) : 0}
-              player2score={boardState.players[1] ?
-                boardState.latestScore(boardState.players[1].nick) : 0}
-              currentUser={boardState.currentUser}
-              currentRack={boardState.currentRack}
+              player1={this.props.game.players[0]}
+              player2={this.props.game.players[1]}
+              player1score={this.props.game.players[0] ?
+                this.props.game.scores[this.props.game.players[0].nick] : 0}
+              player2score={this.props.game.players[1] ?
+                this.props.game.scores[this.props.game.players[1].nick] : 0}
+              currentUser={this.props.game.currentUser}
+              currentRack={this.props.game.currentRack}
               windowWidth={this.props.windowWidth}
             />
           </div>
@@ -255,8 +227,8 @@ class Viewer extends React.Component {
                 // boardWidth={465}
                 // boardHeight={465}
                 gridLayout={CrosswordGameSetup}
-                tilesLayout={tilesLayout}
-                lastPlayedLetters={boardState.lastPlayedLetters}
+                tilesLayout={this.props.game.tilesLayout}
+                lastPlayedLetters={this.props.game.lastPlayedLetters}
                 showBonusLabels
               />
             </div>
@@ -266,21 +238,21 @@ class Viewer extends React.Component {
 
         <div className="col-lg-3 col-md-4 hidden-sm hidden-xs">
           <Scoresheet
-            player1={boardState.players[0]}
-            player2={boardState.players[1]}
-            turns={boardState.turns}
+            player1={this.props.game.players[0]}
+            player2={this.props.game.players[1]}
+            turns={this.props.game.perPlayerTurns}
             comments={this.props.gameComments}
-            tilesLayout={tilesLayout}
-            pool={boardState.pool}
-            currentRack={boardState.currentRack}
+            tilesLayout={this.props.game.tilesLayout}
+            pool={this.props.game.pool}
+            currentRack={this.props.game.currentRack}
             onTurnClick={idx => () => this.onTurnClick(idx)}
           />
         </div>
         {/* The following is an extra stand-alone pool for small screens */}
         <div className="col-sm-12 col-xs-12 hidden-md hidden-lg">
           <Pool
-            currentRack={boardState.currentRack}
-            pool={boardState.pool}
+            currentRack={this.props.game.currentRack}
+            pool={this.props.game.pool}
           />
         </div>
 
@@ -289,16 +261,24 @@ class Viewer extends React.Component {
   }
 }
 
+Viewer.defaultProps = {
+  gameComments: [],
+};
+
 Viewer.propTypes = {
-  gameRepr: PropTypes.shape({
-    version: PropTypes.number.isRequired,
-    turns: PropTypes.arrayOf(PropTypes.object).isRequired,
-    players: PropTypes.arrayOf(PropTypes.shape({
-      real_name: PropTypes.string,
-      p_number: PropTypes.string,
-      nick: PropTypes.string,
-    })),
-    originalGCG: PropTypes.string,
+  game: PropTypes.shape({
+    currentRack: PropTypes.string,
+    currentUser: PropTypes.string,
+    lastPlayedLetters: PropTypes.object,
+    moveIndex: PropTypes.number,
+    perPlayerTurns: PropTypes.object,
+    players: PropTypes.array,
+    pool: PropTypes.object,
+    scores: PropTypes.object,
+    tilesLayout: PropTypes.arrayOf(PropTypes.string),
+    turns: PropTypes.array,
+    version: PropTypes.string,
+    latestTurn: PropTypes.object,
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,
@@ -312,7 +292,7 @@ Viewer.propTypes = {
     username: PropTypes.string,
     created: PropTypes.string,
     edited: PropTypes.bool,
-  })).isRequired,
+  })),
 
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,

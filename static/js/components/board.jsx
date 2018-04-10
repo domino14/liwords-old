@@ -25,8 +25,10 @@ const Board = (props) => {
     numCols = 5;
   } else if (props.windowWidth >= 768) {
     numCols = 7;
-  } else {
+  } else if (props.windowWidth >= 100) {
     numCols = 12;
+  } else {
+    return null;
   }
 
   let boardWidth = ((numCols / 12) * props.windowWidth) - 30;
@@ -36,7 +38,6 @@ const Board = (props) => {
     boardWidth = MAX_BOARD_SIZE;
     boardHeight = MAX_BOARD_SIZE;
   }
-
 
   const rowLabelWidth = boardWidth / ((props.gridWidth / labelRatio) + 1);
   const colLabelHeight = boardHeight / ((props.gridHeight / labelRatio) + 1);

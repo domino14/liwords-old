@@ -292,6 +292,7 @@ const initialState = {
   currentRack: '',
   currentUser: '',
   perPlayerTurns: {},
+  latestTurn: {},
   pool: {
     ...CrosswordGameDistribution,
   },

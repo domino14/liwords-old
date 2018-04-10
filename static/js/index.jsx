@@ -15,7 +15,11 @@ const store = createStoreWithMiddleware(rootReducer, {});
 
 ReactDOM.render(
   <Provider store={store}>
-    <RootContainer />
+    <RootContainer
+      gameID={window.Globals.gameID}
+      viewMode={window.Globals.viewMode}
+      gameRepr={window.Globals.gameRepr}
+    />
   </Provider>,
   document.getElementById('main-app-content'),
 );

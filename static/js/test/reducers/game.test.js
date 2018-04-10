@@ -29,6 +29,7 @@ describe('Base Reducer', () => {
       lastPlayedLetters: {},
       tilesLayout: tilesLayout(blankLayout()),
       scores: {},
+      latestTurn: {},
     });
   });
 });
