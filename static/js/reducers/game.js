@@ -39,8 +39,6 @@ export class GameStateHelper {
   // This class holds the layout of the board as well as the remaining pool.
   constructor(tileDistribution, players) {
     this.layout = blankLayout();
-    this.currentRack = '';
-    this.currentUser = null;
     this.tileDistribution = tileDistribution;
     // tileDistribution should be a map of letter distributions
     // {A: 9, ?: 2, B: 2, etc}
@@ -53,9 +51,17 @@ export class GameStateHelper {
         [players[0].nick]: 0,
         [players[1].nick]: 0,
       };
+      // 0-based player ID
+      this.playerIDs = {
+        [players[0].nick]: 0,
+        [players[1].nick]: 1,
+      };
     } else {
       this.scores = {};
+      this.playerIDs = {};
     }
+    this.quackleTurnNumber = 1;
+    this.quacklePlayerID = 0;
   }
 
   /**
@@ -122,7 +128,15 @@ export class GameStateHelper {
     this.turns[nickname].push(turnRepr);
     this.scores[nickname] = parseInt(turnRepr.cumul, 10);
     this.latestTurn = turnRepr;
+    // It's the other player's turn
+    this.quacklePlayerID = (this.playerIDs[nickname] + 1) % 2;
+    // Turn number seems to be 1-based. Start at 1, and add 1 every two
+    // turns:
+    if (this.quacklePlayerID === 0) {
+      this.quackleTurnNumber += 1;
+    }
   }
+
   modifyLastTurn(nickname, modification) {
     const lastIdx = this.turns[nickname].length - 1;
     this.turns[nickname][lastIdx] = Object.assign(
@@ -149,6 +163,8 @@ export class GameStateHelper {
       pool: this.pool,
       tilesLayout: tilesLayout(this.layout),
       latestTurn: this.latestTurn,
+      quacklePlayerID: this.quacklePlayerID,
+      quackleTurnNumber: this.quackleTurnNumber,
     };
   }
 }
@@ -264,6 +280,7 @@ function computeMoveIndexState(state, moveIndex) {
     addlGameState.currentRack = '';
   }
   const currentUser = (turn ? turn.nick : '');
+
   // Because computers are fast and I'm lazy, we're going to reevaluate
   // the game to this point. We should change this if it's slow, but
   // crossword games are short and fairly simple.
@@ -299,6 +316,8 @@ const initialState = {
   lastPlayedLetters: {},
   tilesLayout: tilesLayout(blankLayout()),
   scores: {},
+  quacklePlayerID: null,
+  quackleTurnNumber: null,
 };
 
 // The main reducer for this function is defined here.

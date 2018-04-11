@@ -106,9 +106,8 @@ class Viewer extends React.Component {
           <div className="row">
             <div className="col-lg-12">
               <Analyzer
-                // FIXME reducer should calculate these
-                // playerID={playerID}
-                // turnNumber={turnNumber}
+                playerID={this.props.game.quacklePlayerID}
+                turnNumber={this.props.game.quackleTurnNumber}
                 show={this.state.showAnalyzer}
                 ref={(node) => {
                   this.analyzer = node;
@@ -227,6 +226,8 @@ Viewer.propTypes = {
     turns: PropTypes.array,
     version: PropTypes.string,
     latestTurn: PropTypes.object,
+    quacklePlayerID: PropTypes.number,
+    quackleTurnNumber: PropTypes.number,
   }).isRequired,
   submitComment: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,

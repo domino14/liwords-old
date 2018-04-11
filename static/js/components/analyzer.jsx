@@ -83,10 +83,6 @@ class Analyzer extends React.Component {
   }
 
   setup() {
-    if (this.props.gcg === '') {
-      window.console.log('Error - no original game');
-      return;
-    }
     if (!this.quackle) {
       this.quackle = new window.Module.API();
       this.quackle.startup();
@@ -166,7 +162,6 @@ class Analyzer extends React.Component {
 Analyzer.propTypes = {
   playerID: PropTypes.number.isRequired,
   turnNumber: PropTypes.number.isRequired,
-  gcg: PropTypes.string.isRequired,
   show: PropTypes.bool.isRequired,
 };
 

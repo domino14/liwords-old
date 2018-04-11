@@ -30,6 +30,8 @@ describe('Base Reducer', () => {
       tilesLayout: tilesLayout(blankLayout()),
       scores: {},
       latestTurn: {},
+      quacklePlayerID: null,
+      quackleTurnNumber: null,
     });
   });
 });
@@ -117,6 +119,8 @@ describe('Initial game load with first turn', () => {
     cesar: 0,
     leesa: 0,
   });
+  expect(seekState.quacklePlayerID).toBe(0);
+  expect(seekState.quackleTurnNumber).toBe(1);
 });
 
 describe('Reducer with seek cases', () => {
@@ -198,6 +202,8 @@ describe('Reducer with seek cases', () => {
       type: 'move',
       rack: 'EEHIRRY',
     });
+    expect(state.quacklePlayerID).toBe(0);
+    expect(state.quackleTurnNumber).toBe(5);
   });
 
   it('Should calculate another reasonably complex board setup', () => {
