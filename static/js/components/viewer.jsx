@@ -26,7 +26,7 @@ const turnFromLocation = () => {
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    const currentTurn = turnFromLocation();
+    this.currentTurn = turnFromLocation();
     this.state = {
       showAnalyzer: false,
     };
@@ -38,7 +38,6 @@ class Viewer extends React.Component {
     this.onDeleteComment = this.onDeleteComment.bind(this);
 
     window.onhashchange = this.hashChange;
-    this.lastClickedTurn = currentTurn;
   }
 
   componentDidMount() {
@@ -49,21 +48,20 @@ class Viewer extends React.Component {
     if (this.props.requestComments) {
       this.props.requestComments();
     }
+    console.log('on mount', this.props.game);
     if (this.lastClickedTurn !== -1) {
-      this.props.gameViewerSeek(this.lastClickedTurn);
+      this.props.gameViewerSeek(this.currentTurn);
     }
   }
 
   onTurnClick(idx) {
-    this.lastClickedTurn = idx;
+    this.currentTurn = idx;
     window.location.hash = idx;
-    this.setState({
-      currentTurn: idx - 1,
-    });
+    this.props.gameViewerSeek(idx);
   }
 
   onSubmitComment(comment) {
-    this.props.submitComment(comment, this.state.currentTurn);
+    this.props.submitComment(comment, this.currentTurn);
   }
 
   onDeleteComment(uuid) {
@@ -94,7 +92,7 @@ class Viewer extends React.Component {
 
   render() {
     const displayedComments = this.props.gameComments.filter(comment =>
-      comment.turn_num === this.state.currentTurn);
+      comment.turn_num === this.currentTurn);
 
     window.console.log('props are', this.props);
 
@@ -119,7 +117,7 @@ class Viewer extends React.Component {
             <div className="col-lg-12">
               <h4>Notes and comments</h4>
               <Notes
-                turnIdx={this.state.currentTurn}
+                turnIdx={this.currentTurn}
                 gcgNote={latestTurn ? latestTurn.note : ''}
                 addlDescription={
                   latestTurn && latestTurn.type === MoveTypesEnum.SCORING_PLAY ?
@@ -224,7 +222,7 @@ Viewer.propTypes = {
     scores: PropTypes.object,
     tilesLayout: PropTypes.arrayOf(PropTypes.string),
     turns: PropTypes.array,
-    version: PropTypes.string,
+    version: PropTypes.number,
     latestTurn: PropTypes.object,
     quacklePlayerID: PropTypes.number,
     quackleTurnNumber: PropTypes.number,

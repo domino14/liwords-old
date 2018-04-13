@@ -75,7 +75,7 @@ Root.propTypes = {
     scores: PropTypes.object,
     tilesLayout: PropTypes.arrayOf(PropTypes.string),
     turns: PropTypes.array,
-    version: PropTypes.string,
+    version: PropTypes.number,
     latestTurn: PropTypes.object,
   }).isRequired,
 
