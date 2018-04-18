@@ -44,6 +44,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "bootstrap3-dialog": "^1.35.4",
+    "history": "^4.7.2",
     "jquery": "^3.2.1",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14",
@@ -54,7 +55,9 @@
     "react-dropzone": "^4.2.3",
     "react-markdown": "^3.1.4",
     "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "underscore": "^1.8.3"
