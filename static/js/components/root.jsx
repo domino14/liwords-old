@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Route } from 'react-router';
+
 import Navbar from './navbar';
 import ErrorView from './error_view';
 import Viewer from './viewer';
@@ -16,6 +18,28 @@ class Root extends React.Component {
   }
 
   render() {
+    const viewer = ({ match }) => (
+      <Viewer
+        gameViewerSeek={this.props.gameViewerSeek}
+        gameViewerBackward={this.props.gameViewerBackward}
+        gameViewerFastBackward={this.props.gameViewerFastBackward}
+        gameViewerForward={this.props.gameViewerForward}
+        gameViewerFastForward={this.props.gameViewerFastForward}
+
+        game={this.props.game}
+        viewMode={this.props.viewMode}
+        submitComment={this.submitComment}
+        editComment={this.editComment}
+        deleteComment={this.deleteComment}
+        requestComments={this.requestComments}
+        // gameComments={this.state.gameComments}
+        gameID={this.props.gameID}
+        windowWidth={this.props.windowWidth}
+        windowHeight={this.props.windowHeight}
+        username={this.props.username}
+        routeMatch={match}
+      />
+    );
     return (
       <div>
         <Navbar />
@@ -26,32 +50,21 @@ class Root extends React.Component {
             />
           </div>
         </div>
-
         <div className="container-fluid">
-          <Viewer
-            gameViewerSeek={this.props.gameViewerSeek}
-            gameViewerBackward={this.props.gameViewerBackward}
-            gameViewerFastBackward={this.props.gameViewerFastBackward}
-            gameViewerForward={this.props.gameViewerForward}
-            gameViewerFastForward={this.props.gameViewerFastForward}
-
-            game={this.props.game}
-            viewMode={this.props.viewMode}
-            submitComment={this.submitComment}
-            editComment={this.editComment}
-            deleteComment={this.deleteComment}
-            requestComments={this.requestComments}
-            // gameComments={this.state.gameComments}
-            gameID={this.props.gameID}
-            windowWidth={this.props.windowWidth}
-            windowHeight={this.props.windowHeight}
-            username={this.props.username}
+          <Route
+            path={`${this.props.routeMatch.path}/games/:gameId`}
+            render={viewer}
+            // component={Viewer}
           />
         </div>
       </div>
     );
   }
 }
+
+Root.defaultProps = {
+  username: '',
+};
 
 Root.propTypes = {
   initEnvironment: PropTypes.func.isRequired,
@@ -79,7 +92,7 @@ Root.propTypes = {
     latestTurn: PropTypes.object,
   }).isRequired,
 
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
 
@@ -92,6 +105,12 @@ Root.propTypes = {
       nick: PropTypes.string,
     })),
     originalGCG: PropTypes.string,
+  }).isRequired,
+  routeMatch: PropTypes.shape({
+    params: PropTypes.object,
+    isExact: PropTypes.boolean,
+    path: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };
 

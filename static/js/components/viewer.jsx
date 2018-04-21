@@ -250,6 +250,13 @@ Viewer.propTypes = {
   gameViewerFastForward: PropTypes.func.isRequired,
   gameViewerFastBackward: PropTypes.func.isRequired,
   gameViewerSeek: PropTypes.func.isRequired,
+
+  routeMatch: PropTypes.shape({
+    params: PropTypes.object,
+    isExact: PropTypes.boolean,
+    path: PropTypes.string,
+    url: PropTypes.string,
+  }).isRequired,
 };
 
 export default Viewer;

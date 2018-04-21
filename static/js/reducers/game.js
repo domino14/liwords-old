@@ -46,7 +46,7 @@ export class GameStateHelper {
     this.turns = {};
     this.lastPlayedLetters = {};
     this.players = players;
-    if (this.players) {
+    if (this.players && this.players.length) {
       this.scores = {
         [players[0].nick]: 0,
         [players[1].nick]: 0,

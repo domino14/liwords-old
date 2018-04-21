@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { Route } from 'react-router';
@@ -21,12 +21,22 @@ const createStoreWithMiddleware = applyMiddleware(
 
 const store = createStoreWithMiddleware(rootReducer, {});
 
-const root = () => (
+const root = props => (
   <RootContainer
     gameID={window.Globals.gameID}
     viewMode={window.Globals.viewMode}
     gameRepr={window.Globals.gameRepr}
+    routeMatch={props.match}
   />);
+
+root.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.object,
+    isExact: PropTypes.boolean,
+    path: PropTypes.string,
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 console.log('provider', Provider);
 console.log('connectedrouter', ConnectedRouter);
