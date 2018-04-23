@@ -10,6 +10,7 @@ import Viewer from './viewer';
 class Root extends React.Component {
   componentWillMount() {
     const { initEnvironment, loadGame, gameViewerSeek } = this.props;
+    console.log('proppies', this.props);
     initEnvironment();
     loadGame({
       ...this.props.gameRepr,
@@ -21,10 +22,6 @@ class Root extends React.Component {
     const viewer = ({ match }) => (
       <Viewer
         gameViewerSeek={this.props.gameViewerSeek}
-        gameViewerBackward={this.props.gameViewerBackward}
-        gameViewerFastBackward={this.props.gameViewerFastBackward}
-        gameViewerForward={this.props.gameViewerForward}
-        gameViewerFastForward={this.props.gameViewerFastForward}
 
         game={this.props.game}
         viewMode={this.props.viewMode}
@@ -69,10 +66,6 @@ Root.defaultProps = {
 Root.propTypes = {
   initEnvironment: PropTypes.func.isRequired,
   loadGame: PropTypes.func.isRequired,
-  gameViewerForward: PropTypes.func.isRequired,
-  gameViewerBackward: PropTypes.func.isRequired,
-  gameViewerFastForward: PropTypes.func.isRequired,
-  gameViewerFastBackward: PropTypes.func.isRequired,
   gameViewerSeek: PropTypes.func.isRequired,
 
   gameID: PropTypes.string.isRequired,

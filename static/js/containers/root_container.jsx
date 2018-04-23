@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 
 import { initEnvironment } from '../actions/environment_actions';
 import {
-  loadGame, gameViewerForward, gameViewerBackward,
-  gameViewerFastForward, gameViewerFastBackward, gameViewerSeek,
+  loadGame, gameViewerSeek,
 } from '../actions/game_actions';
 import Root from '../components/root';
 
@@ -23,9 +22,6 @@ export default connect(mapStateToProps, {
   // An object here with action creators is used as a mapDispatchToProps
   initEnvironment,
   loadGame,
-  gameViewerForward,
-  gameViewerBackward,
-  gameViewerFastForward,
-  gameViewerFastBackward,
+
   gameViewerSeek,
 })(RootContainer);

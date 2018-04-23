@@ -26,18 +26,18 @@ const turnFromLocation = () => {
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    this.currentTurn = turnFromLocation();
+    // this.currentTurn = turnFromLocation();
     this.state = {
       showAnalyzer: false,
     };
 
     this.analyze = this.analyze.bind(this);
 
-    this.hashChange = this.hashChange.bind(this);
+    // this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
 
-    window.onhashchange = this.hashChange;
+    // window.onhashchange = this.hashChange;
   }
 
   componentDidMount() {
@@ -49,9 +49,9 @@ class Viewer extends React.Component {
       this.props.requestComments();
     }
     console.log('on mount', this.props.game);
-    if (this.lastClickedTurn !== -1) {
-      this.props.gameViewerSeek(this.currentTurn);
-    }
+    // if (this.lastClickedTurn !== -1) {
+    //   this.props.gameViewerSeek(this.currentTurn);
+    // }
   }
 
   onTurnClick(idx) {
@@ -69,19 +69,19 @@ class Viewer extends React.Component {
     this.props.deleteComment(uuid);
   }
 
-  hashChange() {
-    // -1 because we use user-friendly hashes for turns -- there is no
-    // turn zero (that's the start of the game, before anyone has gone).
-    // Internally, we treat that as turn `-1` -- see above default
-    // value of currentTurn
-    if (this.lastClickedTurn === window.location.hash.substring(1)) {
-      // This hash change was created by clicking on a turn, so let's
-      // ignore this. We only want to modify the state when the hash
-      // changes on load or by typing in a new hash.
-      return;
-    }
-    this.props.gameViewerSeek(turnFromLocation());
-  }
+  // hashChange() {
+  //   // -1 because we use user-friendly hashes for turns -- there is no
+  //   // turn zero (that's the start of the game, before anyone has gone).
+  //   // Internally, we treat that as turn `-1` -- see above default
+  //   // value of currentTurn
+  //   if (this.lastClickedTurn === window.location.hash.substring(1)) {
+  //     // This hash change was created by clicking on a turn, so let's
+  //     // ignore this. We only want to modify the state when the hash
+  //     // changes on load or by typing in a new hash.
+  //     return;
+  //   }
+  //   this.props.gameViewerSeek(turnFromLocation());
+  // }
 
   analyze() {
     this.analyzer.setup();
@@ -139,11 +139,10 @@ class Viewer extends React.Component {
           <div className="row">
             <div className="col-lg-8 col-lg-offset-3">
               <TurnsNavbar
-                stepForward={this.props.gameViewerForward}
-                stepBackward={this.props.gameViewerBackward}
-                fastForward={this.props.gameViewerFastForward}
-                fastBackward={this.props.gameViewerFastBackward}
+                seek={pos => this.props.gameViewerSeek(pos)}
                 analyze={this.analyze}
+                turnIdx={this.props.game.moveIndex + 1}
+                maxTurnIdx={this.props.game.turns.length}
               />
             </div>
           </div>
@@ -245,10 +244,6 @@ Viewer.propTypes = {
   windowHeight: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
 
-  gameViewerForward: PropTypes.func.isRequired,
-  gameViewerBackward: PropTypes.func.isRequired,
-  gameViewerFastForward: PropTypes.func.isRequired,
-  gameViewerFastBackward: PropTypes.func.isRequired,
   gameViewerSeek: PropTypes.func.isRequired,
 
   routeMatch: PropTypes.shape({
