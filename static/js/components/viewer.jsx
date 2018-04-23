@@ -139,10 +139,10 @@ class Viewer extends React.Component {
           <div className="row">
             <div className="col-lg-8 col-lg-offset-3">
               <TurnsNavbar
-                seek={pos => this.props.gameViewerSeek(pos)}
+                seek={this.props.gameViewerSeek}
                 analyze={this.analyze}
-                turnIdx={this.props.game.moveIndex + 1}
-                maxTurnIdx={this.props.game.turns.length}
+                turnIdx={this.props.game.moveIndex}
+                maxTurnIdx={this.props.game.turns.length - 1}
               />
             </div>
           </div>

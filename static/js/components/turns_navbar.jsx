@@ -7,16 +7,16 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={props.seek(0)}
-        disabled={props.turnIdx === 0}
+        onClick={() => props.seek(-1)}
+        disabled={props.turnIdx === -1}
       >
         <span className="glyphicon glyphicon-fast-backward" />
       </button>
       <button
         type="button"
         className="btn btn-default"
-        onClick={props.seek(props.turnIdx - 1)}
-        disabled={props.turnIdx === 0}
+        onClick={() => props.seek(props.turnIdx - 1)}
+        disabled={props.turnIdx === -1}
       >
         <span className="glyphicon glyphicon-step-backward" />
       </button>
@@ -34,7 +34,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={props.seek(props.turnIdx + 1)}
+        onClick={() => props.seek(props.turnIdx + 1)}
         disabled={props.turnIdx === props.maxTurnIdx}
       >
         <span className="glyphicon glyphicon-step-forward" />
@@ -42,7 +42,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={props.seek(props.maxTurnIdx)}
+        onClick={() => props.seek(props.maxTurnIdx)}
         disabled={props.turnIdx === props.maxTurnIdx}
       >
         <span className="glyphicon glyphicon-fast-forward" />
