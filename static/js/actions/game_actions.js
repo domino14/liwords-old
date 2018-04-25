@@ -8,11 +8,19 @@ export const loadGame = payload => ({
   payload,
 });
 
-export const gameViewerSeek = turnIdx => ({
-  type: types.GAME_VIEWER_SEEK,
-  turnIdx,
-});
+// export const gameViewerSeek = turnIdx => ({
+//   type: types.GAME_VIEWER_SEEK,
+//   turnIdx,
+// });
 
 // export const gameViewerForward = () => (dispatch) => {
 //   dispatch(push('/url'));
 // };
+
+export const gameViewerSeek = (turnIdx, gameId) => (dispatch) => {
+  dispatch(push(`/crosswords/games/${gameId}/${turnIdx + 1}`));
+  dispatch({
+    type: types.GAME_VIEWER_SEEK,
+    turnIdx,
+  });
+};

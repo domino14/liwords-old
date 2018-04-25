@@ -9,13 +9,11 @@ import Viewer from './viewer';
 
 class Root extends React.Component {
   componentWillMount() {
-    const { initEnvironment, loadGame, gameViewerSeek } = this.props;
-    console.log('proppies', this.props);
+    const { initEnvironment, loadGame } = this.props;
     initEnvironment();
     loadGame({
       ...this.props.gameRepr,
     });
-    gameViewerSeek(-1);
   }
 
   render() {
@@ -51,7 +49,12 @@ class Root extends React.Component {
           <Route
             path={`${this.props.routeMatch.path}/games/:gameId`}
             render={viewer}
-            // component={Viewer}
+            exact
+          />
+          <Route
+            path={`${this.props.routeMatch.path}/games/:gameId/:turnIdx`}
+            render={viewer}
+            exact
           />
         </div>
       </div>

@@ -12,17 +12,6 @@ import Analyzer from './analyzer';
 
 import { CrosswordGameSetup } from '../constants/board_setups';
 
-const turnFromLocation = () => {
-  if (window.location.hash.startsWith('#')) {
-    const turn = parseInt(window.location.hash.substring(1), 10);
-    if (Number.isNaN(turn)) {
-      return -1;
-    }
-    return Math.max(turn - 1, -1);
-  }
-  return -1;
-};
-
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
@@ -40,6 +29,7 @@ class Viewer extends React.Component {
     // window.onhashchange = this.hashChange;
   }
 
+
   componentDidMount() {
     // The viewer should request all comments on mount, if there is a game ID.
     if (!this.props.gameID) {
@@ -48,15 +38,11 @@ class Viewer extends React.Component {
     if (this.props.requestComments) {
       this.props.requestComments();
     }
-    console.log('on mount', this.props.game);
-    // if (this.lastClickedTurn !== -1) {
-    //   this.props.gameViewerSeek(this.currentTurn);
-    // }
+    // Change URL to match (or reconcile)
+    // this.props.gameViewerSeek(this.props.game.moveIndex, this.props.gameID);
   }
 
   onTurnClick(idx) {
-    this.currentTurn = idx;
-    window.location.hash = idx;
     this.props.gameViewerSeek(idx);
   }
 
@@ -68,6 +54,19 @@ class Viewer extends React.Component {
     console.log('Want to delete comment iwth uuid', uuid);
     this.props.deleteComment(uuid);
   }
+
+  // currentTurnNumber is a 0-indexed, user-visible turn number. This
+  // differs by 1 from the internal turn numbers (which start at -1, for
+  // reasons given throughout this codebase)
+  currentTurnNumberFromURL() {
+    let { turnIdx } = this.props.routeMatch.params;
+    console.log('I got a ', turnIdx);
+    if (turnIdx) {
+      turnIdx = parseInt(turnIdx, 10);
+    }
+    return turnIdx || 0;
+  }
+
 
   // hashChange() {
   //   // -1 because we use user-friendly hashes for turns -- there is no
@@ -94,7 +93,7 @@ class Viewer extends React.Component {
     const displayedComments = this.props.gameComments.filter(comment =>
       comment.turn_num === this.currentTurn);
 
-    window.console.log('props are', this.props);
+    window.console.log('viwer props are', this.props);
 
     const { latestTurn } = this.props.game;
     return (
@@ -140,6 +139,7 @@ class Viewer extends React.Component {
             <div className="col-lg-8 col-lg-offset-3">
               <TurnsNavbar
                 seek={this.props.gameViewerSeek}
+                gameId={this.props.routeMatch.params.gameId}
                 analyze={this.analyze}
                 turnIdx={this.props.game.moveIndex}
                 maxTurnIdx={this.props.game.turns.length - 1}

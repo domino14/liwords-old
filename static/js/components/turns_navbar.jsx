@@ -7,7 +7,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={() => props.seek(-1)}
+        onClick={() => props.seek(-1, props.gameId)}
         disabled={props.turnIdx === -1}
       >
         <span className="glyphicon glyphicon-fast-backward" />
@@ -15,7 +15,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={() => props.seek(props.turnIdx - 1)}
+        onClick={() => props.seek(props.turnIdx - 1, props.gameId)}
         disabled={props.turnIdx === -1}
       >
         <span className="glyphicon glyphicon-step-backward" />
@@ -34,7 +34,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={() => props.seek(props.turnIdx + 1)}
+        onClick={() => props.seek(props.turnIdx + 1, props.gameId)}
         disabled={props.turnIdx === props.maxTurnIdx}
       >
         <span className="glyphicon glyphicon-step-forward" />
@@ -42,7 +42,7 @@ const TurnsNavbar = props => (
       <button
         type="button"
         className="btn btn-default"
-        onClick={() => props.seek(props.maxTurnIdx)}
+        onClick={() => props.seek(props.maxTurnIdx, props.gameId)}
         disabled={props.turnIdx === props.maxTurnIdx}
       >
         <span className="glyphicon glyphicon-fast-forward" />
@@ -56,6 +56,7 @@ TurnsNavbar.propTypes = {
   analyze: PropTypes.func.isRequired,
   turnIdx: PropTypes.number.isRequired,
   maxTurnIdx: PropTypes.number.isRequired,
+  gameId: PropTypes.string.isRequired,
 };
 
 export default TurnsNavbar;
