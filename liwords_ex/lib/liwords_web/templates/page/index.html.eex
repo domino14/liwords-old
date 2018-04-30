@@ -31,7 +31,7 @@
         end %>,
       viewMode: '<%= @viewMode %>' || '',
       gameID: '<%= @gameID %>' || '',
-
+      turnID: parseInt('<%= @turnID %>', 10) || 0,
       getGameGCG: function() {
         return Globals.gameRepr.originalGCG || '';
       }

@@ -74,7 +74,7 @@ defmodule LIWordsWeb.GameController do
       conn
       |> put_layout(false)
       |> render(LIWordsWeb.PageView, "index.html", game: game, viewMode: "viewer",
-          gameID: uuid)
+          gameID: uuid, turnID: 0)
     else
       # XXX: 404 JSON is not the best return page, but will fix later.
       conn
@@ -82,6 +82,29 @@ defmodule LIWordsWeb.GameController do
       |> put_status(:not_found)
       |> render(LIWordsWeb.ErrorView, "404.json")
     end
+  end
+
+  def show_with_turn(conn, %{"gameId" => uuid, "turnId" => turnId}) do
+    game = with {:ok, casted} <- Ecto.UUID.cast(uuid) do
+      Repo.get_by(Game, uuid: uuid)
+    else
+      :error ->
+        nil
+    end
+
+    if game != nil do
+      conn
+      |> put_layout(false)
+      |> render(LIWordsWeb.PageView, "index.html", game: game, viewMode: "viewer",
+          gameID: uuid, turnID: turnId)
+    else
+      # XXX: 404 JSON is not the best return page, but will fix later.
+      conn
+      |> put_layout(false)
+      |> put_status(:not_found)
+      |> render(LIWordsWeb.ErrorView, "404.json")
+    end
+
   end
 
   def index(conn, _params) do

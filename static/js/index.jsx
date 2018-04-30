@@ -26,6 +26,7 @@ const root = props => (
     gameID={window.Globals.gameID}
     viewMode={window.Globals.viewMode}
     gameRepr={window.Globals.gameRepr}
+    turnID={window.Globals.turnID}
     routeMatch={props.match}
   />);
 
@@ -37,13 +38,6 @@ root.propTypes = {
     url: PropTypes.string,
   }).isRequired,
 };
-
-console.log('provider', Provider);
-console.log('connectedrouter', ConnectedRouter);
-console.log('Route', Route);
-console.log('root', root);
-console.log('store', store);
-console.log('history', history);
 
 ReactDOM.render(
   <Provider store={store}>

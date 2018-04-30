@@ -29,6 +29,7 @@ class Root extends React.Component {
         requestComments={this.requestComments}
         // gameComments={this.state.gameComments}
         gameID={this.props.gameID}
+        turnID={this.props.turnID}
         windowWidth={this.props.windowWidth}
         windowHeight={this.props.windowHeight}
         username={this.props.username}
@@ -72,6 +73,8 @@ Root.propTypes = {
   gameViewerSeek: PropTypes.func.isRequired,
 
   gameID: PropTypes.string.isRequired,
+  turnID: PropTypes.number.isRequired,
+
   viewMode: PropTypes.string.isRequired,
   game: PropTypes.shape({
     currentRack: PropTypes.string,

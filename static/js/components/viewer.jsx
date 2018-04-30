@@ -39,7 +39,7 @@ class Viewer extends React.Component {
       this.props.requestComments();
     }
     // Change URL to match (or reconcile)
-    // this.props.gameViewerSeek(this.props.game.moveIndex, this.props.gameID);
+    this.props.gameViewerSeek(this.props.turnID - 1, this.props.gameID);
   }
 
   onTurnClick(idx) {
@@ -231,6 +231,8 @@ Viewer.propTypes = {
   deleteComment: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   gameID: PropTypes.string.isRequired,
+  turnID: PropTypes.number.isRequired,
+
   gameComments: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string,
     comment: PropTypes.string,

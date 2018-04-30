@@ -53,6 +53,7 @@ defmodule LIWordsWeb.Router do
   scope "/crosswords", LIWordsWeb do
     pipe_through :browser_unprotected
     resources "/games", GameController, only: [:show]
+    get "/games/:gameId/:turnId", GameController, :show_with_turn
   end
 
 
