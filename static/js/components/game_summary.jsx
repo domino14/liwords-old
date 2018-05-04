@@ -76,8 +76,8 @@ function hasNoteOrComment(turn, commentSet) {
 }
 
 const TurnsTable = (props) => {
-  const player1 = props.player1 ? props.player1.nick : '';
-  const player2 = props.player2 ? props.player2.nick : '';
+  const player1 = props.players[0] ? props.players[0].nick : '';
+  const player2 = props.players[1] ? props.players[1].nick : '';
 
   if (!props.turns[player1]) {
     return null;
@@ -112,17 +112,12 @@ const TurnsTable = (props) => {
 };
 
 TurnsTable.propTypes = {
-  turns: PropTypes.object.isRequired,
-  player1: PropTypes.shape({
+  turns: PropTypes.objectOf(PropTypes.array).isRequired,
+  players: PropTypes.arrayOf(PropTypes.shape({
     real_name: PropTypes.string,
     p_number: PropTypes.string,
     nick: PropTypes.string,
-  }).isRequired,
-  player2: PropTypes.shape({
-    real_name: PropTypes.string,
-    p_number: PropTypes.string,
-    nick: PropTypes.string,
-  }).isRequired,
+  })).isRequired,
   onTurnClick: PropTypes.func.isRequired,
   commentsOnTurns: PropTypes.instanceOf(Set),
 };
@@ -136,14 +131,13 @@ const GameSummary = (props) => {
     <table className="table">
       <thead>
         <tr>
-          <th>{props.player1 ? props.player1.nick : ''}</th>
-          <th>{props.player2 ? props.player2.nick : ''}</th>
+          <th>{props.players[0] ? props.players[0].nick : ''}</th>
+          <th>{props.players[1] ? props.players[1].nick : ''}</th>
         </tr>
       </thead>
       <tbody>
         <TurnsTable
-          player1={props.player1}
-          player2={props.player2}
+          players={props.players}
           turns={props.turns}
           onTurnClick={props.onTurnClick}
           commentsOnTurns={commentObj}
@@ -154,17 +148,12 @@ const GameSummary = (props) => {
 };
 
 GameSummary.propTypes = {
-  turns: PropTypes.object.isRequired,
-  player1: PropTypes.shape({
+  turns: PropTypes.objectOf(PropTypes.array).isRequired,
+  players: PropTypes.arrayOf(PropTypes.shape({
     real_name: PropTypes.string,
     p_number: PropTypes.string,
     nick: PropTypes.string,
-  }).isRequired,
-  player2: PropTypes.shape({
-    real_name: PropTypes.string,
-    p_number: PropTypes.string,
-    nick: PropTypes.string,
-  }).isRequired,
+  }).isRequired).isRequired,
   onTurnClick: PropTypes.func.isRequired,
   comments: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string,

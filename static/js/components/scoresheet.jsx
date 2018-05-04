@@ -21,8 +21,7 @@ const Scoresheet = props => (
       }}
     >
       <GameSummary
-        player1={props.player1}
-        player2={props.player2}
+        players={props.players}
         turns={props.turns}
         onTurnClick={props.onTurnClick}
         comments={props.comments}
@@ -31,19 +30,15 @@ const Scoresheet = props => (
   </div>);
 
 Scoresheet.propTypes = {
-  pool: PropTypes.object.isRequired,
-  turns: PropTypes.object.isRequired,
+  pool: PropTypes.objectOf(PropTypes.number).isRequired,
+  turns: PropTypes.objectOf(PropTypes.array).isRequired,
   currentRack: PropTypes.string.isRequired,
-  player1: PropTypes.shape({
+  players: PropTypes.arrayOf(PropTypes.shape({
     real_name: PropTypes.string,
     p_number: PropTypes.string,
     nick: PropTypes.string,
-  }).isRequired,
-  player2: PropTypes.shape({
-    real_name: PropTypes.string,
-    p_number: PropTypes.string,
-    nick: PropTypes.string,
-  }).isRequired,
+  }).isRequired).isRequired,
+
   onTurnClick: PropTypes.func.isRequired,
 
   comments: PropTypes.arrayOf(PropTypes.shape({

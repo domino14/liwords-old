@@ -34,9 +34,9 @@ const ScoreBoard = props => (
     <div className="col-xs-3">
       <div>
         <PlayerScore
-          displayName={props.player1 ? props.player1.nick : ''}
-          score={props.player1score}
-          highlight={props.player1 ? props.player1.nick === props.currentUser : false}
+          displayName={props.players[0] ? props.players[0].nick : ''}
+          score={props.players[0] ? props.scores[props.players[0].nick] : 0}
+          highlight={props.players[0] ? props.players[0].nick === props.currentUser : false}
         />
       </div>
     </div>
@@ -49,9 +49,9 @@ const ScoreBoard = props => (
     <div className="col-xs-3">
       <div>
         <PlayerScore
-          displayName={props.player2 ? props.player2.nick : ''}
-          score={props.player2score}
-          highlight={props.player2 ? props.player2.nick === props.currentUser : false}
+          displayName={props.players[1] ? props.players[1].nick : ''}
+          score={props.players[1] ? props.scores[props.players[1].nick] : 0}
+          highlight={props.players[1] ? props.players[1].nick === props.currentUser : false}
         />
       </div>
     </div>
@@ -59,18 +59,12 @@ const ScoreBoard = props => (
 );
 
 ScoreBoard.propTypes = {
-  player1: PropTypes.shape({
+  players: PropTypes.arrayOf(PropTypes.shape({
     real_name: PropTypes.string,
     p_number: PropTypes.string,
     nick: PropTypes.string,
-  }).isRequired,
-  player2: PropTypes.shape({
-    real_name: PropTypes.string,
-    p_number: PropTypes.string,
-    nick: PropTypes.string,
-  }).isRequired,
-  player1score: PropTypes.number.isRequired,
-  player2score: PropTypes.number.isRequired,
+  })).isRequired,
+  scores: PropTypes.objectOf(PropTypes.number).isRequired,
   currentUser: PropTypes.string.isRequired,
   currentRack: PropTypes.string.isRequired,
 };

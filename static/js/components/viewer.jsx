@@ -43,7 +43,7 @@ class Viewer extends React.Component {
   }
 
   onTurnClick(idx) {
-    this.props.gameViewerSeek(idx);
+    this.props.gameViewerSeek(idx, this.props.gameID);
   }
 
   onSubmitComment(comment) {
@@ -149,12 +149,8 @@ class Viewer extends React.Component {
 
           <div className="row" style={{ marginTop: 8 }}>
             <Scoreboard
-              player1={this.props.game.players[0]}
-              player2={this.props.game.players[1]}
-              player1score={this.props.game.players[0] ?
-                this.props.game.scores[this.props.game.players[0].nick] : 0}
-              player2score={this.props.game.players[1] ?
-                this.props.game.scores[this.props.game.players[1].nick] : 0}
+              players={this.props.game.players}
+              scores={this.props.game.scores}
               currentUser={this.props.game.currentUser}
               currentRack={this.props.game.currentRack}
               windowWidth={this.props.windowWidth}
@@ -182,8 +178,7 @@ class Viewer extends React.Component {
 
         <div className="col-lg-3 col-md-4 hidden-sm hidden-xs">
           <Scoresheet
-            player1={this.props.game.players[0]}
-            player2={this.props.game.players[1]}
+            players={this.props.game.players}
             turns={this.props.game.perPlayerTurns}
             comments={this.props.gameComments}
             tilesLayout={this.props.game.tilesLayout}

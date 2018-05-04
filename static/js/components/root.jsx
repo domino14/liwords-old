@@ -6,6 +6,11 @@ import { Route } from 'react-router';
 import Navbar from './navbar';
 import ErrorView from './error_view';
 import Viewer from './viewer';
+import GCGUploadModal from './gcg_upload';
+import ListGamesModal from './list_games_modal';
+
+const GAME_LIST_LIMIT = 20;
+
 
 class Root extends React.Component {
   componentWillMount() {
@@ -14,6 +19,18 @@ class Root extends React.Component {
     loadGame({
       ...this.props.gameRepr,
     });
+
+    this.showUploadModal = this.showUploadModal.bind(this);
+    this.showListGamesModal = this.showListGamesModal.bind(this);
+  }
+
+  showUploadModal() {
+    this.gcgUploadModal.show();
+  }
+
+  showListGamesModal() {
+    this.fetchGameList(this.state.gameListOffset);
+    this.listGamesModal.show();
   }
 
   render() {
@@ -38,7 +55,10 @@ class Root extends React.Component {
     );
     return (
       <div>
-        <Navbar />
+        <Navbar
+          handleUpload={this.showUploadModal}
+          handleListGames={this.showListGamesModal}
+        />
         <div className="row">
           <div className="col-lg-6 col-md-5 col-lg-offset-3 col-md-offset-3">
             <ErrorView
@@ -58,6 +78,28 @@ class Root extends React.Component {
             exact
           />
         </div>
+
+        <GCGUploadModal
+          ref={(el) => {
+            this.gcgUploadModal = el;
+          }}
+          onListUpload={this.onListUpload}
+          // currentGCG={this.state.currentGCGLink}
+        />
+
+        {/* <ListGamesModal
+          ref={(el) => {
+            this.listGamesModal = el;
+          }}
+          games={this.state.gamesOnDisplay}
+          fetchPrevious={this.fetchPreviousGames}
+          fetchNext={this.fetchNextGames}
+          hasPrevious={
+            this.state.numPossibleGamesOnDisplay >
+            this.state.gameListOffset + GAME_LIST_LIMIT}
+          hasNext={this.state.gameListOffset > 0}
+        /> */}
+
       </div>
     );
   }
