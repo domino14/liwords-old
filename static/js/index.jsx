@@ -26,7 +26,7 @@ const root = props => (
     gameID={window.Globals.gameID}
     viewMode={window.Globals.viewMode}
     gameRepr={window.Globals.gameRepr}
-    turnID={window.Globals.turnID}
+    initialTurnID={window.Globals.turnID}
     routeMatch={props.match}
   />);
 

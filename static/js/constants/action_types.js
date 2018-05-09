@@ -8,6 +8,10 @@ export const GAME_BACKWARD = 'GAME_BACKWARD';
 export const GAME_FAST_BACKWARD = 'GAME_FAST_BACKWARD';
 export const GAME_VIEWER_SEEK = 'GAME_VIEWER_SEEK';
 
+export const LOGIN_TOKEN = 'LOGIN_TOKEN';
+export const SET_USERNAME = 'SET_USERNAME';
+
+export const FETCH_ERROR = 'FETCH_ERROR';
 
 export const UPLOAD_GCG = 'UPLOAD_GCG';
 export const LIST_GAMES = 'LIST_GAMES';
@@ -15,3 +19,5 @@ export const LIST_GAMES = 'LIST_GAMES';
 export const LOAD_COMMENTS = 'LOAD_COMMENTS';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const NEW_COMMENT = 'NEW_COMMENT';
+
+

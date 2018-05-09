@@ -24,6 +24,10 @@ class Root extends React.Component {
     this.showListGamesModal = this.showListGamesModal.bind(this);
   }
 
+  componentDidMount() {
+    this.props.login();
+  }
+
   showUploadModal() {
     this.gcgUploadModal.show();
   }
@@ -43,10 +47,10 @@ class Root extends React.Component {
         submitComment={this.submitComment}
         editComment={this.editComment}
         deleteComment={this.deleteComment}
-        requestComments={this.requestComments}
-        // gameComments={this.state.gameComments}
+        requestComments={this.props.requestComments}
+        gameComments={this.props.gameComments}
         gameID={this.props.gameID}
-        turnID={this.props.turnID}
+        initialTurnID={this.props.initialTurnID}
         windowWidth={this.props.windowWidth}
         windowHeight={this.props.windowHeight}
         username={this.props.username}
@@ -113,9 +117,11 @@ Root.propTypes = {
   initEnvironment: PropTypes.func.isRequired,
   loadGame: PropTypes.func.isRequired,
   gameViewerSeek: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
+  requestComments: PropTypes.func.isRequired,
 
   gameID: PropTypes.string.isRequired,
-  turnID: PropTypes.number.isRequired,
+  initialTurnID: PropTypes.number.isRequired,
 
   viewMode: PropTypes.string.isRequired,
   game: PropTypes.shape({
@@ -132,7 +138,14 @@ Root.propTypes = {
     version: PropTypes.number,
     latestTurn: PropTypes.object,
   }).isRequired,
-
+  gameComments: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string,
+    comment: PropTypes.string,
+    turn_num: PropTypes.number,
+    username: PropTypes.string,
+    created: PropTypes.string,
+    edited: PropTypes.bool,
+  })).isRequired,
   username: PropTypes.string,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,

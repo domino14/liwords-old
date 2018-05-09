@@ -15,18 +15,13 @@ import { CrosswordGameSetup } from '../constants/board_setups';
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    // this.currentTurn = turnFromLocation();
     this.state = {
       showAnalyzer: false,
     };
 
     this.analyze = this.analyze.bind(this);
-
-    // this.hashChange = this.hashChange.bind(this);
     this.onTurnClick = this.onTurnClick.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
-
-    // window.onhashchange = this.hashChange;
   }
 
 
@@ -35,15 +30,13 @@ class Viewer extends React.Component {
     if (!this.props.gameID) {
       return;
     }
-    if (this.props.requestComments) {
-      this.props.requestComments();
-    }
+    this.props.requestComments(this.props.gameID);
     // Change URL to match (or reconcile)
-    this.props.gameViewerSeek(this.props.turnID - 1, this.props.gameID);
+    this.props.gameViewerSeek(this.props.initialTurnID - 1, this.props.gameID);
   }
 
   onTurnClick(idx) {
-    this.props.gameViewerSeek(idx, this.props.gameID);
+    this.props.gameViewerSeek(idx - 1, this.props.gameID);
   }
 
   onSubmitComment(comment) {
@@ -55,33 +48,6 @@ class Viewer extends React.Component {
     this.props.deleteComment(uuid);
   }
 
-  // currentTurnNumber is a 0-indexed, user-visible turn number. This
-  // differs by 1 from the internal turn numbers (which start at -1, for
-  // reasons given throughout this codebase)
-  currentTurnNumberFromURL() {
-    let { turnIdx } = this.props.routeMatch.params;
-    console.log('I got a ', turnIdx);
-    if (turnIdx) {
-      turnIdx = parseInt(turnIdx, 10);
-    }
-    return turnIdx || 0;
-  }
-
-
-  // hashChange() {
-  //   // -1 because we use user-friendly hashes for turns -- there is no
-  //   // turn zero (that's the start of the game, before anyone has gone).
-  //   // Internally, we treat that as turn `-1` -- see above default
-  //   // value of currentTurn
-  //   if (this.lastClickedTurn === window.location.hash.substring(1)) {
-  //     // This hash change was created by clicking on a turn, so let's
-  //     // ignore this. We only want to modify the state when the hash
-  //     // changes on load or by typing in a new hash.
-  //     return;
-  //   }
-  //   this.props.gameViewerSeek(turnFromLocation());
-  // }
-
   analyze() {
     this.analyzer.setup();
     this.setState({
@@ -91,7 +57,7 @@ class Viewer extends React.Component {
 
   render() {
     const displayedComments = this.props.gameComments.filter(comment =>
-      comment.turn_num === this.currentTurn);
+      comment.turn_num === this.props.game.moveIndex);
 
     window.console.log('viwer props are', this.props);
 
@@ -116,7 +82,6 @@ class Viewer extends React.Component {
             <div className="col-lg-12">
               <h4>Notes and comments</h4>
               <Notes
-                turnIdx={this.currentTurn}
                 gcgNote={latestTurn ? latestTurn.note : ''}
                 addlDescription={
                   latestTurn && latestTurn.type === MoveTypesEnum.SCORING_PLAY ?
@@ -226,7 +191,7 @@ Viewer.propTypes = {
   deleteComment: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   gameID: PropTypes.string.isRequired,
-  turnID: PropTypes.number.isRequired,
+  initialTurnID: PropTypes.number.isRequired,
 
   gameComments: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string,
