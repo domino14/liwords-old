@@ -5,7 +5,7 @@ import { initEnvironment } from '../actions/environment_actions';
 import {
   loadGame, gameViewerSeek,
 } from '../actions/game_actions';
-import { requestComments } from '../actions/viewer_actions';
+import { requestComments, uploadGCG } from '../actions/viewer_actions';
 import { login } from '../actions/session_actions';
 
 import Root from '../components/root';
@@ -29,6 +29,7 @@ export default connect(mapStateToProps, {
   loadGame,
   login,
   requestComments,
+  uploadGCG,
 
   gameViewerSeek,
 })(RootContainer);

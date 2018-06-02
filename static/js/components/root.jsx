@@ -22,10 +22,21 @@ class Root extends React.Component {
 
     this.showUploadModal = this.showUploadModal.bind(this);
     this.showListGamesModal = this.showListGamesModal.bind(this);
+    this.onGCGUpload = this.onGCGUpload.bind(this);
   }
 
   componentDidMount() {
     this.props.login();
+  }
+
+  onGCGUpload(acceptedFiles, rejectedFiles) {
+    if (!acceptedFiles.length) {
+      window.console.log('Files rejected', rejectedFiles);
+      return;
+    }
+    const data = new FormData();
+    data.append('file', acceptedFiles[0]);
+    this.props.uploadGCG(data);
   }
 
   showUploadModal() {
@@ -87,7 +98,7 @@ class Root extends React.Component {
           ref={(el) => {
             this.gcgUploadModal = el;
           }}
-          onListUpload={this.onListUpload}
+          onGCGUpload={this.onGCGUpload}
           // currentGCG={this.state.currentGCGLink}
         />
 
@@ -119,6 +130,7 @@ Root.propTypes = {
   gameViewerSeek: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
+  uploadGCG: PropTypes.func.isRequired,
 
   gameID: PropTypes.string.isRequired,
   initialTurnID: PropTypes.number.isRequired,

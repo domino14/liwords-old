@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CrosswordAppContainer from './crossword_app_container';
+import CrosswordAppContainer from './DELETEME_crossword_app_container';
 
 class App {
   static initialize(options) {

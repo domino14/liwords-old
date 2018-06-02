@@ -40,7 +40,7 @@ class GCGUploadModal extends React.Component {
                 ref={(dropzone) => {
                   this.dropzone = dropzone;
                 }}
-                onDrop={this.props.onListUpload}
+                onDrop={this.props.onGCGUpload}
                 multiple={false}
                 maxSize={100000}
                 style={{ display: 'none' }}
@@ -70,7 +70,7 @@ GCGUploadModal.defaultProps = {
 };
 
 GCGUploadModal.propTypes = {
-  onListUpload: PropTypes.func.isRequired,
+  onGCGUpload: PropTypes.func.isRequired,
   currentGCG: PropTypes.string,
 };
 

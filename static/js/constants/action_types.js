@@ -13,7 +13,7 @@ export const SET_USERNAME = 'SET_USERNAME';
 
 export const FETCH_ERROR = 'FETCH_ERROR';
 
-export const UPLOAD_GCG = 'UPLOAD_GCG';
+export const UPLOAD_GCG_RESULT = 'UPLOAD_GCG_RESULT';
 export const LIST_GAMES = 'LIST_GAMES';
 
 export const LOAD_COMMENTS = 'LOAD_COMMENTS';

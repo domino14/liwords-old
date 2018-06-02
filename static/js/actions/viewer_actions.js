@@ -2,7 +2,19 @@ import * as types from '../constants/action_types';
 
 import CrosswordsFetch from '../utils/api_utils';
 
-// export const uploadGCG =
+export const uploadGCG = formData => (dispatch) => {
+  const cfetch = new CrosswordsFetch();
+
+  cfetch.uploadwrap(formData)
+    .then((result) => {
+      const link = `${window.location.protocol}//${window.location.host}${result}`;
+      dispatch({
+        type: types.UPLOAD_GCG_RESULT,
+        link,
+      });
+    });
+  // TODO catch error
+};
 
 // types.UPLOAD_GCG
 

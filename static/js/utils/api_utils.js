@@ -129,6 +129,7 @@ class CrosswordsFetch {
       throw new Error(jsonedError.error);
     } catch (err) {
       if (response.status === 401) {
+        console.log('wow is it cuzza kenji');
         await this.restwrap('/jwt/', 'GET')
           // XXX Note this doesn't set the username back in the main app,
           // but we should already have the username from the first fetch.
