@@ -5,7 +5,7 @@ import { initEnvironment } from '../actions/environment_actions';
 import {
   loadGame, gameViewerSeek,
 } from '../actions/game_actions';
-import { requestComments, uploadGCG } from '../actions/viewer_actions';
+import { requestComments, uploadGCG } from '../actions/viewer_ajax_actions';
 import { login } from '../actions/session_actions';
 
 import Root from '../components/root';

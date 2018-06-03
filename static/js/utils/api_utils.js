@@ -3,6 +3,7 @@
  */
 
 import _ from 'underscore';
+import * as types from '../constants/action_types';
 
 const FetchErrors = {
   CouldNotRefreshToken: 'Could not refresh token.',
@@ -29,8 +30,9 @@ function getQueryString(params) {
 }
 
 class CrosswordsFetch {
-  constructor(authToken) {
+  constructor(authToken, dispatch) {
     this.authToken = authToken || '';
+    this.dispatch = dispatch;
     this.fetchInit = {
       method: 'POST',
       headers: new Headers({
@@ -129,12 +131,19 @@ class CrosswordsFetch {
       throw new Error(jsonedError.error);
     } catch (err) {
       if (response.status === 401) {
-        console.log('wow is it cuzza kenji');
         await this.restwrap('/jwt/', 'GET')
           // XXX Note this doesn't set the username back in the main app,
           // but we should already have the username from the first fetch.
           // If it changes, that would be such a weird edge case anyway.
-          .then(result => this.setAuthToken(result.token))
+          .then((result) => {
+            this.setAuthToken(result.token);
+            if (this.dispatch) {
+              this.dispatch({
+                type: types.LOGIN_TOKEN,
+                token: result.token,
+              });
+            }
+          })
           .catch(() => {
             throw new Error(FetchErrors.CouldNotRefreshToken);
           });
