@@ -12,16 +12,14 @@ import Root from '../components/root';
 
 const RootContainer = props => <Root {...props} />;
 
-const mapStateToProps = state => {
-  console.log('mapping state to props, state is', state);
-  return {
-    windowWidth: state.environment.width,
-    windowHeight: state.environment.height,
-    game: state.game,
-    username: state.session.username,
-    gameComments: state.viewer.comments,
-  };
-};
+const mapStateToProps = state => ({
+  windowWidth: state.environment.width,
+  windowHeight: state.environment.height,
+  game: state.game,
+  username: state.session.username,
+  gameComments: state.viewer.comments,
+  uploadedGCGLink: state.gamelist.uploadedGCGLink,
+});
 
 export default connect(mapStateToProps, {
   // An object here with action creators is used as a mapDispatchToProps

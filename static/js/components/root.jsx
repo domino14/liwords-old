@@ -99,7 +99,7 @@ class Root extends React.Component {
             this.gcgUploadModal = el;
           }}
           onGCGUpload={this.onGCGUpload}
-          // currentGCG={this.state.currentGCGLink}
+          currentGCG={this.props.uploadedGCGLink}
         />
 
         {/* <ListGamesModal
@@ -132,6 +132,7 @@ Root.propTypes = {
   requestComments: PropTypes.func.isRequired,
   uploadGCG: PropTypes.func.isRequired,
 
+  uploadedGCGLink: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
   initialTurnID: PropTypes.number.isRequired,
 

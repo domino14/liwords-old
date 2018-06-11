@@ -3,6 +3,7 @@ import { routerReducer } from 'react-router-redux';
 
 import environment from './environment';
 import game from './game';
+import gamelist from './gamelist';
 import session from './session';
 import viewer from './viewer';
 
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   environment,
   session,
   viewer,
+  gamelist,
 
   router: routerReducer,
 });

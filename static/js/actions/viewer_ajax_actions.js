@@ -9,7 +9,7 @@ export const uploadGCG = formData => (dispatch, getState) => {
     .then((result) => {
       const link = `${window.location.protocol}//${window.location.host}${result}`;
       dispatch({
-        type: types.UPLOAD_GCG_RESULT,
+        type: types.UPLOADED_GCG_LINK,
         link,
       });
     });
