@@ -102,7 +102,7 @@ class Root extends React.Component {
           currentGCG={this.props.uploadedGCGLink}
         />
 
-        {/* <ListGamesModal
+        <ListGamesModal
           ref={(el) => {
             this.listGamesModal = el;
           }}
@@ -113,7 +113,7 @@ class Root extends React.Component {
             this.state.numPossibleGamesOnDisplay >
             this.state.gameListOffset + GAME_LIST_LIMIT}
           hasNext={this.state.gameListOffset > 0}
-        /> */}
+        />
 
       </div>
     );

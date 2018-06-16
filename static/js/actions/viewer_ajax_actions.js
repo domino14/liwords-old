@@ -2,6 +2,8 @@ import * as types from '../constants/action_types';
 
 import CrosswordsFetch from '../utils/api_utils';
 
+const GAME_LIST_LIMIT = 20;
+
 export const uploadGCG = formData => (dispatch, getState) => {
   const cfetch = new CrosswordsFetch(getState().session.jwt, dispatch);
 
@@ -32,3 +34,34 @@ export const requestComments = gameID => (dispatch) => {
   // TODO Catch error
   // .catch((error) => )
 };
+
+const fetchGameList = (offset, dispatch) => {
+  const cfetch = new CrosswordsFetch();
+  cfetch.restwrap('/crosswords/api/games', 'GET', {
+    limit: GAME_LIST_LIMIT,
+    offset,
+  })
+    .then((result) => {
+      dispatch({
+        type: types.GAME_LIST,
+        payload: {
+          gamesOnDisplay: result.data,
+          numPossibleGamesOnDisplay: result.total_games,
+          // offset:
+        },
+      });
+    });
+  // TODO catch error.
+};
+
+export const fetchPreviousGames = () => (dispatch, getState) => {
+  const newOffset = getState().gamelister.offset + GAME_LIST_LIMIT;
+  fetchGameList(newOffset, dispatch);
+  dispatch({
+    type: types.GAME_LIST_OFFSET,
+    newOffset,
+  });
+};
+
+
+

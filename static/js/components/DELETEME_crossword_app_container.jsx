@@ -11,7 +11,6 @@ import GCGUploadModal from './gcg_upload';
 import CommentHelper from '../utils/comment_helper';
 import ListGamesModal from './list_games_modal';
 
-const GAME_LIST_LIMIT = 20;
 
 class CrosswordAppContainer extends React.Component {
   constructor(props) {
