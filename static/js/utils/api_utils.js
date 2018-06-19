@@ -1,5 +1,5 @@
 /**
- * @fileOverview The RPC API for the Wordwalls game.
+ * @fileOverview The RPC API for the Crossword game.
  */
 
 import _ from 'underscore';

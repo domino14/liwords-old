@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// import { FetchErrors } from '../fetch_wrapper';
+import { FetchErrors } from '../utils/api_utils';
 
 const AlertText = (props) => {
   let heading = null;

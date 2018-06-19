@@ -8,9 +8,7 @@ import ErrorView from './error_view';
 import Viewer from './viewer';
 import GCGUploadModal from './gcg_upload';
 import ListGamesModal from './list_games_modal';
-
-const GAME_LIST_LIMIT = 20;
-
+import { GAME_LIST_LIMIT } from '../actions/viewer_ajax_actions';
 
 class Root extends React.Component {
   componentWillMount() {
@@ -44,7 +42,7 @@ class Root extends React.Component {
   }
 
   showListGamesModal() {
-    this.fetchGameList(this.state.gameListOffset);
+    this.props.fetchGameList(this.props.gameListOffset);
     this.listGamesModal.show();
   }
 
@@ -77,7 +75,7 @@ class Root extends React.Component {
         <div className="row">
           <div className="col-lg-6 col-md-5 col-lg-offset-3 col-md-offset-3">
             <ErrorView
-              // errorType={this.state.errorType}
+              errorType={this.props.errorType}
             />
           </div>
         </div>
@@ -106,13 +104,13 @@ class Root extends React.Component {
           ref={(el) => {
             this.listGamesModal = el;
           }}
-          games={this.state.gamesOnDisplay}
-          fetchPrevious={this.fetchPreviousGames}
-          fetchNext={this.fetchNextGames}
+          games={this.props.gamesOnDisplay}
+          fetchPrevious={this.props.fetchPreviousGames}
+          fetchNext={this.props.fetchNextGames}
           hasPrevious={
-            this.state.numPossibleGamesOnDisplay >
-            this.state.gameListOffset + GAME_LIST_LIMIT}
-          hasNext={this.state.gameListOffset > 0}
+            this.props.totalGames >
+            this.props.gameListOffset + GAME_LIST_LIMIT}
+          hasNext={this.props.gameListOffset > 0}
         />
 
       </div>
@@ -131,10 +129,22 @@ Root.propTypes = {
   login: PropTypes.func.isRequired,
   requestComments: PropTypes.func.isRequired,
   uploadGCG: PropTypes.func.isRequired,
+  fetchPreviousGames: PropTypes.func.isRequired,
+  fetchNextGames: PropTypes.func.isRequired,
+  fetchGameList: PropTypes.func.isRequired,
 
   uploadedGCGLink: PropTypes.string.isRequired,
   gameID: PropTypes.string.isRequired,
   initialTurnID: PropTypes.number.isRequired,
+
+  gamesOnDisplay: PropTypes.arrayOf(PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    user1: PropTypes.string.isRequired,
+    user2: PropTypes.string.isRequired,
+    uuid: PropTypes.string.isRequired,
+  })).isRequired,
+  totalGames: PropTypes.number.isRequired,
+  gameListOffset: PropTypes.number.isRequired,
 
   viewMode: PropTypes.string.isRequired,
   game: PropTypes.shape({

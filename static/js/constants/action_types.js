@@ -16,9 +16,8 @@ export const FETCH_ERROR = 'FETCH_ERROR';
 export const UPLOADED_GCG_LINK = 'UPLOADED_GCG_LINK';
 export const LIST_GAMES = 'LIST_GAMES';
 export const GAME_LIST = 'GAME_LIST';
+export const GAME_LIST_OFFSET = 'GAME_LIST_OFFSET';
 
 export const LOAD_COMMENTS = 'LOAD_COMMENTS';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const NEW_COMMENT = 'NEW_COMMENT';
-
-

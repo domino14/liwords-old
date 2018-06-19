@@ -2,7 +2,7 @@ import * as types from '../constants/action_types';
 
 import CrosswordsFetch from '../utils/api_utils';
 
-const GAME_LIST_LIMIT = 20;
+export const GAME_LIST_LIMIT = 15;
 
 export const uploadGCG = formData => (dispatch, getState) => {
   const cfetch = new CrosswordsFetch(getState().session.jwt, dispatch);
@@ -35,7 +35,7 @@ export const requestComments = gameID => (dispatch) => {
   // .catch((error) => )
 };
 
-const fetchGameList = (offset, dispatch) => {
+export const fetchGameList = offset => (dispatch) => {
   const cfetch = new CrosswordsFetch();
   cfetch.restwrap('/crosswords/api/games', 'GET', {
     limit: GAME_LIST_LIMIT,
@@ -46,8 +46,7 @@ const fetchGameList = (offset, dispatch) => {
         type: types.GAME_LIST,
         payload: {
           gamesOnDisplay: result.data,
-          numPossibleGamesOnDisplay: result.total_games,
-          // offset:
+          totalGames: result.total_games,
         },
       });
     });
@@ -55,13 +54,22 @@ const fetchGameList = (offset, dispatch) => {
 };
 
 export const fetchPreviousGames = () => (dispatch, getState) => {
-  const newOffset = getState().gamelister.offset + GAME_LIST_LIMIT;
-  fetchGameList(newOffset, dispatch);
+  const newOffset = getState().gamelist.gameListOffset + GAME_LIST_LIMIT;
+  fetchGameList(newOffset)(dispatch);
   dispatch({
     type: types.GAME_LIST_OFFSET,
     newOffset,
   });
 };
 
-
-
+export const fetchNextGames = () => (dispatch, getState) => {
+  const newOffset = Math.max(
+    getState().gamelist.gameListOffset - GAME_LIST_LIMIT,
+    0,
+  );
+  fetchGameList(newOffset)(dispatch);
+  dispatch({
+    type: types.GAME_LIST_OFFSET,
+    newOffset,
+  });
+};

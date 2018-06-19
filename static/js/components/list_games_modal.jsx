@@ -7,11 +7,15 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import ModalSkeleton from './modal_skeleton';
 
 const ListGamesRow = props => (
   <tr>
+    <td>
+      {moment(props.date).fromNow()}
+    </td>
     <td>
       <a href={`/crosswords/games/${props.uuid}`}>View Game</a>
     </td>
@@ -25,6 +29,7 @@ const ListGamesRow = props => (
 );
 
 ListGamesRow.propTypes = {
+  date: PropTypes.string.isRequired,
   user1: PropTypes.string.isRequired,
   user2: PropTypes.string.isRequired,
   uuid: PropTypes.string.isRequired,
@@ -38,12 +43,14 @@ const ListGamesTable = props => (
       user1={game.user1}
       user2={game.user2}
       uuid={game.uuid}
+      date={game.date}
     />
   ))
 );
 
 ListGamesTable.propTypes = {
   games: PropTypes.arrayOf(PropTypes.shape({
+    date: PropTypes.string,
     user1: PropTypes.string,
     user2: PropTypes.string,
     uuid: PropTypes.string,
@@ -71,6 +78,7 @@ class ListGamesModal extends React.Component {
               <table className="table table-condensed">
                 <thead>
                   <tr>
+                    <th>Date</th>
                     <th>Game</th>
                     <th>Player 1</th>
                     <th>Player 2</th>
@@ -112,7 +120,7 @@ class ListGamesModal extends React.Component {
         </div>
 
       </ModalSkeleton>
-    )
+    );
   }
 }
 

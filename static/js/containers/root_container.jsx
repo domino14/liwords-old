@@ -5,7 +5,8 @@ import { initEnvironment } from '../actions/environment_actions';
 import {
   loadGame, gameViewerSeek,
 } from '../actions/game_actions';
-import { requestComments, uploadGCG } from '../actions/viewer_ajax_actions';
+import { requestComments, uploadGCG, fetchPreviousGames,
+  fetchNextGames, fetchGameList } from '../actions/viewer_ajax_actions';
 import { login } from '../actions/session_actions';
 
 import Root from '../components/root';
@@ -19,6 +20,9 @@ const mapStateToProps = state => ({
   username: state.session.username,
   gameComments: state.viewer.comments,
   uploadedGCGLink: state.gamelist.uploadedGCGLink,
+  gamesOnDisplay: state.gamelist.gamesOnDisplay,
+  totalGames: state.gamelist.totalGames,
+  gameListOffset: state.gamelist.gameListOffset,
 });
 
 export default connect(mapStateToProps, {
@@ -28,8 +32,9 @@ export default connect(mapStateToProps, {
   login,
   requestComments,
   uploadGCG,
-
-
+  fetchPreviousGames,
+  fetchNextGames,
+  fetchGameList,
 
   gameViewerSeek,
 })(RootContainer);
