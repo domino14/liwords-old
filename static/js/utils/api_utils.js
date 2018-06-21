@@ -131,11 +131,13 @@ class CrosswordsFetch {
       throw new Error(jsonedError.error);
     } catch (err) {
       if (response.status === 401) {
+        console.log('401, trna get a token');
         await this.restwrap('/jwt/', 'GET')
           // XXX Note this doesn't set the username back in the main app,
           // but we should already have the username from the first fetch.
           // If it changes, that would be such a weird edge case anyway.
           .then((result) => {
+            console.log('In the then', result);
             this.setAuthToken(result.token);
             if (this.dispatch) {
               this.dispatch({
@@ -145,8 +147,10 @@ class CrosswordsFetch {
             }
           })
           .catch(() => {
+            console.log('There was an error during the jwt refresh');
             throw new Error(FetchErrors.CouldNotRefreshToken);
           });
+        console.log('gonna retry...')
         // retry request.
         await sleep((1.9 ** optRetryDelay) * 100);
         return this.restwrap(

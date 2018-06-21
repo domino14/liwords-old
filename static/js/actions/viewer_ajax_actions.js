@@ -4,6 +4,13 @@ import CrosswordsFetch from '../utils/api_utils';
 
 export const GAME_LIST_LIMIT = 15;
 
+function handleFetchError(dispatch, error) {
+  dispatch({
+    type: types.FETCH_ERROR,
+    message: error.message,
+  });
+}
+
 export const uploadGCG = formData => (dispatch, getState) => {
   const cfetch = new CrosswordsFetch(getState().session.jwt, dispatch);
 
@@ -14,8 +21,11 @@ export const uploadGCG = formData => (dispatch, getState) => {
         type: types.UPLOADED_GCG_LINK,
         link,
       });
+    })
+    .catch((error) => {
+      console.log('handling a fetch error', error);
+      handleFetchError(dispatch, error);
     });
-  // TODO catch error
 };
 
 // Functions below here do not require a JWT; they are mostly GETs and

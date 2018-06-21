@@ -16,6 +16,8 @@ const RootContainer = props => <Root {...props} />;
 const mapStateToProps = state => ({
   windowWidth: state.environment.width,
   windowHeight: state.environment.height,
+  fetchError: state.environment.fetchError,
+
   game: state.game,
   username: state.session.username,
   gameComments: state.viewer.comments,

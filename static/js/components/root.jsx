@@ -75,7 +75,7 @@ class Root extends React.Component {
         <div className="row">
           <div className="col-lg-6 col-md-5 col-lg-offset-3 col-md-offset-3">
             <ErrorView
-              errorType={this.props.errorType}
+              errorType={this.props.fetchError}
             />
           </div>
         </div>
@@ -172,7 +172,7 @@ Root.propTypes = {
   username: PropTypes.string,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
-
+  fetchError: PropTypes.string.isRequired,
   gameRepr: PropTypes.shape({
     version: PropTypes.number.isRequired,
     turns: PropTypes.arrayOf(PropTypes.object).isRequired,
